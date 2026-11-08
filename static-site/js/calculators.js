@@ -1,11 +1,8 @@
 /**
  * SleepingEdge - Core Sleep & Caffeine Science Engine (Vanilla JS)
- * High-precision algorithms based on AASM & NSF sleep guidelines.
- * Features:
- * - 90-minute sleep cycles with standard 15-minute fall-asleep buffer
- * - Robust input validation & friendly inline error states
- * - Dual 12-hour (AM/PM) and 24-hour time formatting
- * - Zero external framework dependencies
+ * Browser-side sleep timing and related arithmetic estimates.
+ * Sleep-cycle lengths and caffeine clearance vary; outputs are illustrative only.
+ * No external framework or analytics dependency is required.
  */
 
 (function () {
@@ -88,8 +85,9 @@
     function calculate() {
       if (feedback) feedback.textContent = '';
       const is24h = formatToggle ? formatToggle.checked : false;
-      const latency = Number(latencyInput ? latencyInput.value : 15);
-      if (!Number.isInteger(latency) || latency < 0 || latency > 120) {
+      const latencyRaw = latencyInput ? latencyInput.value.trim() : '15';
+      const latency = Number(latencyRaw);
+      if (latencyRaw === '' || !Number.isInteger(latency) || latency < 0 || latency > 120) {
         if (feedback) feedback.textContent = 'Enter a fall-asleep buffer from 0 to 120 whole minutes.';
         if (resultsContainer) resultsContainer.innerHTML = '';
         return;
@@ -323,8 +321,9 @@
     if (latencyInput) latencyInput.addEventListener('input', calculate);
 
     function calculate() {
-      const latency = Number(latencyInput ? latencyInput.value : 10);
-      if (!Number.isInteger(latency) || latency < 0 || latency > 60) {
+      const latencyRaw = latencyInput ? latencyInput.value.trim() : '10';
+      const latency = Number(latencyRaw);
+      if (latencyRaw === '' || !Number.isInteger(latency) || latency < 0 || latency > 60) {
         if (resultsContainer) resultsContainer.innerHTML = '<p class="input-feedback" role="alert">Enter a fall-asleep buffer from 0 to 60 whole minutes.</p>';
         return;
       }
@@ -428,12 +427,12 @@
 
       if (resultsContainer) {
         resultsContainer.innerHTML = `
-          <div class="results-heading">Weekly Sleep Debt Summary</div>
+          <div class="results-heading">Weekly Sleep Hours Comparison</div>
           <div class="results-sub">Weekly Target: ${totalTarget} hrs · Logged: ${Math.round(totalActual * 10) / 10} hrs · Average: ${Math.round(avg * 10) / 10} hrs/night</div>
           <div class="results-grid">
             <div class="result-card ${debt <= 2 ? 'optimal' : ''}">
               <div class="result-card-badge">${severity}</div>
-              <div class="result-time">${Math.round(debt * 10) / 10} Hours Debt</div>
+              <div class="result-time">${Math.round(debt * 10) / 10} Hours Below Target</div>
               <div class="result-desc">${advice}</div>
             </div>
           </div>
