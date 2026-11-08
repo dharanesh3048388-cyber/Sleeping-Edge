@@ -75,23 +75,20 @@ jobs:
           mkdir -p dist/preview
           cp -R static-site/. dist/preview/
           rm -f dist/preview/robots.txt dist/preview/sitemap.xml dist/preview/_headers
+          python3 scripts/prepare-pages-preview.py dist/preview
           python3 - <<'PY'
           from pathlib import Path
           import re
           root = Path("dist/preview")
-          prefix = "/Sleeping-Edge/preview"
-          for path in root.rglob("*"):
-              if not path.is_file() or path.suffix.lower() not in {".html", ".css", ".js"}:
-                  continue
-              content = path.read_text(encoding="utf-8")
-              content = re.sub(r"""(?i)(href|src|action)=(["'])/(?!/)""", lambda m: f'{m.group(1)}={m.group(2)}{prefix}/', content)
-              content = re.sub(r"""url\((["']?)/(?!/)""", lambda m: f'url({m.group(1)}{prefix}/', content)
-              if path.suffix.lower() == ".html":
-                  content = re.sub(r'(?i)</head>', '  <meta name="robots" content="noindex,nofollow">\n</head>', content, count=1)
-              path.write_text(content, encoding="utf-8")
-          home = (root / "index.html").read_text(encoding="utf-8")
-          assert 'name="robots" content="noindex,nofollow"' in home, "Preview must be noindex"
-          assert '"/Sleeping-Edge/preview/' in home, "Preview paths were not rewritten"
+          html_files = list(root.rglob("*.html"))
+          assert html_files, "No preview HTML pages found"
+          for page in html_files:
+              content = page.read_text(encoding="utf-8")
+              assert re.search(r'<meta name="robots" content="noindex,nofollow">', content), f"Missing noindex on {page}"
+              for target in re.findall(r"""(?:href|src|action)=["'](/[^"'#?]*)["']""", content, flags=re.I):
+                  assert target.startswith("/Sleeping-Edge/preview/"), f"Unprefixed root path in {page}: {target}"
           assert (root / "sleep-calculator/index.html").is_file(), "Sleep calculator page missing"
-          print("Preview packaging smoke test passed.")
+          assert not (root / "robots.txt").exists(), "Preview robots.txt should not be published"
+          assert not (root / "sitemap.xml").exists(), "Preview sitemap.xml should not be published"
+          print(f"Preview packaging smoke test passed for {len(html_files)} HTML pages.")
           PY
