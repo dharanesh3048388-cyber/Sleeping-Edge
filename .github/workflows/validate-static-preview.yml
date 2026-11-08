@@ -1,0 +1,64 @@
+name: Validate SleepingEdge static site
+
+on:
+  pull_request:
+    paths:
+      - "static-site/**"
+      - ".github/workflows/validate-static-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-static-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate required pages and assets
+        run: |
+          set -euo pipefail
+          test -s static-site/index.html
+          test -s static-site/css/style.css
+          test -s static-site/js/main.js
+          test -s static-site/js/calculators.js
+          for page in sleep-calculator caffeine-calculator nap-calculator sleep-debt-calculator sleep-stages about privacy terms contact; do
+            test -s "static-site/$page/index.html"
+          done
+
+      - name: Check for unresolved deployment placeholders
+        run: |
+          set -euo pipefail
+          if grep -RInE 'YOURDOMAIN\\.com|YOUR_FORMSPREE_ID|CONTACT@YOURDOMAIN' static-site; then
+            echo "::error::Unresolved production placeholders remain in static-site."
+            exit 1
+          fi
+
+      - name: Check JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check static-site/js/main.js
+          node --check static-site/js/calculators.js
+
+      - name: Check HTML navigation and asset references
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          root = Path("static-site")
+          failures = []
+          for page in root.rglob("*.html"):
+              html = page.read_text(encoding="utf-8")
+              for attr, target in re.findall(r'''(?:href|src)=["'](/[^"'#?]*)["']''', html):
+                  rel = target.lstrip("/")
+                  # Root-relative references are currently incompatible with GitHub project pages.
+                  if not (root / rel).exists():
+                      failures.append(f"{page}: unresolved root path {target}")
+          if failures:
+              print("\\n".join(failures))
+              sys.exit(1)
+          print("All root-relative local HTML references resolve within static-site.")
+          PY
