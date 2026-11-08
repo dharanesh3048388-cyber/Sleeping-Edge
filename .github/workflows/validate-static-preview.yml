@@ -1,0 +1,94 @@
+name: Validate SleepingEdge static site
+
+on:
+  pull_request:
+    paths:
+      - "static-site/**"
+      - "package.json"
+      - "bun.lock"
+      - "bun.lockb"
+      - "vite.config.*"
+      - ".github/workflows/validate-static-preview.yml"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-static-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build the existing production app
+        run: bun run build
+
+      - name: Validate required pages and assets
+        run: |
+          set -euo pipefail
+          test -s static-site/index.html
+          test -s static-site/css/style.css
+          test -s static-site/js/main.js
+          test -s static-site/js/calculators.js
+          for page in sleep-calculator caffeine-calculator nap-calculator sleep-debt-calculator sleep-stages about privacy terms contact; do
+            test -s "static-site/$page/index.html"
+          done
+
+      - name: Check JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check static-site/js/main.js
+          node --check static-site/js/calculators.js
+
+      - name: Check local HTML references
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          root = Path("static-site")
+          failures = []
+          for page in root.rglob("*.html"):
+              html = page.read_text(encoding="utf-8")
+              # One capture group: each match is the referenced URL.
+              for target in re.findall(r'''(?:href|src)=["'](/[^"'#?]*)["']''', html, flags=re.I):
+                  rel = target.lstrip("/")
+                  if not (root / rel).exists():
+                      failures.append(f"{page}: unresolved root path {target}")
+          if failures:
+              print("\\n".join(failures))
+              sys.exit(1)
+          print("All root-relative local HTML references resolve within static-site.")
+          PY
+
+      - name: Smoke-test GitHub Pages preview packaging
+        run: |
+          set -euo pipefail
+          mkdir -p dist/preview
+          cp -R static-site/. dist/preview/
+          rm -f dist/preview/robots.txt dist/preview/sitemap.xml dist/preview/_headers
+          python3 scripts/prepare-pages-preview.py dist/preview
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root = Path("dist/preview")
+          html_files = list(root.rglob("*.html"))
+          assert html_files, "No preview HTML pages found"
+          for page in html_files:
+              content = page.read_text(encoding="utf-8")
+              assert re.search(r'<meta name="robots" content="noindex,nofollow">', content), f"Missing noindex on {page}"
+              for target in re.findall(r"""(?:href|src|action)=["'](/[^"'#?]*)["']""", content, flags=re.I):
+                  assert target.startswith("/Sleeping-Edge/preview/"), f"Unprefixed root path in {page}: {target}"
+          assert (root / "sleep-calculator/index.html").is_file(), "Sleep calculator page missing"
+          assert not (root / "robots.txt").exists(), "Preview robots.txt should not be published"
+          assert not (root / "sitemap.xml").exists(), "Preview sitemap.xml should not be published"
+          print(f"Preview packaging smoke test passed for {len(html_files)} HTML pages.")
+          PY

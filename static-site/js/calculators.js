@@ -245,8 +245,8 @@
         return;
       }
 
-      if (mg > 1200) {
-        if (feedback) feedback.textContent = 'Note: Daily caffeine intake above 400 mg may cause jitteriness and heart palpitations according to the FDA.';
+      if (mg > 400) {
+        if (feedback) feedback.textContent = 'Note: If this is your total daily intake, more than 400 mg is above the FDA level generally considered not to be associated with negative effects for most healthy adults. Individual sensitivity and medical circumstances vary.';
       }
 
       if (!bedtimeVal) {
@@ -259,10 +259,10 @@
         window.trackCalcEvent('Calculate-Caffeine', { mg, halfLife });
       }
 
-      const safeThreshold = 25; // mg at bedtime considered non-disruptive
+      const estimatedResidualTarget = 25; // illustrative modelling target only; not a proven safe or non-disruptive level
       let hoursNeeded = 0;
-      if (mg > safeThreshold) {
-        hoursNeeded = halfLife * (Math.log(mg / safeThreshold) / Math.log(2));
+      if (mg > estimatedResidualTarget) {
+        hoursNeeded = halfLife * (Math.log(mg / estimatedResidualTarget) / Math.log(2));
       }
 
       // Calculate latest cutoff time
@@ -293,18 +293,18 @@
       if (resultsContainer) {
         resultsContainer.innerHTML = `
           <div class="results-heading">Your Caffeine Cutoff Analysis</div>
-          <div class="results-sub">Based on a metabolic half-life of ${halfLife} hours and a ${safeThreshold} mg sleep-friendly threshold</div>
+          <div class="results-sub">Modelled with a ${halfLife}-hour half-life and an illustrative ${estimatedResidualTarget} mg residual target. This target is not a guaranteed safe level.</div>
           <div class="results-grid">
             <div class="result-card optimal">
               <div class="result-card-badge">Daily Caffeine Cutoff</div>
               <div class="result-time">${formatTime(cutoffTime, false)}</div>
-              <div class="result-desc">To reach &lt;${safeThreshold} mg by bedtime, finish your last sip before this hour (${Math.round(hoursNeeded * 10) / 10} hours before bed).</div>
+              <div class="result-desc">To reach the illustrative target of about ${estimatedResidualTarget} mg by bedtime, finish your last sip before this hour (${Math.round(hoursNeeded * 10) / 10} hours before bed).</div>
             </div>
             ${currentActiveMg !== null ? `
-              <div class="result-card ${currentActiveMg <= safeThreshold ? 'optimal' : ''}">
+              <div class="result-card ${currentActiveMg <= estimatedResidualTarget ? 'optimal' : ''}">
                 <div class="result-card-badge">Residual at Bedtime</div>
                 <div class="result-time">${currentActiveMg} mg</div>
-                <div class="result-desc">${currentActiveMg <= safeThreshold ? 'Safe zone! Your caffeine level will not disrupt REM or deep sleep.' : 'Caution: High residual caffeine will block adenosine receptors and delay deep sleep.'}</div>
+                <div class="result-desc">${currentActiveMg <= estimatedResidualTarget ? 'The model estimates a lower residual amount. This does not guarantee that sleep will be unaffected.' : 'The model estimates a higher residual amount; caffeine may affect sleep differently from person to person.'}</div>
               </div>
             ` : ''}
           </div>
@@ -498,32 +498,37 @@
       const latency = parseFloat(latencyInput.value);
       const awakenings = parseFloat(awakeningsInput.value);
 
-      if (isNaN(bed) || bed <= 0) return;
+      if (!Number.isFinite(bed) || !Number.isFinite(latency) || !Number.isFinite(awakenings) ||
+          bed < 60 || bed > 900 || latency < 0 || latency > 180 ||
+          awakenings < 0 || awakenings > 240 || latency + awakenings > bed) {
+        if (resultsContainer) resultsContainer.innerHTML = '<p class="input-feedback" role="alert">Please enter valid values: time in bed 60–900 minutes, time to fall asleep 0–180 minutes, and awake time 0–240 minutes. Awake time cannot exceed time in bed.</p>';
+        return;
+      }
 
-      const asleepMinutes = Math.max(0, bed - latency - awakenings);
+      const asleepMinutes = bed - latency - awakenings;
       const efficiency = bed > 0 ? Math.round((asleepMinutes / bed) * 1000) / 10 : 0;
 
       if (window.trackCalcEvent) {
         window.trackCalcEvent('Calculate-SleepEfficiency', { efficiency });
       }
 
-      let rating = 'Exceptional';
-      let tip = 'Your sleep continuity is excellent with virtually zero lost restorative time.';
+      let rating = 'Higher estimated efficiency';
+      let tip = 'This estimate suggests a relatively high proportion of time in bed was spent asleep. It is not a diagnosis or a measure of sleep quality.';
       if (efficiency < 75) {
-        rating = 'Poor (Sleep Fragmentation)';
-        tip = 'High time awake in bed can condition cognitive insomnia. If unable to sleep after 20 minutes, leave bed in dim light.';
+        rating = 'Lower estimated efficiency';
+        tip = 'A lower estimate can have many causes and does not diagnose insomnia. If sleep difficulties persist, consider discussing them with a healthcare professional.';
       } else if (efficiency < 85) {
-        rating = 'Fragmented';
-        tip = 'Consider cutting off blue screens 1 hour before bed and eliminating evening alcohol.';
+        rating = 'Moderate estimated efficiency';
+        tip = 'This estimate alone cannot identify the cause. Consistent sleep habits and a comfortable sleep environment may help.';
       } else if (efficiency < 90) {
-        rating = 'Normal & Healthy';
-        tip = 'Over 85% sleep efficiency indicates solid, restorative continuity.';
+        rating = 'Commonly used reference range';
+        tip = 'Sleep efficiency is one measure only; it does not establish whether sleep is restorative or healthy.';
       }
 
       if (resultsContainer) {
         resultsContainer.innerHTML = `
           <div class="results-heading">Sleep Efficiency Score</div>
-          <div class="results-sub">Clinical ratio of time spent asleep versus total time in bed</div>
+          <div class="results-sub">Estimated ratio of time spent asleep versus total time in bed (not a clinical diagnosis)</div>
           <div class="results-grid">
             <div class="result-card ${efficiency >= 85 ? 'optimal' : ''}">
               <div class="result-card-badge">${rating}</div>

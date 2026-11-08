@@ -34,6 +34,15 @@ jobs:
       - name: Build production website
         run: bun run build
 
+
+      - name: Publish isolated static-site preview
+        run: |
+          set -euo pipefail
+          mkdir -p dist/preview
+          cp -R static-site/. dist/preview/
+          rm -f dist/preview/robots.txt dist/preview/sitemap.xml dist/preview/_headers
+          python3 scripts/prepare-pages-preview.py dist/preview
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
