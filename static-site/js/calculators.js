@@ -147,21 +147,12 @@
           eventDate = new Date(targetDate.getTime() + totalBedMinutes * 60 * 1000);
         }
 
-        const isOptimal = false;
         const qualityTag = (cycles * 1.5) + ' hours planned';
         let desc;
         if (cycles <= 4) desc = 'This duration is below the usual adult recommendation of at least 7 hours. Repeated short sleep may affect health and alertness.';
         else if (cycles === 5) desc = 'A 7.5-hour sleep opportunity falls within the commonly recommended adult range for many people. Individual needs vary.';
         else desc = 'A 9-hour sleep opportunity may suit some adults. Sleep needs vary by person and circumstance.';
-
-        cardsHtml += 
-          <div class="result-card ${isOptimal ? 'optimal' : ''}">
-            <div class="result-card-badge">Illustrative option · ${qualityTag}</div>
-            <div class="result-time">${formatTime(eventDate, is24h)}</div>
-            <div class="result-meta">${formatDuration(sleepMinutes)} sleep (${formatDuration(totalBedMinutes)} in bed)</div>
-            <div class="result-desc">${desc}</div>
-          </div>
-        `;
+        cardsHtml += '<div class="result-card">' + '<div class="result-card-badge">Illustrative option · ' + qualityTag + '</div>' + '<div class="result-time">' + formatTime(eventDate, is24h) + '</div>' + '<div class="result-meta">' + formatDuration(sleepMinutes) + ' sleep (' + formatDuration(totalBedMinutes) + ' in bed)</div>' + '<div class="result-desc">' + desc + '</div></div>';
       });
 
       if (resultsContainer) {
@@ -272,6 +263,7 @@
 
       const bedtime = new Date();
       bedtime.setHours(bHour, bMin, 0, 0);
+      if (bedtime.getTime() <= Date.now()) bedtime.setDate(bedtime.getDate() + 1);
 
       const cutoffTime = new Date(bedtime.getTime() - hoursNeeded * 60 * 60 * 1000);
 
