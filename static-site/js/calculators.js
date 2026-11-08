@@ -43,7 +43,6 @@
     const modeTabs = document.querySelectorAll('.sleep-mode-tab');
     const inputTimeWrap = document.getElementById('sleep-input-time-wrap');
     const timeInput = document.getElementById('sleep-time');
-    const ampmSelect = document.getElementById('sleep-ampm');
     const formatToggle = document.getElementById('sleep-format-24h');
     const latencyInput = document.getElementById('sleep-latency');
     const feedback = document.getElementById('sleep-calc-feedback');
@@ -74,9 +73,6 @@
     if (formatToggle) {
       formatToggle.addEventListener('change', () => {
         const is24h = formatToggle.checked;
-        if (ampmSelect) {
-          ampmSelect.style.display = is24h ? 'none' : 'block';
-        }
         calculate();
       });
     }
@@ -87,14 +83,18 @@
     });
 
     if (timeInput) timeInput.addEventListener('input', calculate);
-    if (ampmSelect) ampmSelect.addEventListener('change', calculate);
     if (latencyInput) latencyInput.addEventListener('input', calculate);
 
     function calculate() {
       if (feedback) feedback.textContent = '';
       const is24h = formatToggle ? formatToggle.checked : false;
-      const latency = parseInt(latencyInput ? latencyInput.value : '15', 10);
-      const safeLatency = isNaN(latency) || latency < 0 ? 15 : Math.min(latency, 120);
+      const latency = Number(latencyInput ? latencyInput.value : 15);
+      if (!Number.isInteger(latency) || latency < 0 || latency > 120) {
+        if (feedback) feedback.textContent = 'Enter a fall-asleep buffer from 0 to 120 whole minutes.';
+        if (resultsContainer) resultsContainer.innerHTML = '';
+        return;
+      }
+      const safeLatency = latency;
 
       const cycleLength = 90; // minutes
       const now = new Date();
@@ -121,13 +121,8 @@
           return;
         }
 
-        if (!is24h) {
-          const ampm = ampmSelect ? ampmSelect.value : 'AM';
-          if (ampm === 'PM' && hours < 12) hours += 12;
-          if (ampm === 'AM' && hours === 12) hours = 0;
-        }
-
         targetDate.setHours(hours, minutes, 0, 0);
+        if (targetDate.getTime() <= now.getTime()) targetDate.setDate(targetDate.getDate() + 1);
       }
 
       // Track Plausible event
@@ -152,24 +147,16 @@
           eventDate = new Date(targetDate.getTime() + totalBedMinutes * 60 * 1000);
         }
 
-        const isOptimal = cycles === 5;
-        let qualityTag = 'Sufficient';
-        let desc = `${cycles * 1.5} hrs asleep. Good recovery for busy days.`;
+        const isOptimal = false;
+        const qualityTag = (cycles * 1.5) + ' hours planned';
+        let desc;
+        if (cycles <= 4) desc = 'This duration is below the usual adult recommendation of at least 7 hours. Repeated short sleep may affect health and alertness.';
+        else if (cycles === 5) desc = 'A 7.5-hour sleep opportunity falls within the commonly recommended adult range for many people. Individual needs vary.';
+        else desc = 'A 9-hour sleep opportunity may suit some adults. Sleep needs vary by person and circumstance.';
 
-        if (cycles === 6) {
-          qualityTag = 'Peak Recovery';
-          desc = '9.0 hrs asleep. Recommended for physical healing and memory consolidation.';
-        } else if (cycles === 5) {
-          qualityTag = 'Optimal (Recommended)';
-          desc = '7.5 hrs asleep. The natural human adult sweet spot for sharp mental clarity.';
-        } else if (cycles === 3) {
-          qualityTag = 'Short Sleep';
-          desc = '4.5 hrs asleep. Quick recharge; prevents morning grogginess but energy drops later.';
-        }
-
-        cardsHtml += `
+        cardsHtml += 
           <div class="result-card ${isOptimal ? 'optimal' : ''}">
-            <div class="result-card-badge">${qualityTag} · ${cycles} Cycles</div>
+            <div class="result-card-badge">Illustrative option · ${qualityTag}</div>
             <div class="result-time">${formatTime(eventDate, is24h)}</div>
             <div class="result-meta">${formatDuration(sleepMinutes)} sleep (${formatDuration(totalBedMinutes)} in bed)</div>
             <div class="result-desc">${desc}</div>
@@ -179,12 +166,12 @@
 
       if (resultsContainer) {
         const promptText = currentMode === 'wake_at' 
-          ? `To wake refreshed at ${formatTime(targetDate, is24h)}, drift off to sleep at:` 
-          : (currentMode === 'sleep_now' ? 'If you drift off now, set your alarm for:' : `Going to bed at ${formatTime(targetDate, is24h)}, set your alarm for:`);
+          ? `For a planned wake time of ${formatTime(targetDate, is24h)}, estimated bedtimes are:` 
+          : (currentMode === 'sleep_now' ? 'If you try to sleep now, these are illustrative alarm options:' : `For a planned bedtime of ${formatTime(targetDate, is24h)}, estimated wake times are:`);
 
         resultsContainer.innerHTML = `
           <div class="results-heading">${promptText}</div>
-          <div class="results-sub">Factoring in ${safeLatency} min to fall asleep + complete 90-min cycles</div>
+          <div class="results-sub">Uses a ${safeLatency}-minute fall-asleep buffer and illustrative 90-minute intervals. Actual sleep cycles vary and cannot be predicted by this tool.</div>
           <div class="results-grid ${cycleCounts.length === 4 ? 'results-grid-4' : ''}">
             ${cardsHtml}
           </div>
@@ -235,13 +222,19 @@
 
     function calculate() {
       if (feedback) feedback.textContent = '';
-      const mg = parseFloat(mgInput.value);
-      const halfLife = parseFloat(halfLifeInput ? halfLifeInput.value : '5.5');
+      const mg = Number(mgInput.value);
+      const halfLife = Number(halfLifeInput ? halfLifeInput.value : 5.5);
       const bedtimeVal = bedtimeInput.value.trim();
       const intakeVal = intakeInput ? intakeInput.value.trim() : '';
 
-      if (isNaN(mg) || mg <= 0) {
-        if (feedback) feedback.textContent = 'Please enter a positive caffeine amount (e.g., 140 mg).';
+      if (!Number.isFinite(mg) || mg < 1 || mg > 1500) {
+        if (feedback) feedback.textContent = 'Enter a caffeine amount from 1 to 1,500 mg.';
+        if (resultsContainer) resultsContainer.innerHTML = '';
+        return;
+      }
+      if (!Number.isFinite(halfLife) || halfLife < 3 || halfLife > 9.5) {
+        if (feedback) feedback.textContent = 'Choose a half-life between 3 and 9.5 hours.';
+        if (resultsContainer) resultsContainer.innerHTML = '';
         return;
       }
 
@@ -249,8 +242,15 @@
         if (feedback) feedback.textContent = 'Note: If this is your total daily intake, more than 400 mg is above the FDA level generally considered not to be associated with negative effects for most healthy adults. Individual sensitivity and medical circumstances vary.';
       }
 
-      if (!bedtimeVal) {
-        if (feedback) feedback.textContent = 'Please select your target bedtime.';
+      const validTime = (value) => /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+      if (!validTime(bedtimeVal)) {
+        if (feedback) feedback.textContent = 'Please enter a valid target bedtime.';
+        if (resultsContainer) resultsContainer.innerHTML = '';
+        return;
+      }
+      if (intakeVal && !validTime(intakeVal)) {
+        if (feedback) feedback.textContent = 'Please enter a valid caffeine intake time.';
+        if (resultsContainer) resultsContainer.innerHTML = '';
         return;
       }
 
@@ -296,7 +296,7 @@
           <div class="results-sub">Modelled with a ${halfLife}-hour half-life and an illustrative ${estimatedResidualTarget} mg residual target. This target is not a guaranteed safe level.</div>
           <div class="results-grid">
             <div class="result-card optimal">
-              <div class="result-card-badge">Daily Caffeine Cutoff</div>
+              <div class="result-card-badge">Illustrative timing estimate</div>
               <div class="result-time">${formatTime(cutoffTime, false)}</div>
               <div class="result-desc">To reach the illustrative target of about ${estimatedResidualTarget} mg by bedtime, finish your last sip before this hour (${Math.round(hoursNeeded * 10) / 10} hours before bed).</div>
             </div>
@@ -331,8 +331,12 @@
     if (latencyInput) latencyInput.addEventListener('input', calculate);
 
     function calculate() {
-      const latency = parseInt(latencyInput ? latencyInput.value : '10', 10);
-      const safeLatency = isNaN(latency) || latency < 0 ? 10 : latency;
+      const latency = Number(latencyInput ? latencyInput.value : 10);
+      if (!Number.isInteger(latency) || latency < 0 || latency > 60) {
+        if (resultsContainer) resultsContainer.innerHTML = '<p class="input-feedback" role="alert">Enter a fall-asleep buffer from 0 to 60 whole minutes.</p>';
+        return;
+      }
+      const safeLatency = latency;
       const now = new Date();
       const hour = now.getHours();
       const isLateAfternoon = hour >= 16;
@@ -343,25 +347,12 @@
 
       const naps = [
         {
-          name: 'The Power Nap',
-          sleepDuration: 20,
-          badge: 'Fast Refresh',
-          target: 'Stage 2 Light Sleep',
-          desc: 'Wakes before deep slow-wave sleep starts. Boosts alertness, mood, and reaction time without any grogginess.'
+          name: 'Brief Nap', sleepDuration: 20, badge: 'Short rest', target: 'Brief nap opportunity',
+          desc: 'A short nap around 10–20 minutes is a common starting point. Actual sleep onset and alertness after waking vary; grogginess is still possible.'
         },
         {
-          name: 'The NASA Pilot Nap',
-          sleepDuration: 26,
-          badge: 'NASA Tested',
-          target: 'Motor Memory Lock',
-          desc: 'NASA military study confirmed a 34% increase in pilot alertness and 54% gain in working memory efficiency.'
-        },
-        {
-          name: 'Full Sleep Cycle Nap',
-          sleepDuration: 90,
-          badge: 'Full Recovery',
-          target: 'Deep NREM + Dream REM',
-          desc: 'Complete architectural cycle. Clears heavy mental exhaustion and sparks creative problem-solving.'
+          name: 'Longer Nap', sleepDuration: 90, badge: 'Longer rest', target: 'Longer nap opportunity',
+          desc: 'A longer nap allows more time for sleep but may cause grogginess after waking. Ninety minutes is not a guaranteed complete sleep cycle.'
         }
       ];
 
@@ -381,8 +372,8 @@
 
       if (resultsContainer) {
         resultsContainer.innerHTML = `
-          <div class="results-heading">Optimal Nap Alarms (Starting Now: ${formatTime(now, false)})</div>
-          <div class="results-sub">${isLateAfternoon ? '⚠️ Warning: It is past 4:00 PM. Napping late in the day can reduce your bedtime sleep drive (adenosine).' : 'Ideal afternoon circadian dip window.'}</div>
+          <div class="results-heading">Estimated nap alarm options (starting ${formatTime(now, false)})</div>
+          <div class="results-sub">${isLateAfternoon ? 'A late nap may make it harder for some people to fall asleep at their usual bedtime.' : 'Choose a nap time that fits your schedule and leaves enough time before your usual bedtime.'}</div>
           <div class="results-grid">
             ${cardsHtml}
           </div>
@@ -435,22 +426,12 @@
       const debt = Math.max(0, totalTarget - totalActual);
       const avg = totalActual / 7;
 
-      let severity = 'None (Fully Rested)';
-      let advice = 'Your sleep reserve is in top shape! Maintain your current sleep timing.';
-      let bonusMins = 0;
+      let severity = 'No estimated shortfall';
+      let advice = 'Your recorded total meets or exceeds the weekly target you entered. This simple comparison does not assess sleep quality or daytime alertness.';
 
-      if (debt >= 8) {
-        severity = 'Severe Sleep Deficit';
-        advice = 'Add +45 to +60 minutes to your sleep window for the next 7-10 nights. Avoid sleeping in >1.5 hours on weekends to prevent circadian social jetlag.';
-        bonusMins = 60;
-      } else if (debt >= 4) {
-        severity = 'Moderate Sleep Deficit';
-        advice = 'Go to bed 30 minutes earlier every night this week, paired with a 20-minute afternoon power nap around 1:30 PM.';
-        bonusMins = 30;
-      } else if (debt > 0.5) {
-        severity = 'Mild Deficit';
-        advice = 'Easily repayable in 2 nights by going to bed 15-20 minutes earlier than normal.';
-        bonusMins = 20;
+      if (debt > 0) {
+        severity = 'Estimated weekly shortfall';
+        advice = 'This is the arithmetic difference from your chosen weekly target, not a precise amount that must be repaid. Prioritize regular, adequate sleep; seek professional advice for persistent sleepiness or sleep difficulties.';
       }
 
       if (resultsContainer) {
@@ -463,13 +444,6 @@
               <div class="result-time">${Math.round(debt * 10) / 10} Hours Debt</div>
               <div class="result-desc">${advice}</div>
             </div>
-            ${bonusMins > 0 ? `
-              <div class="result-card">
-                <div class="result-card-badge">Daily Recovery Buffer</div>
-                <div class="result-time">+${bonusMins} min / night</div>
-                <div class="result-desc">Shift your bedtime earlier by this duration until your weekly balance normalizes.</div>
-              </div>
-            ` : ''}
           </div>
         `;
       }
@@ -512,7 +486,7 @@
         window.trackCalcEvent('Calculate-SleepEfficiency', { efficiency });
       }
 
-      let rating = 'Higher estimated efficiency';
+      let rating = 'Estimated sleep efficiency';
       let tip = 'This estimate suggests a relatively high proportion of time in bed was spent asleep. It is not a diagnosis or a measure of sleep quality.';
       if (efficiency < 75) {
         rating = 'Lower estimated efficiency';
@@ -521,7 +495,7 @@
         rating = 'Moderate estimated efficiency';
         tip = 'This estimate alone cannot identify the cause. Consistent sleep habits and a comfortable sleep environment may help.';
       } else if (efficiency < 90) {
-        rating = 'Commonly used reference range';
+        rating = 'Higher estimated efficiency';
         tip = 'Sleep efficiency is one measure only; it does not establish whether sleep is restorative or healthy.';
       }
 
@@ -530,7 +504,7 @@
           <div class="results-heading">Sleep Efficiency Score</div>
           <div class="results-sub">Estimated ratio of time spent asleep versus total time in bed (not a clinical diagnosis)</div>
           <div class="results-grid">
-            <div class="result-card ${efficiency >= 85 ? 'optimal' : ''}">
+            <div class="result-card">
               <div class="result-card-badge">${rating}</div>
               <div class="result-time">${efficiency}%</div>
               <div class="result-meta">${Math.round(asleepMinutes)} min actual sleep / ${bed} min in bed</div>
