@@ -1,5 +1,25 @@
 (function () {
   'use strict';
+  // On an explicit page reload, start at the top instead of restoring a stale scroll offset.
+  // Keep the browser's normal back/forward scroll restoration behaviour unchanged.
+  (function resetScrollOnReload() {
+    let isReload = false;
+    try {
+      const entries = performance.getEntriesByType('navigation');
+      isReload = !!(entries.length && entries[0].type === 'reload');
+      if (isReload && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
+    } catch (_) {}
+    if (!isReload) return;
+    const goToTop = function () {
+      window.scrollTo(0, 0);
+      requestAnimationFrame(function () {
+        window.scrollTo(0, 0);
+        requestAnimationFrame(function () { window.scrollTo(0, 0); });
+      });
+    };
+    window.addEventListener('pageshow', goToTop, { once: true });
+    window.addEventListener('load', goToTop, { once: true });
+  })();
   const THEME_KEY = 'sleepingedge_theme';
   function applyTheme(theme) {
     const selected = theme === 'light' ? 'light' : 'dark';
