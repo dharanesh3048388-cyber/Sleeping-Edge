@@ -42,6 +42,30 @@ jobs:
             test -s "static-site/$page/index.html"
           done
 
+      - name: Guard against placeholders and unconfigured integrations
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          pages = list(Path("static-site").rglob("*.html"))
+          assert len(pages) >= 9, f"Expected all core pages, found {len(pages)}"
+          forbidden = [
+              "YOURDOMAIN", "YOUR_FORMSPREE_ID", "B0XXXXXXXX",
+              "YOUR_AMAZON_TAG", "CONTACT@YOURDOMAIN", "INSERT YOUR"
+          ]
+          for page in pages:
+              content = page.read_text(encoding="utf-8")
+              for marker in forbidden:
+                  assert marker not in content, f"Placeholder {marker} remains in {page}"
+              assert "plausible.io/js/script.js" not in content, f"Unconsented analytics script in {page}"
+              assert not re.search(r"""class=["'][^"']*ad-slot""", content), f"Unconfigured ad slot in {page}"
+              assert 'id="cookie-banner"' not in content, f"Inactive consent UI remains in {page}"
+          contact = Path("static-site/contact/index.html").read_text(encoding="utf-8")
+          assert "<form" not in contact.lower(), "Contact page must not expose an unconfigured form"
+          print(f"Placeholder/integration guard passed for {len(pages)} pages.")
+          PY
+
       - name: Check JavaScript syntax
         run: |
           set -euo pipefail

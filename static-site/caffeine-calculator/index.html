@@ -3,82 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caffeine Cutoff Calculator - Coffee & Sleep Timing | SleepingEdge</title>
-  <meta name="description" content="Calculate your personalized daily caffeine cutoff time based on caffeine dose, metabolic half-life, and target bedtime. Protect deep sleep and adenosine receptors.">
-  <link rel="canonical" href="https://YOURDOMAIN.com/caffeine-calculator/">
-  
+  <title>Caffeine Timing Calculator — SleepingEdge</title>
+  <meta name="description" content="Estimate caffeine remaining at bedtime using a simple, adjustable half-life model.">
+
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Caffeine Cutoff Calculator - Sleep Timing & Clearance">
-  <meta property="og:description" content="Calculate the exact hour to stop drinking coffee or energy drinks so residual caffeine doesn't sabotage your deep sleep.">
-  <meta property="og:url" content="https://YOURDOMAIN.com/caffeine-calculator/">
-  <meta property="og:image" content="https://YOURDOMAIN.com/og-caffeine.jpg">
-  
+  <meta property="og:title" content="Caffeine Timing Calculator — SleepingEdge">
+  <meta property="og:description" content="A transparent caffeine decay estimate, not a safe-dose guarantee.">
+
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Caffeine Cutoff Calculator - SleepingEdge">
-  <meta name="twitter:description" content="Scientifically calculate your caffeine curfew to protect deep slow-wave sleep.">
+  <meta name="twitter:title" content="Caffeine Timing Calculator — SleepingEdge">
+  <meta name="twitter:description" content="Estimate caffeine remaining at bedtime using a simple half-life model.">
   
   <link rel="stylesheet" href="/css/style.css">
-  <script defer data-domain="YOURDOMAIN.com" src="https://plausible.io/js/script.js"></script>
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "name": "SleepingEdge Caffeine Cutoff Calculator",
-        "url": "https://YOURDOMAIN.com/caffeine-calculator/",
-        "applicationCategory": "HealthApplication",
-        "operatingSystem": "All",
-        "browserRequirements": "Requires JavaScript",
-        "description": "Calculates caffeine clearance and recommended daily cutoff time based on pharmacokinetics.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What is the half-life of caffeine in the human body?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "For healthy adults, caffeine has an average metabolic half-life of 5 to 6 hours. This means if you consume 200 mg of caffeine at 2:00 PM, approximately 100 mg remains active in your bloodstream at 8:00 PM and 50 mg remains at 2:00 AM."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can caffeine ruin sleep even if I can fall asleep easily?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Even if you fall asleep without trouble, active caffeine binds to adenosine A1 and A2A receptors in the brain, suppressing restorative Stage N3 Slow-Wave Deep Sleep and fragmenting nighttime REM cycles."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is considered a safe residual caffeine level at bedtime?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sleep researchers generally recommend having less than 25 mg of active caffeine remaining in your system at bedtime to avoid disrupting neurochemical sleep architecture."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why do some people metabolize caffeine faster or slower?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Variations in the CYP1A2 hepatic enzyme gene determine whether you are a fast or slow caffeine metabolizer. Oral contraceptives, pregnancy, and liver health also extend caffeine clearance time."
-            }
-          }
-        ]
-      }
-    ]
-  }
-  </script>
-</head>
+  </head>
 <body>
 
   <header class="site-header">
@@ -119,10 +57,7 @@
   </header>
 
   <main class="container">
-    <div class="ad-slot ad-top-banner">
-      <span class="ad-slot-label">Advertisement</span>
-      <div class="ad-inner-content"></div>
-    </div>
+    
 
     <section class="hero-section">
       <span class="badge-tag">Pharmacokinetics & Adenosine Clearance</span>
@@ -130,7 +65,7 @@
         Caffeine Cutoff Calculator
       </h1>
       <p class="hero-lead">
-        Calculate your daily caffeine curfew. Find out when to finish your last coffee, tea, or pre-workout drink so residual stimulants won't degrade your slow-wave deep sleep.
+        Calculate your daily caffeine curfew. Find out when to finish your last coffee, tea, or pre-workout drink to explore how much caffeine may remain by your planned bedtime. The result is a mathematical estimate, not a safe-dose guarantee.
       </p>
     </section>
 
@@ -174,7 +109,7 @@
               <span>Time Consumed (Optional)</span>
               <span style="font-size:0.75rem; color:var(--text-muted)">Check current active level</span>
             </label>
-            <input type="time" id="caffeine-intake" class="form-input" value="14:00">
+            <input type="time" id="caffeine-intake" class="form-input">
           </div>
 
           <!-- Metabolic Half-Life Slider -->
@@ -202,107 +137,17 @@
       </div>
     </div>
 
-    <div class="ad-slot ad-in-content">
-      <span class="ad-slot-label">Advertisement</span>
-      <div class="ad-inner-content"></div>
-    </div>
+    
 
-    <!-- Recommended Sleep Products -->
-    <section class="recommended-block">
-      <div class="recommended-title">Recommended Sleep Recovery Gear</div>
-      <div class="recommended-sub">Tools curated by sleep specialists to preserve your circadian rhythm and deep sleep stages.</div>
-
-      <div class="product-grid">
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Circadian Light Control</div>
-            <h3 class="product-name">100% Zero-Pressure Blackout Eye Mask</h3>
-            <p class="product-desc">Deep contoured eye cups allow rapid eye movement (REM) with zero pressure on eyelids, ensuring natural melatonin synthesis.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
-        </article>
-
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Acoustic Shielding</div>
-            <h3 class="product-name">Precision White & Pink Noise Machine</h3>
-            <p class="product-desc">Real non-looping acoustic fan and digital pink noise mask sudden decibel spikes from city traffic and disruptive household noise.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
-        </article>
-
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Melatonin Defense</div>
-            <h3 class="product-name">Evening Blue Light Blocking Glasses</h3>
-            <p class="product-desc">Filters 99.5% of melanopsin-stimulating 450–480nm spectrum emitted by phone, monitor, and tablet screens before bedtime.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
-        </article>
-      </div>
-
-      <p class="affiliate-disclosure">
-        Affiliate Disclosure: SleepingEdge participates in affiliate programs, including the Amazon Services LLC Associates Program. When you purchase through links on our site, we may earn an affiliate commission at no extra cost to you.
-      </p>
-    </section>
+    
+    
 
     <!-- Editorial Explanation -->
     <article class="guide-section">
-      <div class="guide-content">
-        <h2>How Caffeine Blocks Adenosine and Silently Destroys Deep Sleep</h2>
-        <p>
-          From the moment you wake up, a neurochemical compound called <strong>adenosine</strong> builds up in your brain. The longer you remain awake, the higher your adenosine concentrations climb, creating what neuroscientists term <em>sleep pressure</em>. When you fall asleep, your brain clears this accumulated adenosine.
-        </p>
-        <p>
-          Caffeine acts as a competitive antagonist for your brain’s adenosine receptors (specifically the A1 and A2A receptors). Because caffeine molecules share a molecular structure remarkably similar to adenosine, they bind directly to these receptor docking sites without activating them. While this prevents your brain from feeling fatigue, <strong>it does not eliminate the tiredness</strong>—it merely mutes the signal.
-        </p>
-        <h3>The Hidden Threat of Residual Caffeine</h3>
-        <p>
-          Many coffee drinkers believe they are immune to caffeine because they can drink an espresso at 9:00 PM and fall asleep by 11:00 PM. However, electroencephalogram (EEG) sleep studies consistently demonstrate that having active caffeine in your nervous system:
-        </p>
-        <ul>
-          <li>Reduces <strong>NREM Stage 3 Slow-Wave Deep Sleep</strong> by up to 30%, depriving you of physical recovery and growth hormone release.</li>
-          <li>Increases nighttime micro-awakenings that fragment the natural progression between sleep stages.</li>
-          <li>Delays your circadian melatonin release curve by approximately 40 minutes per 200 mg dose.</li>
-        </ul>
-        <p>
-          Because caffeine has an average half-life of 5.5 hours, an afternoon beverage with 200 mg consumed at 3:00 PM still leaves roughly 50 mg circulating in your blood at 2:00 AM. Using this calculator to establish a disciplined cutoff window ensures your adenosine receptors are clear when you close your eyes.
-        </p>
-      </div>
+      <div class="guide-content"><h2>Understanding caffeine timing</h2><p>Caffeine is cleared gradually, and its half-life varies considerably between people. A simple first-order model estimates the amount remaining over time, but it cannot account for every medication, health condition, pregnancy-related change or individual sensitivity.</p><p>The calculator’s residual-milligram reference is an illustrative modelling choice only. It is not a clinically established safe threshold, and reaching it does not guarantee that caffeine will not affect your sleep.</p><p>If caffeine affects your sleep, consider reducing the dose or moving consumption earlier. Ask a healthcare professional about caffeine use if you are pregnant, have a relevant medical condition or take medicines that may interact with it.</p></div>
     </article>
 
-    <section class="faq-section">
-      <h2 class="faq-title">Caffeine & Sleep FAQs</h2>
-      <div class="faq-list">
-        <div class="faq-item">
-          <button class="faq-question" type="button">What is the half-life of caffeine?</button>
-          <div class="faq-answer">
-            For healthy adults, caffeine has an average metabolic half-life of 5 to 6 hours. This means half the caffeine remains in your bloodstream after 5–6 hours, a quarter remains after 10–12 hours, and an eighth remains after 15–18 hours.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" type="button">Can caffeine ruin sleep if I can fall asleep easily?</button>
-          <div class="faq-answer">
-            Yes. Even if you fall asleep promptly, active caffeine suppresses restorative slow-wave deep sleep and fragments nighttime REM cycles, leaving you feeling unrested the following day.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" type="button">What is a safe residual caffeine level at bedtime?</button>
-          <div class="faq-answer">
-            Sleep researchers generally recommend having less than 25 mg of active caffeine remaining in your system at bedtime to avoid neurochemical sleep disruption.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" type="button">Why do some people clear caffeine faster than others?</button>
-          <div class="faq-answer">
-            Variations in the CYP1A2 liver enzyme gene classify individuals as fast or slow metabolizers. Smokers metabolize caffeine faster, while oral contraceptives, pregnancy, and certain SSRIs slow clearance down.
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="faq-section"><h2 class="faq-title">Frequently Asked Questions</h2><div class="faq-list"><div class="faq-item"><button class="faq-question" type="button">How long does caffeine stay in the body?</button><div class="faq-answer">Caffeine is eliminated gradually. Its half-life varies between people and can be affected by pregnancy, smoking, medicines and other factors. A single average cannot predict an individual’s clearance.</div></div><div class="faq-item"><button class="faq-question" type="button">Does the calculator’s 25 mg reference mean that amount is safe?</button><div class="faq-answer">No. The 25 mg value is an illustrative model input, not a validated safe or sleep-neutral threshold. Even smaller amounts may affect some people.</div></div><div class="faq-item"><button class="faq-question" type="button">Can I use this estimate as medical advice?</button><div class="faq-answer">No. It is a simplified mathematical estimate and does not account for all personal or medical factors.</div></div></div></section>
   </main>
 
   <footer class="site-footer">
@@ -310,7 +155,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <h3>SleepingEdge</h3>
-          <p>Scientific circadian rhythm tools, sleep cycle optimization, and caffeine clearance calculators designed to maximize human recovery.</p>
+          <p>Browser-based sleep timing and educational calculators. Estimates only; not medical advice.</p>
         </div>
 
         <div>
@@ -331,7 +176,7 @@
             <li><a href="/contact/">Contact Us</a></li>
             <li><a href="/privacy/">Privacy Policy</a></li>
             <li><a href="/terms/">Terms of Use</a></li>
-            <li><a href="javascript:void(0)" onclick="openCookiePreferences()">Cookie Preferences</a></li>
+
           </ul>
         </div>
       </div>
@@ -344,40 +189,9 @@
   </footer>
 
   <!-- Cookie Consent Banner & Modal -->
-  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-live="polite">
-    <div class="container cookie-content">
-      <div class="cookie-text">
-        We use essential cookies to maintain site functionality, anonymous analytics, and partner advertising. Read our <a href="/privacy/">Privacy Policy</a>.
-      </div>
-      <div class="cookie-actions">
-        <button id="btn-cookie-accept" class="btn-cookie btn-cookie-accept" type="button">Accept All</button>
-        <button id="btn-cookie-reject" class="btn-cookie" type="button">Reject Non-Essential</button>
-        <button id="btn-cookie-manage" class="btn-cookie" type="button">Preferences</button>
-      </div>
-    </div>
-  </div>
+  
 
-  <div id="cookie-modal" class="cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title">
-    <div class="cookie-modal-card">
-      <h3 id="cookie-modal-title" style="font-size:1.25rem; font-weight:800; margin-bottom:1rem;">Cookie Preferences</h3>
-      <div class="cookie-pref-group">
-        <div><strong>Strictly Necessary</strong><div style="font-size:0.75rem; color:var(--text-muted)">Required for core site functionality.</div></div>
-        <input type="checkbox" checked disabled>
-      </div>
-      <div class="cookie-pref-group">
-        <div><strong>Analytics</strong><div style="font-size:0.75rem; color:var(--text-muted)">Anonymous telemetry to improve calculators.</div></div>
-        <input type="checkbox" id="consent-analytics" checked>
-      </div>
-      <div class="cookie-pref-group">
-        <div><strong>Advertising</strong><div style="font-size:0.75rem; color:var(--text-muted)">Contextual display advertising.</div></div>
-        <input type="checkbox" id="consent-advertising" checked>
-      </div>
-      <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem;">
-        <button id="btn-cookie-close-modal" class="btn-cookie" type="button">Cancel</button>
-        <button id="btn-cookie-save-prefs" class="btn-cookie btn-cookie-accept" type="button">Save Preferences</button>
-      </div>
-    </div>
-  </div>
+  
 
   <script src="/js/main.js"></script>
   <script src="/js/calculators.js"></script>
