@@ -1,0 +1,6 @@
+{
+  "name": "SleepingEdge - Science-Backed Sleep Cycle Calculator",
+  "description": "The ultimate online sleep calculator. Wake up refreshed at the end of natural sleep cycles with bidirectional bedtime planning, nap optimizer, caffeine cutoff, sleep debt recovery, and photorealistic aurora atmosphere.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

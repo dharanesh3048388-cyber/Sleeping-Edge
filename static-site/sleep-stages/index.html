@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sleep Stages & Efficiency Calculator - NREM Deep & REM | SleepingEdge</title>
+  <meta name="description" content="Calculate your sleep efficiency score and understand your sleep architecture. Learn how much deep sleep, light sleep, and REM dream sleep healthy adults need.">
+  <link rel="canonical" href="https://YOURDOMAIN.com/sleep-stages/">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sleep Stages & Efficiency Calculator - Sleep Architecture">
+  <meta property="og:description" content="Calculate clinical sleep efficiency percentage and explore the neurobiology of Stage N1, N2, deep slow-wave N3, and REM sleep.">
+  <meta property="og:url" content="https://YOURDOMAIN.com/sleep-stages/">
+  <meta property="og:image" content="https://YOURDOMAIN.com/og-stages.jpg">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sleep Stages & Efficiency Calculator - SleepingEdge">
+  <meta name="twitter:description" content="Calculate your clinical sleep efficiency score and optimize deep and REM stages.">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <script defer data-domain="YOURDOMAIN.com" src="https://plausible.io/js/script.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "SleepingEdge Sleep Efficiency Calculator",
+        "url": "https://YOURDOMAIN.com/sleep-stages/",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript",
+        "description": "Calculates clinical sleep efficiency ratio and stage distributions.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a good sleep efficiency score?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In clinical sleep medicine, a sleep efficiency score of 85% or higher is considered healthy and normal. Scores above 90% indicate top-tier restorative continuity, while scores under 75% suggest sleep fragmentation or conditioned insomnia."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much deep sleep should an adult get each night?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "For healthy adults aged 18 to 64, Stage N3 Slow-Wave Deep Sleep should comprise approximately 15% to 25% of total sleep time (roughly 60 to 110 minutes per night)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens during REM sleep?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "During Rapid Eye Movement (REM) sleep, your voluntary muscles are temporarily paralyzed while your brain exhibits high-frequency neural activity. REM is essential for emotional calibration, complex memory synthesis, and creative associative learning."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why do we wake up during the night?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Brief awakenings (micro-arousals) between 90-minute sleep cycles are completely natural. However, prolonged awakenings caused by environmental noise, room temperature over 68°F (20°C), alcohol, or caffeine fragment sleep continuity."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-link" aria-label="SleepingEdge Homepage">
+        Sleeping<span class="brand-accent">Edge</span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="/sleep-calculator/" class="nav-link">Sleep Cycles</a></li>
+          <li><a href="/caffeine-calculator/" class="nav-link">Caffeine Cutoff</a></li>
+          <li><a href="/nap-calculator/" class="nav-link">Power Naps</a></li>
+          <li><a href="/sleep-debt-calculator/" class="nav-link">Sleep Debt</a></li>
+          <li><a href="/sleep-stages/" class="nav-link active">Sleep Stages</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button id="theme-toggle-btn" class="btn-icon" type="button" aria-label="Toggle dark and light mode"></button>
+        <button id="mobile-menu-btn" class="btn-icon mobile-nav-toggle" type="button" aria-expanded="false" aria-label="Open navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="mobile-menu">
+      <ul class="mobile-nav-links">
+        <li><a href="/sleep-calculator/" class="nav-link">Sleep Cycles</a></li>
+        <li><a href="/caffeine-calculator/" class="nav-link">Caffeine Cutoff</a></li>
+        <li><a href="/nap-calculator/" class="nav-link">Power Naps</a></li>
+        <li><a href="/sleep-debt-calculator/" class="nav-link">Sleep Debt</a></li>
+        <li><a href="/sleep-stages/" class="nav-link active">Sleep Stages</a></li>
+        <li><a href="/about/" class="nav-link">About Us</a></li>
+        <li><a href="/contact/" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="ad-slot ad-top-banner">
+      <span class="ad-slot-label">Advertisement</span>
+      <div class="ad-inner-content"></div>
+    </div>
+
+    <section class="hero-section">
+      <span class="badge-tag">Polysomnography & Sleep Architecture</span>
+      <h1 class="hero-title">
+        Sleep Stages & Efficiency Calculator
+      </h1>
+      <p class="hero-lead">
+        Determine your clinical sleep efficiency percentage. Understand how much of your night is spent in deep tissue repair (N3) versus creative dream sleep (REM).
+      </p>
+    </section>
+
+    <div class="calc-card">
+      <form id="stages-calc-form" novalidate>
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label for="stages-bed-minutes" class="form-label">Total Time in Bed (Minutes)</label>
+            <input type="number" id="stages-bed-minutes" class="form-input" value="480" min="60" max="900" required>
+            <span style="font-size:0.75rem; color:var(--text-muted)">e.g., 8 hours = 480 min</span>
+          </div>
+
+          <div class="form-group">
+            <label for="stages-latency" class="form-label">Time to Fall Asleep (Minutes)</label>
+            <input type="number" id="stages-latency" class="form-input" value="20" min="0" max="180" required>
+            <span style="font-size:0.75rem; color:var(--text-muted)">Normal: 10 to 25 min</span>
+          </div>
+
+          <div class="form-group">
+            <label for="stages-awakenings" class="form-label">Minutes Awake in the Night</label>
+            <input type="number" id="stages-awakenings" class="form-input" value="15" min="0" max="240" required>
+            <span style="font-size:0.75rem; color:var(--text-muted)">Bathroom trips or tossing</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top:1rem;">Calculate Sleep Efficiency</button>
+      </form>
+
+      <div id="stages-results" class="results-container" aria-live="polite"></div>
+
+      <div class="medical-disclaimer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:0.15rem; color:var(--accent-amber);"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <div>
+          <strong>Estimates Only, Not Medical Advice:</strong> Sleep efficiency calculations reflect standard clinical sleep medicine formulas. For diagnostic assessment of sleep fragmentation or breathing interruptions, consult a board-certified sleep physician for an in-lab polysomnogram (PSG).
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-slot ad-in-content">
+      <span class="ad-slot-label">Advertisement</span>
+      <div class="ad-inner-content"></div>
+    </div>
+
+    <!-- Recommended Sleep Products -->
+    <section class="recommended-block">
+      <div class="recommended-title">Recommended Sleep Recovery Gear</div>
+      <div class="recommended-sub">Tools curated by sleep specialists to preserve your circadian rhythm and deep sleep stages.</div>
+
+      <div class="product-grid">
+        <article class="product-card">
+          <div>
+            <div class="product-tag">Circadian Light Control</div>
+            <h3 class="product-name">100% Zero-Pressure Blackout Eye Mask</h3>
+            <p class="product-desc">Deep contoured eye cups allow rapid eye movement (REM) with zero pressure on eyelids, ensuring natural melatonin synthesis.</p>
+          </div>
+          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
+        </article>
+
+        <article class="product-card">
+          <div>
+            <div class="product-tag">Acoustic Shielding</div>
+            <h3 class="product-name">Precision White & Pink Noise Machine</h3>
+            <p class="product-desc">Real non-looping acoustic fan and digital pink noise mask sudden decibel spikes from city traffic and disruptive household noise.</p>
+          </div>
+          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
+        </article>
+
+        <article class="product-card">
+          <div>
+            <div class="product-tag">Melatonin Defense</div>
+            <h3 class="product-name">Evening Blue Light Blocking Glasses</h3>
+            <p class="product-desc">Filters 99.5% of melanopsin-stimulating 450–480nm spectrum emitted by phone, monitor, and tablet screens before bedtime.</p>
+          </div>
+          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
+        </article>
+      </div>
+
+      <p class="affiliate-disclosure">
+        Affiliate Disclosure: SleepingEdge participates in affiliate programs, including the Amazon Services LLC Associates Program. When you purchase through links on our site, we may earn an affiliate commission at no extra cost to you.
+      </p>
+    </section>
+
+    <!-- Editorial Explanation -->
+    <article class="guide-section">
+      <div class="guide-content">
+        <h2>Understanding Sleep Architecture: The Four Critical Stages of Rest</h2>
+        <p>
+          Polysomnography reveals that human sleep is an intricately orchestrated neurological symphony divided into two primary categories: <strong>Non-Rapid Eye Movement (NREM)</strong> sleep and <strong>Rapid Eye Movement (REM)</strong> sleep.
+        </p>
+        <h3>Stage N1: The Light Sleep Gateway (5% of Night)</h3>
+        <p>
+          Stage N1 is the gentle bridge between waking consciousness and sleep. During this 5 to 10-minute transition, alpha brain waves give way to low-amplitude theta waves. Breathing becomes regular, heart rate slows, and you may experience brief muscle twitches known as <em>hypnic jerks</em>.
+        </p>
+        <h3>Stage N2: Memory Consolidation (45–55% of Night)</h3>
+        <p>
+          Stage N2 accounts for the largest proportion of adult sleep. During this phase, core body temperature drops and your brain produces bursts of high-frequency oscillatory activity called <strong>sleep spindles</strong> and large <strong>K-complexes</strong>. Sleep spindles actively transfer short-term motor skills and declarative memories from the hippocampus to the neocortex for long-term storage.
+        </p>
+        <h3>Stage N3: Slow-Wave Deep Repair (15–25% of Night)</h3>
+        <p>
+          Stage N3 is the most physically restorative phase of human life. Dominated by slow, synchronized delta waves (0.5 to 2 Hz), your vascular system relaxes, arterial blood pressure drops, and pituitary human growth hormone (HGH) surges to repair damaged muscle fibers and stimulate protein synthesis. Crucially, the brain's <strong>glymphatic system</strong> expands by 60%, circulating cerebrospinal fluid to flush out metabolic debris, including beta-amyloid plaques.
+        </p>
+        <h3>Stage REM: Dream Architecture & Emotional Calibration (20–25% of Night)</h3>
+        <p>
+          Approximately 90 minutes into your night, your brain enters REM sleep. Cortical glucose metabolism surges to levels resembling full wakefulness, eyes dart rapidly beneath closed lids, and your motor cortex is inhibited by the neurotransmitters glycine and GABA to prevent you from acting out dreams (atonia). REM sleep recalibrates emotional sensitivity in the amygdala and weaves disparate ideas together to stimulate creative problem-solving.
+        </p>
+      </div>
+    </article>
+
+    <section class="faq-section">
+      <h2 class="faq-title">Sleep Stages FAQs</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" type="button">What is sleep efficiency?</button>
+          <div class="faq-answer">
+            Sleep efficiency is the percentage of time spent actually asleep compared to the total time spent in bed. A score of 85% or above indicates healthy sleep continuity.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">How much deep sleep do adults need?</button>
+          <div class="faq-answer">
+            Healthy adults should aim for 15% to 25% of total sleep in Stage N3 deep sleep (roughly 1 to 2 hours per night). Deep sleep declines naturally as we age.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">What stage of sleep do dreams occur in?</button>
+          <div class="faq-answer">
+            While brief thought-like mental activity can occur in NREM stages, vivid, narrative dreams with strong emotional and sensory experiences occur during REM sleep.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">How can I increase my deep sleep percentage?</button>
+          <div class="faq-answer">
+            Consistent aerobic exercise in the morning, avoiding alcohol within 3 hours of bed, keeping the bedroom cool (65–68°F / 18–20°C), and adhering to consistent sleep schedules directly enhance Stage N3 slow-wave duration.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>SleepingEdge</h3>
+          <p>Scientific circadian rhythm tools, sleep cycle optimization, and caffeine clearance calculators designed to maximize human recovery.</p>
+        </div>
+
+        <div>
+          <div class="footer-links-title">Calculators</div>
+          <ul class="footer-links-list">
+            <li><a href="/sleep-calculator/">Sleep Cycle Calculator</a></li>
+            <li><a href="/caffeine-calculator/">Caffeine Cutoff Calculator</a></li>
+            <li><a href="/nap-calculator/">Power Nap Calculator</a></li>
+            <li><a href="/sleep-debt-calculator/">Sleep Debt Planner</a></li>
+            <li><a href="/sleep-stages/">Sleep Stages & Efficiency</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-links-title">Legal & Company</div>
+          <ul class="footer-links-list">
+            <li><a href="/about/">About Us</a></li>
+            <li><a href="/contact/">Contact Us</a></li>
+            <li><a href="/privacy/">Privacy Policy</a></li>
+            <li><a href="/terms/">Terms of Use</a></li>
+            <li><a href="javascript:void(0)" onclick="openCookiePreferences()">Cookie Preferences</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 SleepingEdge. All rights reserved. Free for personal use.</div>
+        <div>Estimates only · Not medical advice.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cookie Consent Banner & Modal -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-live="polite">
+    <div class="container cookie-content">
+      <div class="cookie-text">
+        We use essential cookies to maintain site functionality, anonymous analytics, and partner advertising. Read our <a href="/privacy/">Privacy Policy</a>.
+      </div>
+      <div class="cookie-actions">
+        <button id="btn-cookie-accept" class="btn-cookie btn-cookie-accept" type="button">Accept All</button>
+        <button id="btn-cookie-reject" class="btn-cookie" type="button">Reject Non-Essential</button>
+        <button id="btn-cookie-manage" class="btn-cookie" type="button">Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="cookie-modal" class="cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title">
+    <div class="cookie-modal-card">
+      <h3 id="cookie-modal-title" style="font-size:1.25rem; font-weight:800; margin-bottom:1rem;">Cookie Preferences</h3>
+      <div class="cookie-pref-group">
+        <div><strong>Strictly Necessary</strong><div style="font-size:0.75rem; color:var(--text-muted)">Required for core site functionality.</div></div>
+        <input type="checkbox" checked disabled>
+      </div>
+      <div class="cookie-pref-group">
+        <div><strong>Analytics</strong><div style="font-size:0.75rem; color:var(--text-muted)">Anonymous telemetry to improve calculators.</div></div>
+        <input type="checkbox" id="consent-analytics" checked>
+      </div>
+      <div class="cookie-pref-group">
+        <div><strong>Advertising</strong><div style="font-size:0.75rem; color:var(--text-muted)">Contextual display advertising.</div></div>
+        <input type="checkbox" id="consent-advertising" checked>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem;">
+        <button id="btn-cookie-close-modal" class="btn-cookie" type="button">Cancel</button>
+        <button id="btn-cookie-save-prefs" class="btn-cookie btn-cookie-accept" type="button">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/calculators.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.initStagesCalculator) window.initStagesCalculator();
+    });
+  </script>
+</body>
+</html>

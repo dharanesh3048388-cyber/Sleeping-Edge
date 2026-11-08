@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <script>
+      // Enforce Dark Mode (Northern Lights Aurora) as default on opening
+      try {
+        localStorage.removeItem('sleepingedge_theme');
+        document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
+    <title>SleepingEdge · Sleep Calculator & Caffeine Calculator</title>
+    <meta name="description" content="Free scientific Sleep Calculator and Caffeine Cutoff Calculator. Calculate exact 90-minute sleep cycles, caffeine clearance half-life, and power nap windows." />
+    <meta name="keywords" content="caffeine calculator, caffeine cutoff calculator, sleep calculator, sleep cycle calculator, power nap calculator, sleep debt recovery, 90 minute sleep cycle, bedtime calculator" />
+    <meta property="og:title" content="SleepingEdge · Sleep Calculator & Caffeine Calculator" />
+    <meta property="og:description" content="Calculate your exact sleep cycles and caffeine cutoff time. Wake up refreshed at the end of natural cycles and optimize deep sleep." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SleepingEdge" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SleepingEdge · Sleep Calculator & Caffeine Calculator" />
+    <meta name="twitter:description" content="Calculate your exact sleep cycles and caffeine cutoff time. Science-backed, 100% free, no sign-up required." />
+
+    <!-- Schema.org JSON-LD Structured Data for Caffeine Calculator & Sleep Calculator -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://sleepingedge.com/#app",
+          "name": "SleepingEdge Sleep & Caffeine Calculator",
+          "applicationCategory": "HealthApplication",
+          "operatingSystem": "All",
+          "url": "https://sleepingedge.com",
+          "description": "Scientific sleep cycle calculator, caffeine cutoff calculator, nap optimizer, and sleep debt planner.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Caffeine Cutoff & Clearance Half-Life Calculator",
+            "90-Minute Sleep Cycle Bedtime & Wake Time Planning",
+            "Power Nap Optimization (20min, 60min, 90min)",
+            "7-Day Cumulative Sleep Debt Recovery",
+            "Medical-grade White & Pink Noise Synthesizer"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://sleepingedge.com/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does the caffeine calculator determine my cutoff time?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The caffeine calculator models caffeine clearance using the clinical hepatic CYP1A2 half-life (average 5 to 7 hours). It calculates the exact hour you must stop drinking coffee, energy drinks, or tea so that less than 25mg of active caffeine remains at bedtime, protecting restorative deep sleep."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When should I stop drinking caffeine before bed?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "For a standard 200mg coffee and an 11:00 PM bedtime, your recommended caffeine cutoff is typically between 1:00 PM and 2:00 PM (at least 9 to 10 hours prior to sleep) to allow complete clearance."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is waking up at the end of a 90-minute sleep cycle better?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Human sleep naturally occurs in 90-minute cycles transitioning from Light Sleep (N1/N2) to Deep Slow-Wave Sleep (N3) and REM. Waking at the completion of a cycle avoids waking from Stage 3 deep sleep, eliminating sleep inertia and morning grogginess."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <script>
+      // Defensive guard for Chrome extensions attempting to monkey-patch window.fetch
+      try {
+        const _origFetch = window.fetch ? window.fetch.bind(window) : undefined;
+        let _activeFetch = _origFetch;
+        if (_origFetch) {
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get() {
+              return _activeFetch;
+            },
+            set(fn) {
+              _activeFetch = fn;
+            }
+          });
+        }
+      } catch (e) {
+        // Safe no-op
+      }
+
+      // Prevent third-party extension errors from triggering unhandled dialogs
+      window.addEventListener('error', function(event) {
+        if (event && event.filename && event.filename.startsWith('chrome-extension://')) {
+          event.preventDefault();
+          event.stopPropagation();
+          return true;
+        }
+      }, true);
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-slate-950 dark:bg-[#07090e] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-sky-500/30 dark:selection:bg-emerald-500/30">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

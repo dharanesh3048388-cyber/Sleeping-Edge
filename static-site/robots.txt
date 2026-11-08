@@ -1,0 +1,6 @@
+# SleepingEdge Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap Index
+Sitemap: https://YOURDOMAIN.com/sitemap.xml

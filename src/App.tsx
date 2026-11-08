@@ -1,0 +1,231 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React, { useState, useEffect } from 'react';
+import { NorthernLightsCanvas } from './components/NorthernLightsCanvas';
+import { MannsPlanetCanvas } from './components/MannsPlanetCanvas';
+import { Header } from './components/Header';
+import { HeroCalculator } from './components/HeroCalculator';
+import { NapOptimizer } from './components/NapOptimizer';
+import { CaffeineCutoff } from './components/CaffeineCutoff';
+import { SleepDebtPlanner } from './components/SleepDebtPlanner';
+import { SleepArchitectureSection } from './components/SleepArchitectureSection';
+import { PreferencesDrawer } from './components/PreferencesDrawer';
+import { AmbientAudioBar } from './components/AmbientAudioBar';
+import { Footer } from './components/Footer';
+import { sleepAudio } from './utils/audioEngine';
+
+export default function App() {
+  // Theme state: Default strictly to Dark Mode (Northern Lights Aurora) when opening
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    try {
+      localStorage.removeItem('sleepingedge_theme');
+    } catch {}
+    return true;
+  });
+
+  // Soundscape state
+  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
+
+  // Settings / Calibration state
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [latencyMinutes, setLatencyMinutes] = useState<number>(() => {
+    const saved = localStorage.getItem('sleepingedge_latency');
+    return saved ? Number(saved) : 14;
+  });
+  const [cycleLength, setCycleLength] = useState<number>(() => {
+    const saved = localStorage.getItem('sleepingedge_cycle');
+    return saved ? Number(saved) : 90;
+  });
+  const [is24Hour, setIs24Hour] = useState<boolean>(() => {
+    const saved = localStorage.getItem('sleepingedge_24h');
+    return saved ? saved === 'true' : false;
+  });
+  const [ageGroup, setAgeGroup] = useState<string>(() => {
+    const saved = localStorage.getItem('sleepingedge_age');
+    return saved || 'adult';
+  });
+
+  const [activeSection, setActiveSection] = useState<string>('calculator');
+
+  // Sync dark class on html tag
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  // Persist preferences
+  const handleLatencyChange = (val: number) => {
+    setLatencyMinutes(val);
+    localStorage.setItem('sleepingedge_latency', val.toString());
+  };
+
+  const handleCycleLengthChange = (val: number) => {
+    setCycleLength(val);
+    localStorage.setItem('sleepingedge_cycle', val.toString());
+  };
+
+  const handleToggle24Hour = (val: boolean) => {
+    setIs24Hour(val);
+    localStorage.setItem('sleepingedge_24h', val.toString());
+  };
+
+  const handleAgeGroupChange = (val: string) => {
+    setAgeGroup(val);
+    localStorage.setItem('sleepingedge_age', val);
+  };
+
+  const handleResetDefaults = () => {
+    setLatencyMinutes(14);
+    setCycleLength(90);
+    setIs24Hour(false);
+    setAgeGroup('adult');
+    localStorage.removeItem('sleepingedge_latency');
+    localStorage.removeItem('sleepingedge_cycle');
+    localStorage.removeItem('sleepingedge_24h');
+    localStorage.removeItem('sleepingedge_age');
+  };
+
+  // Deep linking and SEO direct navigation (e.g. #caffeine-calculator, #sleep-calculator, or ?tool=caffeine)
+  useEffect(() => {
+    const resolveTarget = () => {
+      const hash = window.location.hash.toLowerCase().replace('#', '');
+      const params = new URLSearchParams(window.location.search);
+      const toolParam = params.get('tool')?.toLowerCase();
+
+      if (hash.includes('caffeine') || toolParam?.includes('caffeine')) {
+        return 'caffeine';
+      }
+      if (hash.includes('nap') || toolParam?.includes('nap')) {
+        return 'naps';
+      }
+      if (hash.includes('debt') || hash.includes('recovery') || toolParam?.includes('debt')) {
+        return 'recovery';
+      }
+      if (hash.includes('science') || hash.includes('stage') || hash.includes('architecture')) {
+        return 'science';
+      }
+      if (hash.includes('calc') || toolParam?.includes('calc')) {
+        return 'calculator';
+      }
+      return null;
+    };
+
+    const target = resolveTarget();
+    if (target) {
+      setActiveSection(target);
+      // Small timeout to allow full DOM mount
+      const timer = window.setTimeout(() => {
+        const el = document.getElementById(target);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          el.classList.add('transition-all', 'duration-500', 'ring-2', 'ring-sky-500/60', 'dark:ring-emerald-400/60');
+          window.setTimeout(() => {
+            el.classList.remove('ring-2', 'ring-sky-500/60', 'dark:ring-emerald-400/60');
+          }, 2400);
+        }
+      }, 250);
+      return () => window.clearTimeout(timer);
+    }
+  }, []);
+
+  const handleToggleAudio = () => {
+    if (isAudioPlaying) {
+      sleepAudio.stop();
+      setIsAudioPlaying(false);
+    } else {
+      sleepAudio.play('mountain_wind', 0.35);
+      setIsAudioPlaying(true);
+    }
+  };
+
+  const handleNavigate = (section: string) => {
+    setActiveSection(section);
+    const hashMap: Record<string, string> = {
+      calculator: 'sleep-calculator',
+      caffeine: 'caffeine-calculator',
+      naps: 'nap-optimizer',
+      recovery: 'sleep-debt',
+      science: 'sleep-stages'
+    };
+    if (window.history?.replaceState) {
+      window.history.replaceState(null, '', `#${hashMap[section] || section}`);
+    }
+    const element = document.getElementById(section);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <div className="min-h-screen relative font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-sky-500/30 dark:selection:bg-emerald-500/30 selection:text-sky-950 dark:selection:text-emerald-200">
+      {/* Background Visual Themes */}
+      {isDark ? <NorthernLightsCanvas /> : <MannsPlanetCanvas />}
+
+      {/* Main App Container */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Header
+          isDark={isDark}
+          onToggleTheme={() => setIsDark(!isDark)}
+          isAudioPlaying={isAudioPlaying}
+          onToggleAudio={handleToggleAudio}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+          activeSection={activeSection}
+          onNavigate={handleNavigate}
+        />
+
+        <main className="flex-1 pb-16">
+          <HeroCalculator
+            latencyMinutes={latencyMinutes}
+            cycleLength={cycleLength}
+            is24Hour={is24Hour}
+          />
+
+          <NapOptimizer
+            latencyMinutes={latencyMinutes}
+            is24Hour={is24Hour}
+          />
+
+          <CaffeineCutoff
+            is24Hour={is24Hour}
+          />
+
+          <SleepDebtPlanner />
+
+          <SleepArchitectureSection />
+        </main>
+
+        <Footer />
+      </div>
+
+      {/* Preferences Drawer / Modal */}
+      <PreferencesDrawer
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        latencyMinutes={latencyMinutes}
+        onChangeLatency={handleLatencyChange}
+        cycleLength={cycleLength}
+        onChangeCycleLength={handleCycleLengthChange}
+        is24Hour={is24Hour}
+        onToggle24Hour={handleToggle24Hour}
+        ageGroup={ageGroup}
+        onChangeAgeGroup={handleAgeGroupChange}
+        onResetDefaults={handleResetDefaults}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark(!isDark)}
+      />
+
+      {/* Floating Ambient Soundscape Control */}
+      <AmbientAudioBar
+        isPlaying={isAudioPlaying}
+        onTogglePlay={handleToggleAudio}
+      />
+    </div>
+  );
+}
