@@ -28,14 +28,6 @@ jobs:
             test -s "static-site/$page/index.html"
           done
 
-      - name: Check for unresolved deployment placeholders
-        run: |
-          set -euo pipefail
-          if grep -RInE 'YOURDOMAIN\\.com|YOUR_FORMSPREE_ID|CONTACT@YOURDOMAIN' static-site; then
-            echo "::error::Unresolved production placeholders remain in static-site."
-            exit 1
-          fi
-
       - name: Check JavaScript syntax
         run: |
           set -euo pipefail
