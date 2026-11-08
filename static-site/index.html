@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SleepingEdge - Free Sleep Cycle, Caffeine & Nap Calculators</title>
   <meta name="description" content="Calculate optimal bedtimes, wake times, caffeine cutoffs, and power naps based on 90-minute sleep cycles and circadian biology. Free, fast, and scientific.">
-  <link rel="canonical" href="https://YOURDOMAIN.com/">
-  
+
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="SleepingEdge - Free Sleep Cycle, Caffeine & Nap Calculators">
   <meta property="og:description" content="Wake up refreshed at the end of a sleep cycle. Calculate exact bedtimes, caffeine cutoff hours, and power naps.">
-  <meta property="og:url" content="https://YOURDOMAIN.com/">
-  <meta property="og:image" content="https://YOURDOMAIN.com/og-image.jpg">
-  
+
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="SleepingEdge - Free Sleep Cycle & Caffeine Calculator">
@@ -23,43 +20,9 @@
   <link rel="stylesheet" href="/css/style.css">
   
   <!-- Plausible Analytics (Privacy-focused, cookie-free) -->
-  <script defer data-domain="YOURDOMAIN.com" src="https://plausible.io/js/script.js"></script>
 
   <!-- Structured Data: WebSite & Organization -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": "https://YOURDOMAIN.com/#website",
-        "url": "https://YOURDOMAIN.com/",
-        "name": "SleepingEdge",
-        "description": "Scientific sleep calculators and circadian rhythm tools."
-      },
-      {
-        "@type": "Organization",
-        "@id": "https://YOURDOMAIN.com/#organization",
-        "name": "SleepingEdge",
-        "url": "https://YOURDOMAIN.com/",
-        "logo": "https://YOURDOMAIN.com/logo.png"
-      },
-      {
-        "@type": "WebApplication",
-        "name": "SleepingEdge Sleep Cycle Calculator",
-        "applicationCategory": "HealthApplication",
-        "operatingSystem": "All",
-        "browserRequirements": "Requires JavaScript",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      }
-    ]
-  }
-  </script>
-</head>
+  </head>
 <body>
 
   <!-- Site Header -->
@@ -109,22 +72,13 @@
 
   <main class="container">
     <!-- Top Ad Slot (Fixed Height, No CLS) -->
-    <div class="ad-slot ad-top-banner">
-      <span class="ad-slot-label">Advertisement</span>
-      <div class="ad-inner-content">
-        <!-- Ad tag will be injected here upon consent -->
-      </div>
-    </div>
+    
 
     <!-- Hero Section -->
     <section class="hero-section">
       <span class="badge-tag">Circadian Sleep Architecture</span>
-      <h1 class="hero-title">
-        Wake at the end of a cycle. <span>Every time.</span>
-      </h1>
-      <p class="hero-lead">
-        Waking up mid-cycle leaves you groggy and sluggish. SleepingEdge computes the exact minutes to drift off to sleep or set your alarm so you rise energized.
-      </p>
+      <h1 class="hero-title">Plan your sleep timing with <span>clearer estimates.</span></h1>
+      <p class="hero-lead">Explore illustrative sleep-duration options, caffeine timing estimates, nap windows and sleep-efficiency calculations. These tools explain their assumptions and cannot predict your exact sleep stages or how refreshed you will feel.</p>
     </section>
 
     <!-- Main Calculator Console Card -->
@@ -151,10 +105,7 @@
             </label>
             <div style="display:flex; gap:0.5rem;">
               <input type="time" id="sleep-time" class="form-input" value="07:00" required>
-              <select id="sleep-ampm" class="form-select" style="max-width: 90px;" aria-label="AM or PM">
-                <option value="AM" selected>AM</option>
-                <option value="PM">PM</option>
-              </select>
+              
             </div>
           </div>
 
@@ -171,14 +122,14 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
           <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-secondary); cursor:pointer;">
             <input type="checkbox" id="sleep-format-24h">
-            <span>Use 24-hour military clock</span>
+            <span>Show results in 24-hour format</span>
           </label>
         </div>
 
         <div id="sleep-calc-feedback" class="input-feedback" role="alert"></div>
 
         <button type="submit" class="btn-primary">
-          Calculate Optimal Sleep Cycles
+          Calculate Sleep Timing Options
         </button>
       </form>
 
@@ -189,8 +140,7 @@
       <div class="medical-disclaimer">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:0.15rem; color:var(--accent-amber);"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         <div>
-          <strong>Informational Estimates Only:</strong> Results are based on statistical population averages (90-minute ultradian cycles with a 15-minute sleep latency) and do not constitute clinical diagnosis or medical advice. Consult a certified sleep physician for chronic insomnia or sleep disorders.
-        </div>
+          <strong>Informational estimates only:</strong> Sleep cycles vary in length and across the night. The calculator uses 90-minute intervals as a simple planning aid, not a prediction of your actual sleep stages or a guarantee of easier waking.</div>
       </div>
     </div>
 
@@ -201,108 +151,15 @@
     </div>
 
     <!-- Recommended Sleep Products (Affiliate Component) -->
-    <section class="recommended-block">
-      <div class="recommended-title">Recommended Sleep Recovery Gear</div>
-      <div class="recommended-sub">Tools curated by sleep specialists to preserve your circadian rhythm and deep sleep stages.</div>
-
-      <div class="product-grid">
-        <!-- Card 1 -->
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Circadian Light Control</div>
-            <h3 class="product-name">100% Zero-Pressure Blackout Eye Mask</h3>
-            <p class="product-desc">Deep contoured eye cups allow rapid eye movement (REM) with zero pressure on eyelids, ensuring natural melatonin synthesis.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">
-            View on Amazon &rarr;
-          </a>
-        </article>
-
-        <!-- Card 2 -->
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Acoustic Shielding</div>
-            <h3 class="product-name">Precision White & Pink Noise Machine</h3>
-            <p class="product-desc">Real non-looping acoustic fan and digital pink noise mask sudden decibel spikes from city traffic and disruptive household noise.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">
-            View on Amazon &rarr;
-          </a>
-        </article>
-
-        <!-- Card 3 -->
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Melatonin Defense</div>
-            <h3 class="product-name">Evening Blue Light Blocking Glasses</h3>
-            <p class="product-desc">Filters 99.5% of melanopsin-stimulating 450–480nm spectrum emitted by phone, monitor, and tablet screens before bedtime.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">
-            View on Amazon &rarr;
-          </a>
-        </article>
-      </div>
-
-      <p class="affiliate-disclosure">
-        Affiliate Disclosure: SleepingEdge participates in affiliate programs, including the Amazon Services LLC Associates Program. When you purchase through links on our site, we may earn an affiliate commission at no extra cost to you.
-      </p>
-    </section>
+    
 
     <!-- Editorial Scientific Guide (300-500 Words for SEO) -->
     <article class="guide-section">
-      <div class="guide-content">
-        <h2>The Science of Sleep Cycles: Why Timing Matters More Than Hours</h2>
-        <p>
-          Have you ever slept for nine straight hours only to wake up feeling exhausted, irritable, and disoriented? Conversely, have you ever woken up after just seven and a half hours feeling sharp, clear-headed, and energized? This counterintuitive phenomenon is driven by <strong>sleep architecture</strong> and the biology of ultradian cycles.
-        </p>
-        <p>
-          Human sleep is not a uniform state of unconsciousness. Instead, the brain cycles repeatedly through distinct architectural phases roughly every <strong>90 minutes</strong> (typically ranging from 80 to 110 minutes depending on individual chronotype and age):
-        </p>
-        <ul>
-          <li><strong>Stage N1 (Light Sleep):</strong> The transitional phase between wakefulness and sleep where brain waves slow from active beta to relaxed alpha rhythms.</li>
-          <li><strong>Stage N2 (Light Intermediate Sleep):</strong> Heart rate slows, core body temperature drops, and sleep spindles appear to lock motor learning and working memory.</li>
-          <li><strong>Stage N3 (Slow-Wave Deep Sleep):</strong> Delta brainwaves dominate. This is when human growth hormone (HGH) releases, tissues repair, and the brain’s glymphatic system flushes toxic metabolic byproducts like amyloid-beta.</li>
-          <li><strong>REM (Rapid Eye Movement / Dream Sleep):</strong> Intense cortical activity where emotional memories are organized, neuroplasticity is stimulated, and vivid dreams occur.</li>
-        </ul>
-        <p>
-          When your morning alarm jolts you awake in the middle of Stage N3 Slow-Wave Deep Sleep, your brain experiences <em>sleep inertia</em>—a biological state where prefrontal cortical firing is suppressed, resulting in cognitive impairment that can last up to four hours. By calculating your bedtime in multiples of 90 minutes plus a 15-minute sleep latency buffer, you wake up at the conclusion of REM or Stage 1 sleep, allowing you to rise naturally with full alertness.
-        </p>
-      </div>
+      <div class="guide-content"><h2>How sleep timing estimates work</h2><p>Sleep is organized into repeating NREM and REM patterns, but cycle length is not fixed at 90 minutes. It varies between people and across the same night. A clock-based calculator cannot know which stage you will be in when an alarm sounds.</p><p>This tool offers several durations based on illustrative 90-minute intervals. Treat them as planning options, not medical recommendations or a promise that waking at a particular time will prevent sleep inertia.</p><p>For most adults, regularly allowing at least seven hours of sleep is a useful starting point. Individual needs vary with age, health, workload and other factors. If you are persistently sleepy or struggling to sleep, seek advice from a qualified healthcare professional.</p></div>
     </article>
 
     <!-- FAQ Section -->
-    <section class="faq-section">
-      <h2 class="faq-title">Frequently Asked Questions</h2>
-      <div class="faq-list">
-        <div class="faq-item">
-          <button class="faq-question" type="button">How long is a normal sleep cycle?</button>
-          <div class="faq-answer">
-            For healthy human adults, a complete sleep cycle averages 90 minutes (ranging between 80 to 110 minutes). Early nighttime cycles feature greater proportions of N3 deep slow-wave sleep, while morning cycles feature prolonged REM periods.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" type="button">Why do you add 15 minutes to the bedtime calculation?</button>
-          <div class="faq-answer">
-            Healthy adults do not fall asleep the instant their head touches the pillow. Clinical sleep studies define the standard time needed to transition from wakefulness to Stage N1 sleep as "sleep onset latency," which averages 10 to 20 minutes (with 15 minutes considered the gold standard benchmark).
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" type="button">How many sleep cycles do I need per night?</button>
-          <div class="faq-answer">
-            Most adults perform optimally with 5 cycles (7.5 hours of sleep) or 6 cycles (9.0 hours of sleep). Less than 4 cycles (6 hours) chronically impairs immune function, hormone balance, and reaction speed.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question" type="button">Can I catch up on lost sleep on the weekend?</button>
-          <div class="faq-answer">
-            Sleeping in more than 60–90 minutes on weekends causes "social jetlag," shifting your circadian suprachiasmatic nucleus (SCN) phase and making it harder to sleep on Sunday night. It is far more restorative to go to bed 30 minutes earlier or take a 20-minute afternoon power nap.
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="faq-section"><h2 class="faq-title">Frequently Asked Questions</h2><div class="faq-list"><div class="faq-item"><button class="faq-question" type="button">How long is a sleep cycle?</button><div class="faq-answer">Sleep cycles vary. Around 90 minutes is a rough average sometimes used for simple illustrations, not a fixed duration that applies to every person or every cycle.</div></div><div class="faq-item"><button class="faq-question" type="button">Does waking at the end of a calculated cycle guarantee I feel refreshed?</button><div class="faq-answer">No. The calculator cannot measure your sleep stage, sleep quality or sleep inertia. Regular adequate sleep is more important than trying to time an alarm to an assumed cycle.</div></div><div class="faq-item"><button class="faq-question" type="button">How much sleep should adults aim for?</button><div class="faq-answer">Many adults should regularly get at least seven hours, though individual needs vary. Age, health and personal circumstances matter.</div></div><div class="faq-item"><button class="faq-question" type="button">What if I regularly feel tired despite enough time in bed?</button><div class="faq-answer">Persistent daytime sleepiness, insomnia or loud snoring with breathing pauses deserves discussion with a healthcare professional.</div></div></div></section>
   </main>
 
   <!-- Site Footer -->
@@ -311,7 +168,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <h3>SleepingEdge</h3>
-          <p>Scientific circadian rhythm tools, sleep cycle optimization, and caffeine clearance calculators designed to maximize human cognitive and physical recovery.</p>
+          <p>Browser-based sleep timing and educational calculators. Estimates only; not medical advice.</p>
         </div>
 
         <div>
@@ -332,7 +189,7 @@
             <li><a href="/contact/">Contact Us</a></li>
             <li><a href="/privacy/">Privacy Policy</a></li>
             <li><a href="/terms/">Terms of Use</a></li>
-            <li><a href="javascript:void(0)" onclick="openCookiePreferences()">Cookie Preferences</a></li>
+
           </ul>
         </div>
       </div>
@@ -345,57 +202,10 @@
   </footer>
 
   <!-- Cookie Consent Banner -->
-  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent banner">
-    <div class="container cookie-content">
-      <div class="cookie-text">
-        We use essential cookies to maintain site functionality, anonymous analytics to understand site usage, and partner cookies to serve contextual advertising. Read our <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms</a>.
-      </div>
-      <div class="cookie-actions">
-        <button id="btn-cookie-accept" class="btn-cookie btn-cookie-accept" type="button">Accept All</button>
-        <button id="btn-cookie-reject" class="btn-cookie" type="button">Reject Non-Essential</button>
-        <button id="btn-cookie-manage" class="btn-cookie" type="button">Preferences</button>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- Cookie Preferences Modal -->
-  <div id="cookie-modal" class="cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title">
-    <div class="cookie-modal-card">
-      <h3 id="cookie-modal-title" style="font-size:1.25rem; font-weight:800; margin-bottom:1rem;">Cookie Preferences</h3>
-      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1.25rem;">
-        Customize which categories of cookies and tracking scripts you consent to. Essential cookies are required to preserve your settings and cannot be switched off.
-      </p>
-
-      <div class="cookie-pref-group">
-        <div>
-          <strong style="font-size:0.9rem;">Strictly Necessary Cookies</strong>
-          <div style="font-size:0.75rem; color:var(--text-muted)">Required for security, theme preferences, and form state.</div>
-        </div>
-        <input type="checkbox" checked disabled>
-      </div>
-
-      <div class="cookie-pref-group">
-        <div>
-          <strong style="font-size:0.9rem;">Performance & Analytics</strong>
-          <div style="font-size:0.75rem; color:var(--text-muted)">Anonymous telemetry to improve calculator performance.</div>
-        </div>
-        <input type="checkbox" id="consent-analytics" checked>
-      </div>
-
-      <div class="cookie-pref-group">
-        <div>
-          <strong style="font-size:0.9rem;">Advertising & Marketing</strong>
-          <div style="font-size:0.75rem; color:var(--text-muted)">Personalized and contextual partner display advertising.</div>
-        </div>
-        <input type="checkbox" id="consent-advertising" checked>
-      </div>
-
-      <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem;">
-        <button id="btn-cookie-close-modal" class="btn-cookie" type="button">Cancel</button>
-        <button id="btn-cookie-save-prefs" class="btn-cookie btn-cookie-accept" type="button">Save Preferences</button>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- Scripts -->
   <script src="/js/main.js"></script>
