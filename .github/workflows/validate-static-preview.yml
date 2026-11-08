@@ -59,7 +59,7 @@ jobs:
               for marker in forbidden:
                   assert marker not in content, f"Placeholder {marker} remains in {page}"
               assert "plausible.io/js/script.js" not in content, f"Unconsented analytics script in {page}"
-              assert not re.search(r'class=["'][^"']*ad-slot', content), f"Unconfigured ad slot in {page}"
+              assert not re.search(r"""class=["'][^"']*ad-slot""", content), f"Unconfigured ad slot in {page}"
               assert 'id="cookie-banner"' not in content, f"Inactive consent UI remains in {page}"
           contact = Path("static-site/contact/index.html").read_text(encoding="utf-8")
           assert not re.search(r"<form\\b", contact, flags=re.I), "Contact page must not expose an unconfigured form"
