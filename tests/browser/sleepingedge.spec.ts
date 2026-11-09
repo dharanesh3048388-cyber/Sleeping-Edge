@@ -150,6 +150,16 @@ test.describe('production trust and monetization readiness pages', () => {
     });
   }
 
+  test('public-facing production pages do not advertise repository or issue-tracker destinations', async ({ page }) => {
+    await page.goto(baseURL + '/');
+    const footer = page.getByRole('contentinfo');
+    await expect(footer.getByRole('link', { name: /repository|github|source code/i })).toHaveCount(0);
+    await expect(page.locator('a[href*="github.com/"]')).toHaveCount(0);
+    await page.goto(baseURL + '/contact/');
+    await expect(page.locator('a[href*="github.com/"]')).toHaveCount(0);
+    await expect(page.getByText(/issue tracker/i)).toHaveCount(0);
+  });
+
   test('footer exposes all production trust links', async ({ page }) => {
     await page.goto(baseURL + '/');
     const footer = page.getByRole('navigation', { name: 'Legal and information' });
