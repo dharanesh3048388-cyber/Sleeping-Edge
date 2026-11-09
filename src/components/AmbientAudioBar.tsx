@@ -6,8 +6,8 @@ interface AmbientAudioBarProps {
   isOpen: boolean;
   isPlaying: boolean;
   currentSound: AmbientSoundType;
-  onSelectSound: (type: AmbientSoundType) => void;
-  onTogglePlay: () => void;
+  onSelectSound: (type: AmbientSoundType, volume: number) => void;
+  onTogglePlay: (volume?: number) => void;
   onClose: () => void;
 }
 
@@ -29,7 +29,7 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
   const activeProfile = SOUND_PROFILES.find((s) => s.id === currentSound) || SOUND_PROFILES[0];
 
   const handleSelectSound = (type: AmbientSoundType) => {
-    onSelectSound(type);
+    onSelectSound(type, volume);
   };
 
   const handleVolumeChange = (newVol: number) => {
@@ -74,7 +74,7 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
           </button>
           <button
             type="button"
-            onClick={onTogglePlay}
+            onClick={() => onTogglePlay(volume)}
             className="p-1.5 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
             title={isPlaying ? 'Pause ambient sound' : 'Play selected ambient sound'}
             aria-label={isPlaying ? 'Pause ambient sound' : 'Play ambient sound'}
