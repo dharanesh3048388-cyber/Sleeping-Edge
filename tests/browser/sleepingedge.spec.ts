@@ -71,6 +71,14 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
+  test('a fresh visit defaults to dark mode even when the device prefers light', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto(baseURL + '/');
+
+    await expect(page.locator('html')).toHaveClass(/dark/);
+    await expect(page.getByRole('switch', { name: 'Switch to Light Mode' })).toHaveAttribute('aria-checked', 'true');
+  });
+
   test('normal page text remains selectable and theme choice survives a reload', async ({ page }) => {
     await page.goto(baseURL + '/');
     await expect(page.getByRole('heading', { name: /Plan your sleep timing/i })).toBeVisible();
