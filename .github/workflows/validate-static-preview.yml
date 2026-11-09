@@ -138,7 +138,7 @@ jobs:
         run: bun run build
 
       - name: Install isolated browser-test runner
-        run: npm install --no-save --package-lock=false @playwright/test
+        run: npm install --no-save --package-lock=false --legacy-peer-deps @playwright/test
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
