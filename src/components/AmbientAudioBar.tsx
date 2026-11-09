@@ -52,14 +52,14 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
     <div
       id="ambient-sounds"
       role="region"
-      aria-label="Ambient noise and sleep soundscape player"
+      aria-label="Sleep sounds player"
       className="fixed bottom-3 right-3 left-3 sm:left-auto sm:right-4 sm:bottom-4 z-40 max-w-md w-auto sm:w-[26rem] bg-white/95 dark:bg-[#0b111e]/95 backdrop-blur-2xl border border-sky-300/70 dark:border-emerald-500/30 rounded-2xl p-3.5 sm:p-4 shadow-2xl text-xs transition-all duration-300 ring-1 ring-sky-400/20 dark:ring-emerald-400/10 max-h-[82vh] overflow-y-auto"
     >
       {/* Header bar */}
       <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200 dark:border-white/10">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-sky-500 dark:bg-emerald-400 animate-pulse" />
-          <span className="font-bold text-slate-900 dark:text-white">Ambient Noise Generator</span>
+          <span className="font-bold text-slate-900 dark:text-white">Sleep Sounds</span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -76,8 +76,8 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
             type="button"
             onClick={() => onTogglePlay(volume)}
             className="p-1.5 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-            title={isPlaying ? 'Pause ambient sound' : 'Play selected ambient sound'}
-            aria-label={isPlaying ? 'Pause ambient sound' : 'Play ambient sound'}
+            title={isPlaying ? 'Pause sleep sounds' : 'Play selected sleep sound'}
+            aria-label={isPlaying ? 'Pause sleep sounds' : 'Play sleep sounds'}
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           </button>
@@ -85,8 +85,8 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
             type="button"
             onClick={onClose}
             className="p-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-            title="Close ambient sound player"
-            aria-label="Close ambient sound player"
+            title="Close sleep sounds player"
+            aria-label="Close sleep sounds player"
           >
             <X className="w-4 h-4" />
           </button>

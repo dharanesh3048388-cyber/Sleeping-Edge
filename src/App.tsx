@@ -260,7 +260,7 @@ export default function App() {
         onToggleTheme={() => setIsDark(!isDark)}
       />
 
-      {/* Floating Ambient Soundscape Control */}
+      {/* Floating Sleep Sounds Control */}
       <AmbientAudioBar
         isOpen={isAudioOpen}
         isPlaying={isAudioPlaying}

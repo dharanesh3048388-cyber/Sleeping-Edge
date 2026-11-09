@@ -99,14 +99,14 @@ export const Header: React.FC<HeaderProps> = ({
           })}
         </nav>
 
-        {/* Zone 3: Actions (Ambient Audio, Settings, Theme Toggle) */}
+        {/* Zone 3: Actions (Sleep Sounds, Settings, Theme Toggle) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Ambient Noise Player Toggle */}
+          {/* Sleep Sounds Player Toggle */}
           <button
             type="button"
             onClick={onToggleAudio}
-            title={isAudioPlaying ? 'Mute ambient noise player' : 'Open ambient noise player & soundscapes'}
-            aria-label={isAudioPlaying ? 'Mute ambient noise player' : 'Open ambient noise soundscapes'}
+            title={isAudioPlaying ? 'Pause sleep sounds' : 'Open Sleep Sounds player'}
+            aria-label={isAudioPlaying ? 'Pause sleep sounds' : 'Open Sleep Sounds player'}
             className={`relative flex items-center justify-center h-10 px-2.5 sm:px-3 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
               isAudioPlaying
                 ? 'bg-sky-500/15 text-sky-700 border-sky-400 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-400/50 shadow-sm'
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
               <VolumeX className="w-4 h-4 shrink-0" />
             )}
             <span className="hidden md:inline font-medium ml-1.5">
-              {isAudioPlaying ? 'Noise Active' : 'Ambient Noise'}
+              {isAudioPlaying ? 'Playing' : 'Sleep Sounds'}
             </span>
             {isAudioPlaying && (
               <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">

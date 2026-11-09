@@ -172,30 +172,43 @@ test.describe('ambient sound SEO landing pages and deep links', () => {
       await expect(page.locator('a[href="../?sound=' + preset + '#ambient-sounds"]')).toBeVisible();
     }
   });
+  test('Sleep Sounds is the single user-facing category name for the sound player', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(baseURL + '/');
+
+    await page.getByRole('link', { name: 'Sleep Sounds', exact: true }).click();
+    const player = page.getByRole('region', { name: 'Sleep sounds player' });
+    await expect(player).toBeVisible();
+    await expect(player.getByText('Sleep Sounds', { exact: true })).toBeVisible();
+    await expect(player.getByText('Ambient Noise Generator', { exact: true })).toHaveCount(0);
+    await expect(player.getByRole('button', { name: /Soundscapes/ })).toBeVisible();
+    await expect(player.getByRole('button', { name: /Color Noise/ })).toBeVisible();
+  });
+
   test('white-noise search landing page opens the selected player without autoplay', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(baseURL + '/white-noise-for-sleep/');
     await page.getByRole('link', { name: /Open white noise player/i }).click();
 
-    const player = page.getByRole('region', { name: 'Ambient noise and sleep soundscape player' });
+    const player = page.getByRole('region', { name: 'Sleep sounds player' });
     await expect(player).toBeVisible();
     await expect(player.getByText('Pure White Noise')).toBeVisible();
-    await expect(player.getByRole('button', { name: 'Play ambient sound' })).toBeVisible();
-    await expect(player.getByRole('button', { name: 'Pause ambient sound' })).toHaveCount(0);
+    await expect(player.getByRole('button', { name: 'Play sleep sounds' })).toBeVisible();
+    await expect(player.getByRole('button', { name: 'Pause sleep sounds' })).toHaveCount(0);
 
-    await player.getByRole('button', { name: 'Play ambient sound' }).click();
-    await expect(player.getByRole('button', { name: 'Pause ambient sound' })).toBeVisible();
-    await player.getByRole('button', { name: 'Pause ambient sound' }).click();
-    await player.getByRole('button', { name: 'Close ambient sound player' }).click();
+    await player.getByRole('button', { name: 'Play sleep sounds' }).click();
+    await expect(player.getByRole('button', { name: 'Pause sleep sounds' })).toBeVisible();
+    await player.getByRole('button', { name: 'Pause sleep sounds' }).click();
+    await player.getByRole('button', { name: 'Close sleep sounds player' }).click();
     await expect(player).toHaveCount(0);
   });
 
   test('pink-noise query parameter preselects the matching sound without autoplay', async ({ page }) => {
     await page.goto(baseURL + '/?sound=pink_noise#ambient-sounds');
-    const player = page.getByRole('region', { name: 'Ambient noise and sleep soundscape player' });
+    const player = page.getByRole('region', { name: 'Sleep sounds player' });
     await expect(player).toBeVisible();
     await expect(player.getByText('Pure Pink Noise')).toBeVisible();
-    await expect(player.getByRole('button', { name: 'Play ambient sound' })).toBeVisible();
+    await expect(player.getByRole('button', { name: 'Play sleep sounds' })).toBeVisible();
   });
 });
 
@@ -227,8 +240,72 @@ test.describe('production trust and monetization readiness pages', () => {
   test('footer exposes all production trust links', async ({ page }) => {
     await page.goto(baseURL + '/');
     const footer = page.getByRole('navigation', { name: 'Legal and information' });
-    for (const label of ['Sleep sounds', 'About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
+    for (const label of ['Sleep tools', 'Sleep sounds', 'About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
       await expect(footer.getByRole('link', { name: label })).toBeVisible();
     }
   });
+});
+
+test.describe('indexable sleep tool landing pages', () => {
+  const pages = [
+    '/sleep-tools/',
+    '/sleep-calculator/',
+    '/nap-calculator/',
+    '/caffeine-calculator/',
+    '/sleep-debt-calculator/',
+    '/sleep-stages/'
+  ];
+
+  for (const path of pages) {
+    test('loads complete SEO landing page ' + path, async ({ page }) => {
+      const errors: string[] = [];
+      page.on('pageerror', error => errors.push(error.message));
+      const response = await page.goto(baseURL + path);
+      expect(response?.ok(), 'landing page response should be successful').toBeTruthy();
+
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{70,}/);
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+      expect(canonical).toContain(path);
+      await expect(page.locator('meta[property="og:title"]')).toHaveCount(1);
+      await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary');
+      await expect(page.getByRole('navigation', { name: 'Breadcrumb' })).toBeVisible();
+
+      const structuredData = await page.locator('script[type="application/ld+json"]').first().textContent();
+      const parsed: { ['@graph']?: Array<{ ['@type']?: string }> } = JSON.parse(structuredData || '{}');
+      const types = (parsed['@graph'] || []).map(item => item['@type']);
+      expect(types).toContain('WebPage');
+      expect(types).toContain('BreadcrumbList');
+      expect(errors, 'uncaught browser errors').toEqual([]);
+    });
+  }
+
+  test('tool directory links to every calculator guide and the sound library', async ({ page }) => {
+    await page.goto(baseURL + '/sleep-tools/');
+    for (const path of [
+      'sleep-calculator', 'nap-calculator', 'caffeine-calculator',
+      'sleep-debt-calculator', 'sleep-stages', 'sleep-sounds'
+    ]) {
+      await expect(page.locator('a[href="../' + path + '/"]').first()).toBeVisible();
+    }
+  });
+
+  const directToolLinks = [
+    { path: '/sleep-calculator/', name: 'Open sleep calculator', section: '#calculator', hash: '#sleep-calculator' },
+    { path: '/nap-calculator/', name: 'Open nap optimizer', section: '#naps', hash: '#nap-optimizer' },
+    { path: '/caffeine-calculator/', name: 'Open caffeine calculator', section: '#caffeine', hash: '#caffeine-calculator' },
+    { path: '/sleep-debt-calculator/', name: 'Open 7-day sleep tracker', section: '#recovery', hash: '#sleep-debt' },
+    { path: '/sleep-stages/', name: 'Explore sleep stages', section: '#science', hash: '#sleep-stages' }
+  ];
+
+  for (const tool of directToolLinks) {
+    test('landing-page CTA opens the correct live app section ' + tool.path, async ({ page }) => {
+      await page.goto(baseURL + tool.path);
+      await page.getByRole('link', { name: tool.name, exact: true }).click();
+      await expect(page.locator(tool.section)).toBeVisible();
+      await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(tool.hash);
+    });
+  }
 });
