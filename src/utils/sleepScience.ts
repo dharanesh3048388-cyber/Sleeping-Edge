@@ -289,12 +289,12 @@ export function calculateCaffeineCutoff(
   targetBedtime: Date,
   intakeTime: Date,
   halfLifeHours: number = 5.5,
-  safeBedtimeMgThreshold: number = 25
+  illustrativeReferenceMg: number = 25
 ): {
   activeMgAtBedtime: number;
   latestCutoffTime: Date;
   hoursNeededToClear: number;
-  isSafeNow: boolean;
+  isBelowIllustrativeReference: boolean;
 } {
   // Hours between intake and bedtime
   let diffMs = targetBedtime.getTime() - intakeTime.getTime();
@@ -307,21 +307,20 @@ export function calculateCaffeineCutoff(
   // Active mg at bedtime
   const activeMgAtBedtime = mg * Math.pow(0.5, hoursElapsed / halfLifeHours);
 
-  // How many hours needed to drop to safe threshold?
-  // threshold = mg * (0.5)^(t / halfLife)
-  // t = halfLife * log2(mg / threshold)
-  const hoursNeededToClear = mg > safeBedtimeMgThreshold
-    ? halfLifeHours * (Math.log(mg / safeBedtimeMgThreshold) / Math.log(2))
+  // Time required to reach an illustrative reference amount; this is not a safety threshold.
+  // reference = mg * (0.5)^(t / halfLife)
+  const hoursNeededToClear = mg > illustrativeReferenceMg
+    ? halfLifeHours * (Math.log(mg / illustrativeReferenceMg) / Math.log(2))
     : 0;
 
   const latestCutoffTime = new Date(targetBedtime.getTime() - hoursNeededToClear * 60 * 60 * 1000);
-  const isSafeNow = activeMgAtBedtime <= safeBedtimeMgThreshold;
+  const isBelowIllustrativeReference = activeMgAtBedtime <= illustrativeReferenceMg;
 
   return {
     activeMgAtBedtime: Math.max(0, Math.round(activeMgAtBedtime * 10) / 10),
     latestCutoffTime,
     hoursNeededToClear: Math.round(hoursNeededToClear * 10) / 10,
-    isSafeNow
+    isBelowIllustrativeReference
   };
 }
 
