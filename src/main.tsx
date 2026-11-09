@@ -7,9 +7,4 @@ import './index.css';
 if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
 }
-import { initSecurityGuardian } from './utils/securityGuardian';
-
-// Initialize client-side anti-inspect and anti-tamper security guardian
-initSecurityGuardian();
-
 createRoot(document.getElementById('root')!).render(<App />);
