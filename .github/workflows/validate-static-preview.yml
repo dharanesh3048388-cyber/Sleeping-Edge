@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - "static-site/**"
+      - "src/**"
+      - "tests/**"
+      - "index.html"
+      - "playwright.config.*"
       - "package.json"
       - "bun.lock"
       - "bun.lockb"
@@ -116,3 +120,50 @@ jobs:
           assert not (root / "sitemap.xml").exists(), "Preview sitemap.xml should not be published"
           print(f"Preview packaging smoke test passed for {len(html_files)} HTML pages.")
           PY
+
+  browser-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install locked project dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build production website
+        run: bun run build
+
+      - name: Install isolated browser-test runner
+        run: npm install --no-save --package-lock=false @playwright/test
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve production build
+        run: |
+          python3 -m http.server 4173 --directory dist > /tmp/sleepingedge-http.log 2>&1 &
+          echo $! > /tmp/sleepingedge-http.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/Sleeping-Edge/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/sleepingedge-http.log
+          exit 1
+
+      - name: Run browser regression suite
+        env:
+          SLEEPINGEDGE_BASE_URL: http://127.0.0.1:4173/Sleeping-Edge
+        run: npx playwright test --reporter=line
+
+      - name: Stop local test server
+        if: always()
+        run: |
+          if [ -f /tmp/sleepingedge-http.pid ]; then
+            kill "$(cat /tmp/sleepingedge-http.pid)" || true
+          fi
