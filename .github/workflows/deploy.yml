@@ -52,7 +52,8 @@ jobs:
       - name: Validate required static pages and assets
         run: |
           set -euo pipefail
-          for page in index sleep-calculator caffeine-calculator nap-calculator sleep-debt-calculator sleep-stages about privacy terms contact; do
+          test -s static-site/index.html
+          for page in sleep-calculator caffeine-calculator nap-calculator sleep-debt-calculator sleep-stages about privacy terms contact; do
             test -s "static-site/$page/index.html"
           done
           test -s static-site/css/style.css
@@ -101,7 +102,7 @@ jobs:
                   if not (root / target.lstrip("/")).exists():
                       failures.append(f"{page}: unresolved root path {target}")
           if failures:
-              print("\\n".join(failures))
+              print("\n".join(failures))
               sys.exit(1)
           print("All root-relative local HTML references resolve.")
           PY
