@@ -72,7 +72,7 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
             <span className="font-mono text-sky-700 dark:text-emerald-400 font-bold">{latencyMinutes} minutes</span>
           </div>
           <p className="text-[11px] text-slate-500 dark:text-slate-400">
-            Average time it takes to drift off once in bed. Typical is 14 minutes. Falling asleep in under 5 minutes often signals heavy sleep debt.
+            Set an estimate for how long you usually take to fall asleep. This is a planning input, not an assessment of sleep health.
           </p>
           <input
             type="range"
@@ -84,9 +84,9 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
             className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-600 dark:accent-emerald-400"
           />
           <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-            <span>5 min (Quick)</span>
-            <span>14 min (Typical)</span>
-            <span>45 min (Delayed)</span>
+            <span>5 min</span>
+            <span>25 min</span>
+            <span>45 min</span>
           </div>
         </div>
 
@@ -97,7 +97,7 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
             <span className="font-mono text-sky-700 dark:text-emerald-400 font-bold">{cycleLength} minutes</span>
           </div>
           <p className="text-[11px] text-slate-500 dark:text-slate-400">
-            Most adults complete a cycle every 90 minutes. Normal range spans 75–110 minutes.
+            Sleep timing intervals vary. This adjustable value is a planning assumption, not a measurement or prediction of your actual sleep stages.
           </p>
           <input
             type="range"
@@ -110,7 +110,7 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
           />
           <div className="flex justify-between text-[10px] text-slate-500 font-mono">
             <span>75 min</span>
-            <span>90 min (Standard)</span>
+            <span>90 min (Example)</span>
             <span>110 min</span>
           </div>
         </div>
@@ -201,6 +201,8 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
           <button
             type="button"
             onClick={() => onToggle24Hour(!is24Hour)}
+            aria-label="Toggle 24-hour clock format"
+            aria-pressed={is24Hour}
             className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
               is24Hour ? 'bg-sky-600 dark:bg-emerald-500 justify-end' : 'bg-slate-300 dark:bg-slate-800 justify-start'
             }`}
