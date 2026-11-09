@@ -143,9 +143,20 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Serve production build
+      - name: Package the static preview exactly as deployment does
         run: |
-          python3 -m http.server 4173 --directory dist > /tmp/sleepingedge-http.log 2>&1 &
+          set -euo pipefail
+          mkdir -p dist/preview
+          cp -R static-site/. dist/preview/
+          rm -f dist/preview/robots.txt dist/preview/sitemap.xml dist/preview/_headers
+          python3 scripts/prepare-pages-preview.py dist/preview
+
+      - name: Serve production build and static preview
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/sleepingedge-www/Sleeping-Edge
+          cp -R dist/. /tmp/sleepingedge-www/Sleeping-Edge/
+          python3 -m http.server 4173 --directory /tmp/sleepingedge-www > /tmp/sleepingedge-http.log 2>&1 &
           echo $! > /tmp/sleepingedge-http.pid
           for attempt in $(seq 1 30); do
             if curl --fail --silent http://127.0.0.1:4173/Sleeping-Edge/ > /dev/null; then
