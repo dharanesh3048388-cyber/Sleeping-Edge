@@ -111,6 +111,9 @@ export function calculateBedtimesForWake(
   cycleLength: number = 90,
   is24Hour: boolean = false
 ): CycleResult[] {
+  if (!Number.isFinite(wakeDate.getTime()) || !Number.isFinite(latencyMinutes) || latencyMinutes < 0 || latencyMinutes > 120 || !Number.isFinite(cycleLength) || cycleLength < 60 || cycleLength > 120) {
+    throw new RangeError('Wake time, latency (0–120 minutes), and interval (60–120 minutes) must be valid.');
+  }
   const results: CycleResult[] = [];
   
   // Cycles 6 down to 3
@@ -168,6 +171,9 @@ export function calculateWakeTimesForBed(
   cycleLength: number = 90,
   is24Hour: boolean = false
 ): CycleResult[] {
+  if (!Number.isFinite(bedDate.getTime()) || !Number.isFinite(latencyMinutes) || latencyMinutes < 0 || latencyMinutes > 120 || !Number.isFinite(cycleLength) || cycleLength < 60 || cycleLength > 120) {
+    throw new RangeError('Bedtime, latency (0–120 minutes), and interval (60–120 minutes) must be valid.');
+  }
   const results: CycleResult[] = [];
   const cycleCounts = [3, 4, 5, 6];
 
@@ -224,6 +230,9 @@ export function calculateNapOptions(
   latencyMinutes: number = 10,
   is24Hour: boolean = false
 ): NapOption[] {
+  if (!Number.isFinite(currentTime.getTime()) || !Number.isInteger(latencyMinutes) || latencyMinutes < 0 || latencyMinutes > 60) {
+    throw new RangeError('Nap start time and latency (0–60 whole minutes) must be valid.');
+  }
   const options: NapOption[] = [
     {
       id: 'power',
@@ -286,6 +295,10 @@ export function calculateCaffeineCutoff(
   hoursNeededToClear: number;
   isBelowIllustrativeReference: boolean;
 } {
+  if (!Number.isFinite(mg) || mg <= 0 || mg > 1500 || !Number.isFinite(halfLifeHours) || halfLifeHours < 3 || halfLifeHours > 9.5 || !Number.isFinite(illustrativeReferenceMg) || illustrativeReferenceMg <= 0 || !Number.isFinite(targetBedtime.getTime()) || !Number.isFinite(intakeTime.getTime())) {
+    throw new RangeError('Caffeine amount, half-life, reference amount, and times must be valid.');
+  }
+
   // Hours between intake and bedtime
   let diffMs = targetBedtime.getTime() - intakeTime.getTime();
   if (diffMs < 0) {
@@ -326,6 +339,9 @@ export function calculateSleepDebt(
   totalActualHours: number;
   totalTargetHours: number;
 } {
+  if (!Number.isFinite(dailyTargetHours) || dailyTargetHours < 4 || dailyTargetHours > 12 || past7DaysActualHours.length !== 7 || past7DaysActualHours.some((h) => !Number.isFinite(h) || h < 0 || h > 24)) {
+    throw new RangeError('Provide a daily target from 4–12 hours and exactly seven daily sleep values from 0–24 hours.');
+  }
   const totalActual = past7DaysActualHours.reduce((sum, h) => sum + h, 0);
   const totalTarget = dailyTargetHours * past7DaysActualHours.length;
   const shortfall = Math.max(0, totalTarget - totalActual);
@@ -351,6 +367,9 @@ export function calculateSleepEfficiency(
   rating: 'Higher estimate' | 'Mid-range estimate' | 'Lower estimate';
   advice: string;
 } {
+  if (!Number.isFinite(timeInBedMinutes) || !Number.isFinite(timeToFallAsleepMinutes) || !Number.isFinite(awakeningsMinutes) || timeInBedMinutes < 60 || timeInBedMinutes > 900 || timeToFallAsleepMinutes < 0 || timeToFallAsleepMinutes > 180 || awakeningsMinutes < 0 || awakeningsMinutes > 240 || timeToFallAsleepMinutes + awakeningsMinutes > timeInBedMinutes) {
+    throw new RangeError('Sleep efficiency inputs are outside the supported ranges.');
+  }
   const actualAsleepMinutes = Math.max(0, timeInBedMinutes - timeToFallAsleepMinutes - awakeningsMinutes);
   const efficiency = timeInBedMinutes > 0 ? (actualAsleepMinutes / timeInBedMinutes) * 100 : 0;
   const rounded = Math.round(efficiency * 10) / 10;
