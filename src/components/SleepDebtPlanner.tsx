@@ -6,7 +6,7 @@ type Chronotype = 'lion' | 'bear' | 'wolf' | 'dolphin';
 
 interface ChronotypeProfile {
   name: string;
-  share: string;
+  pattern: string;
   optimalSleep: string;
   peakFocus: string;
   description: string;
@@ -16,35 +16,35 @@ interface ChronotypeProfile {
 const CHRONOTYPE_PROFILES: Record<Chronotype, ChronotypeProfile> = {
   lion: {
     name: 'Lion (Early Lark)',
-    share: '15–20% of population',
+    pattern: 'Earlier timing tendency',
     optimalSleep: '9:30 PM – 5:30 AM',
     peakFocus: '8:00 AM – 12:00 PM',
-    description: 'Wakes naturally before the alarm full of energy. Highly productive in early hours, but fades rapidly by 8:00 PM.',
+    description: 'May prefer earlier sleep and wake times. This is a broad example, not a diagnostic profile.',
     strategy: 'Schedule analytical work first thing in morning. Guard your early bedtime against late social obligations.'
   },
   bear: {
     name: 'Bear (Solar Rhythm)',
-    share: '50–55% of population',
+    pattern: 'Intermediate timing tendency',
     optimalSleep: '11:00 PM – 7:00 AM',
     peakFocus: '10:00 AM – 2:00 PM',
-    description: 'Rhythm strictly follows the sun. Needs a solid 7.5–8 hours. Experiences a natural energy lull between 2:00–4:00 PM.',
+    description: 'May prefer a schedule closer to conventional daytime hours. Individual sleep duration and energy patterns vary.',
     strategy: 'Get morning sunlight immediately upon waking. Take a 20-min power nap or brief walk during the mid-afternoon trough.'
   },
   wolf: {
     name: 'Wolf (Night Owl)',
-    share: '15–20% of population',
+    pattern: 'Later timing tendency',
     optimalSleep: '12:30 AM – 8:30 AM',
     peakFocus: '5:00 PM – 10:00 PM',
-    description: 'Struggles with traditional 9-to-5 schedules. Creativity and analytical horsepower peak in late afternoon and night.',
-    strategy: 'Use warm dim amber lighting after 9 PM. Avoid blue screen light which easily suppresses your delayed melatonin onset.'
+    description: 'May prefer later sleep and wake times. Work schedules and light exposure can affect how practical this timing is.',
+    strategy: 'Use warm dim amber lighting after 9 PM. Keep evening light levels comfortable and consistent; light timing can influence circadian rhythms.'
   },
   dolphin: {
     name: 'Dolphin (Light Sleeper)',
-    share: '10% of population',
+    pattern: 'Variable or irregular sleep tendency',
     optimalSleep: '11:30 PM – 6:30 AM',
     peakFocus: '3:00 PM – 7:00 PM',
-    description: 'Often wakes with nervous energy. Prone to mid-night awakenings and light sleep architecture.',
-    strategy: 'Strict bedtime wind-down ritual. Cool bedroom temperature (65°F / 18°C) and sound masking are essential.'
+    description: 'A popular informal label for people who describe variable or easily disrupted sleep; it is not a clinical chronotype.',
+    strategy: 'A consistent, comfortable sleep routine may help. No single room temperature or sound setup is essential for everyone.'
   }
 };
 
@@ -81,7 +81,7 @@ export const SleepDebtPlanner: React.FC = () => {
           Sleep Debt & Rhythm
         </h2>
         <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-600 dark:text-slate-300">
-          You cannot erase a week of lost sleep with one long weekend lie-in. Track your deficit and recover gradually without ruining Monday morning.
+          Compare your reported sleep with a personal weekly target. This is a simple arithmetic difference, not a clinical measure of sleep debt or a repayment prescription.
         </p>
       </div>
 
@@ -97,7 +97,7 @@ export const SleepDebtPlanner: React.FC = () => {
                 : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
             }`}
           >
-            7-Day Sleep Debt Recovery
+            7-Day Sleep Target Comparison
           </button>
           <button
             type="button"
@@ -108,7 +108,7 @@ export const SleepDebtPlanner: React.FC = () => {
                 : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
             }`}
           >
-            Chronotype Diagnostic
+            Chronotype overview
           </button>
         </div>
       </div>
@@ -174,7 +174,7 @@ export const SleepDebtPlanner: React.FC = () => {
             <div className="lg:col-span-5 bg-slate-50/95 dark:bg-slate-950/70 border border-slate-200/90 dark:border-white/15 rounded-xl p-5 flex flex-col justify-between h-full shadow-sm">
               <div>
                 <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mb-1">
-                  Cumulative Weekly Deficit
+                  Weekly Difference from Target
                 </div>
                 <div className="text-4xl sm:text-5xl font-mono font-bold text-slate-900 dark:text-white tracking-tight tabular-nums mb-1">
                   {debtResult.totalDebtHours > 0 ? `-${debtResult.totalDebtHours}h` : '0.0h'}
@@ -191,7 +191,7 @@ export const SleepDebtPlanner: React.FC = () => {
                         : 'text-emerald-600 dark:text-emerald-400 font-bold'
                     }
                   >
-                    {debtResult.severity} Deficit
+                    Weekly comparison
                   </span>
                 </div>
 
@@ -199,23 +199,18 @@ export const SleepDebtPlanner: React.FC = () => {
                 <div className="p-4 rounded-xl bg-sky-50/90 dark:bg-slate-900/60 border border-sky-200/80 dark:border-white/10 mb-4 shadow-xs">
                   <div className="flex items-center gap-2 text-xs font-semibold text-sky-800 dark:text-emerald-300 mb-2">
                     <BatteryCharging className="w-4 h-4 text-sky-600 dark:text-emerald-400" />
-                    <span>Scientific Recovery Plan</span>
+                    <span>How to interpret this estimate</span>
                   </div>
                   <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {debtResult.recoveryStrategy}
+                    This is the difference between the hours you entered and your chosen target. It does not measure biological sleep debt or tell you exactly how much extra sleep to add.
                   </p>
                 </div>
 
-                {debtResult.recommendedDailyBonusMinutes > 0 && (
-                  <div className="flex items-center justify-between text-xs font-mono text-slate-700 dark:text-slate-300 p-3 rounded-lg bg-sky-100/70 dark:bg-emerald-950/30 border border-sky-300/60 dark:border-emerald-500/20">
-                    <span>Target Nightly Bonus:</span>
-                    <span className="text-sky-800 dark:text-emerald-400 font-bold">+{debtResult.recommendedDailyBonusMinutes} min / night</span>
-                  </div>
-                )}
+
               </div>
 
               <div className="pt-4 border-t border-slate-200 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                Sleeping in extra late on Sunday shifts your internal clock forward, making it much harder to fall asleep Sunday night.
+                If you have ongoing daytime sleepiness or difficulty sleeping, consider discussing it with a healthcare professional.
               </div>
             </div>
           </div>
@@ -248,7 +243,7 @@ export const SleepDebtPlanner: React.FC = () => {
                     {type}
                   </div>
                   <div className="text-sm font-semibold mb-1">{p.name.split(' ')[0]}</div>
-                  <div className={`text-[11px] ${isSelected ? 'text-sky-100 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}>{p.share}</div>
+                  <div className={`text-[11px] ${isSelected ? 'text-sky-100 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}>{p.pattern}</div>
                 </button>
               );
             })}
