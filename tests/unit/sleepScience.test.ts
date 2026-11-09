@@ -7,7 +7,7 @@ import {
   calculateSleepDebt,
   calculateSleepEfficiency,
   formatTimeDisplay
-} from "../src/utils/sleepScience";
+} from "../../src/utils/sleepScience";
 
 describe("sleep timing estimates", () => {
   test("calculates bedtime options from a wake time and latency", () => {
