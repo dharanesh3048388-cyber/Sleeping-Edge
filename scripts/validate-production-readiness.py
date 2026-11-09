@@ -50,6 +50,9 @@ for slug, preset in sound_targets.items():
 hub = (public / "sleep-sounds" / "index.html").read_text(encoding="utf-8")
 for slug in sound_targets:
     assert f'../{slug}/' in hub, f"Sound hub does not link to {slug}"
+extra_presets = ["arctic_wind", "solar_storm", "celestial_drone", "binaural_delta"]
+for preset in extra_presets:
+    assert f'href="../?sound={preset}#ambient-sounds"' in hub, f"Sound hub does not expose preset {preset}"
 
 # The static site is deployed only as a noindex preview below /preview/.
 # Its own nested robots.txt is not the host's crawler policy, and its old
