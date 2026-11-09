@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, ArrowUp } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -47,19 +47,17 @@ export const Footer: React.FC = () => {
               Sleeping<span className="text-sky-600 dark:text-emerald-400">Edge</span>
             </div>
             <p className="text-slate-600 dark:text-slate-400 max-w-md leading-relaxed">
-              Engineered for natural sleep cycle alignment and caffeine timing. Zero tracking cookies, zero account walls, 100% private in-browser computation.
+              Free browser-based sleep-planning tools. Calculator inputs are processed in your browser; the site also requests fonts from Google Fonts. No account is required.
             </p>
-            <div className="flex items-center justify-center md:justify-start gap-2 text-[11px] text-sky-700 dark:text-emerald-400 font-mono pt-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Local Browser Privacy Guaranteed</span>
-            </div>
           </div>
-
-          {/* Scientific Citations */}
           <div className="text-center md:text-right space-y-1">
-            <div className="font-mono text-slate-700 dark:text-slate-300 font-semibold">
-              AASM · NSF · NASA Fatigue Countermeasures
-            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-md">
+              Sleep timing and caffeine outputs are estimates based on the inputs and assumptions shown. They do not measure sleep stages or provide medical advice.
+            </p>
+            <a href="https://github.com/dharanesh3048388-cyber/Sleeping-Edge" target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-slate-900 dark:hover:text-white">
+              Project and contact
+            </a>
+          </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
               Formulas derived from classic 90-min NREM/REM cycle medicine and hepatic clearance rates.
             </p>
