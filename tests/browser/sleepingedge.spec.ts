@@ -172,6 +172,19 @@ test.describe('ambient sound SEO landing pages and deep links', () => {
       await expect(page.locator('a[href="../?sound=' + preset + '#ambient-sounds"]')).toBeVisible();
     }
   });
+  test('Sleep Sounds is the single user-facing category name for the sound player', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(baseURL + '/');
+
+    await page.getByRole('link', { name: 'Sleep Sounds', exact: true }).click();
+    const player = page.getByRole('region', { name: 'Sleep sounds player' });
+    await expect(player).toBeVisible();
+    await expect(player.getByText('Sleep Sounds', { exact: true })).toBeVisible();
+    await expect(player.getByText('Ambient Noise Generator', { exact: true })).toHaveCount(0);
+    await expect(player.getByRole('button', { name: /Soundscapes/ })).toBeVisible();
+    await expect(player.getByRole('button', { name: /Color Noise/ })).toBeVisible();
+  });
+
   test('white-noise search landing page opens the selected player without autoplay', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(baseURL + '/white-noise-for-sleep/');
