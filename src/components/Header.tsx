@@ -48,7 +48,8 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'caffeine', label: 'Caffeine Calculator', icon: Coffee, hash: '#caffeine-calculator' },
     { id: 'naps', label: 'Nap Optimizer', icon: Clock, hash: '#nap-optimizer' },
     { id: 'recovery', label: 'Sleep Debt', icon: BatteryCharging, hash: '#sleep-debt' },
-    { id: 'science', label: 'Sleep Stages', icon: Brain, hash: '#sleep-stages' }
+    { id: 'science', label: 'Sleep Stages', icon: Brain, hash: '#sleep-stages' },
+    { id: 'sound', label: 'Sleep Sounds', icon: Volume2, hash: '#ambient-sounds' }
   ];
 
   return (
