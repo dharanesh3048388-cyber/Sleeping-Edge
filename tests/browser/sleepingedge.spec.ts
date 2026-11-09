@@ -17,6 +17,27 @@ test.describe('SleepingEdge production app', () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(2);
   });
 
+
+  test('switching clock formats preserves the selected wake and bedtime', async ({ page }) => {
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await page.goto(baseURL + '/');
+
+    await page.getByRole('button', { name: 'Adjust sleep parameters' }).click();
+    await page.getByRole('button', { name: 'Toggle 24-hour clock format' }).click();
+    await page.getByRole('button', { name: 'Save Preferences' }).click();
+
+    await expect(page.getByLabel('Wake hour')).toHaveValue('7');
+    await expect(page.getByLabel('Bed hour')).toHaveValue('23');
+
+    await page.getByRole('button', { name: 'Adjust sleep parameters' }).click();
+    await page.getByRole('button', { name: 'Toggle 24-hour clock format' }).click();
+    await page.getByRole('button', { name: 'Save Preferences' }).click();
+
+    await expect(page.getByLabel('Wake hour')).toHaveValue('7');
+    await expect(page.getByLabel('Bed hour')).toHaveValue('11');
+    await expect(page.getByRole('button', { name: 'PM' })).toHaveClass(/bg-sky-600/);
+  });
+
   test('mobile layout does not introduce horizontal page overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(baseURL + '/');
