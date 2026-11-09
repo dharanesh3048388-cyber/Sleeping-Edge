@@ -31,6 +31,14 @@ describe("sleep timing estimates", () => {
     expect(results[2].date.getMinutes()).toBe(45);
   });
 
+  test("labels sleep opportunity by actual duration when the interval is customized", () => {
+    const bedtime = new Date(2026, 0, 1, 22, 0, 0, 0);
+    const fiveIntervals = calculateWakeTimesForBed(bedtime, 15, 100, true)[2];
+    expect(fiveIntervals.sleepMinutes).toBe(500);
+    expect(fiveIntervals.label).toBe("8h 20m sleep opportunity");
+    expect(fiveIntervals.quality).toBe("recommended");
+  });
+
   test("rejects invalid timing inputs", () => {
     expect(() => calculateBedtimesForWake(new Date(NaN), 15, 90)).toThrow(RangeError);
     expect(() => calculateWakeTimesForBed(new Date(), -1, 90)).toThrow(RangeError);
