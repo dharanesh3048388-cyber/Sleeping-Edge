@@ -21,7 +21,7 @@ export interface SoundProfile {
   id: AmbientSoundType;
   name: string;
   tagline: string;
-  category: 'Color Noise' | 'Soundscape' | 'Brainwave Entrainment';
+  category: 'Color Noise' | 'Soundscape' | 'Tonal Audio';
   recommendedFor: string;
   spectrum: string;
 }
@@ -42,7 +42,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     tagline: 'Subsurface oceanic tidal swell & abyssal rumble',
     category: 'Soundscape',
     recommendedFor: 'A low, wave-like texture for listeners who prefer deeper ambient sound.',
-    spectrum: 'Infrasonic wave surge (40–180Hz)'
+    spectrum: 'Low-frequency wave texture (40–180 Hz)'
   },
   {
     id: 'solar_storm',
@@ -77,7 +77,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     spectrum: 'Acoustic stochastic filter'
   },
 
-  // --- Clinical Color Noise & Entrainment ---
+  // --- Colour noise and tonal audio ---
   {
     id: 'pink_noise',
     name: 'Pure Pink Noise',
@@ -106,7 +106,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     id: 'binaural_delta',
     name: 'Binaural Delta (2.5 Hz)',
     tagline: '108 Hz + 110.5 Hz carrier sine waves',
-    category: 'Brainwave Entrainment',
+    category: 'Tonal Audio',
     recommendedFor: 'A two-tone listening experiment; it is not proven to induce a particular sleep stage.',
     spectrum: 'Sub-harmonic carrier'
   }
@@ -334,7 +334,7 @@ class SleepAudioEngine {
     swellLfo.connect(swellLfoGain);
     swellLfoGain.connect(swellGain.gain);
 
-    // Infrasonic deep rumble sine wave (44 Hz) simulating ocean pressure
+    // Low-frequency deep rumble tone (44 Hz) adds weight to the ocean texture
     const subOsc = ctx.createOscillator();
     subOsc.type = 'sine';
     subOsc.frequency.setValueAtTime(44.0, ctx.currentTime);
