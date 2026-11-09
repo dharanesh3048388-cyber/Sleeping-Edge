@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 
+const informationLinks = [
+  { label: 'About', path: 'about/' },
+  { label: 'Methodology', path: 'methodology/' },
+  { label: 'Privacy', path: 'privacy/' },
+  { label: 'Terms', path: 'terms/' },
+  { label: 'Advertising & affiliates', path: 'affiliate-disclosure/' },
+  { label: 'Contact', path: 'contact/' },
+];
+
 export const Footer: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -23,24 +32,34 @@ export const Footer: React.FC = () => {
         <ArrowUp className="w-3.5 h-3.5 text-sky-600 dark:text-emerald-400" />
       </button>
 
-      <footer className="w-full border-t border-slate-200/80 dark:border-white/10 bg-white/85 dark:bg-[#040609]/90 backdrop-blur-md py-12 px-4 sm:px-6 lg:px-8 relative z-10 text-xs text-slate-600 dark:text-slate-400 transition-colors">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left space-y-1.5">
-            <div className="font-bold text-slate-900 dark:text-white text-sm">
-              Sleeping<span className="text-sky-600 dark:text-emerald-400">Edge</span>
+      <footer className="w-full border-t border-slate-200/80 dark:border-white/10 bg-white/85 dark:bg-[#040609]/90 backdrop-blur-md py-10 px-4 sm:px-6 lg:px-8 relative z-10 text-xs text-slate-600 dark:text-slate-400 transition-colors">
+        <div className="max-w-5xl mx-auto space-y-7">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-6">
+            <div className="space-y-1.5 max-w-md">
+              <div className="font-bold text-slate-900 dark:text-white text-sm">
+                Sleeping<span className="text-sky-600 dark:text-emerald-400">Edge</span>
+              </div>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                Free browser-based sleep-planning tools. Calculator inputs are processed in your browser; the site also requests fonts from Google Fonts. No account is required.
+              </p>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 max-w-md leading-relaxed">
-              Free browser-based sleep-planning tools. Calculator inputs are processed in your browser; the site also requests fonts from Google Fonts. No account is required.
-            </p>
+            <div className="max-w-md">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Sleep timing and caffeine outputs are estimates based on the inputs and assumptions shown. They do not measure sleep stages or provide medical advice.
+              </p>
+              <a href="https://github.com/dharanesh3048388-cyber/Sleeping-Edge" target="_blank" rel="noreferrer" className="inline-block mt-2 underline underline-offset-4 hover:text-slate-900 dark:hover:text-white">
+                Project repository
+              </a>
+            </div>
           </div>
-          <div className="text-center md:text-right space-y-2">
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-md">
-              Sleep timing and caffeine outputs are estimates based on the inputs and assumptions shown. They do not measure sleep stages or provide medical advice.
-            </p>
-            <a href="https://github.com/dharanesh3048388-cyber/Sleeping-Edge" target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-slate-900 dark:hover:text-white">
-              Project repository
-            </a>
-          </div>
+          <nav aria-label="Legal and information" className="flex flex-wrap gap-x-5 gap-y-3 border-t border-slate-200/70 dark:border-white/10 pt-5">
+            {informationLinks.map((item) => (
+              <a key={item.path} href={`${import.meta.env.BASE_URL}${item.path}`} className="underline underline-offset-4 hover:text-slate-950 dark:hover:text-white">
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <p className="text-[11px] text-slate-500">© {new Date().getFullYear()} SleepingEdge. Informational tools, not medical care.</p>
         </div>
       </footer>
     </>
