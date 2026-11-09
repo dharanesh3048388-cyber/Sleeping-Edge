@@ -72,7 +72,7 @@ export const NapOptimizer: React.FC<NapOptimizerProps> = ({
       </div>
 
       {/* Nap Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
         {napOptions.map((nap) => {
           const isPower = nap.id === 'power';
 
@@ -90,9 +90,7 @@ export const NapOptimizer: React.FC<NapOptimizerProps> = ({
                 <div className="flex items-center justify-between text-xs mb-3">
                   <span
                     className={`font-bold tracking-wide ${
-                      isNasa
-                        ? 'text-cyan-800 dark:text-cyan-400'
-                        : isPower
+                      isPower
                         ? 'text-sky-800 dark:text-emerald-400'
                         : 'text-purple-800 dark:text-purple-400'
                     }`}
