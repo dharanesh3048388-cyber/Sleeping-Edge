@@ -15,7 +15,7 @@ import { SleepArchitectureSection } from './components/SleepArchitectureSection'
 import { PreferencesDrawer } from './components/PreferencesDrawer';
 import { AmbientAudioBar } from './components/AmbientAudioBar';
 import { Footer } from './components/Footer';
-import { sleepAudio } from './utils/audioEngine';
+import { sleepAudio, AmbientSoundType, SOUND_PROFILES } from './utils/audioEngine';
 
 const readPreference = (key: string): string | null => {
   try { return window.localStorage.getItem(key); } catch { return null; }
@@ -27,11 +27,22 @@ const removePreference = (key: string): void => {
   try { window.localStorage.removeItem(key); } catch { /* Continue with in-memory state. */ }
 };
 
+const getRequestedAmbientSound = (): AmbientSoundType | null => {
+  try {
+    const requested = new URLSearchParams(window.location.search).get('sound');
+    return SOUND_PROFILES.find((profile) => profile.id === requested)?.id ?? null;
+  } catch {
+    return null;
+  }
+};
+
 export default function App() {
   // Respect the saved theme; use Northern Lights dark mode for first-time visitors.
   const [isDark, setIsDark] = useState<boolean>(() => readPreference('sleepingedge_theme') !== 'light');
 
-  // Soundscape state
+  // Soundscape state. Deep links preselect and open a sound, but never autoplay it.
+  const [selectedSound, setSelectedSound] = useState<AmbientSoundType>(() => getRequestedAmbientSound() ?? 'mountain_wind');
+  const [isAudioOpen, setIsAudioOpen] = useState<boolean>(() => getRequestedAmbientSound() !== null);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
   // Settings / Calibration state
@@ -98,7 +109,12 @@ export default function App() {
       const hash = window.location.hash.toLowerCase().replace('#', '');
       const params = new URLSearchParams(window.location.search);
       const toolParam = params.get('tool')?.toLowerCase();
+      const soundParam = params.get('sound');
+      const hasSoundPreset = SOUND_PROFILES.some((profile) => profile.id === soundParam);
 
+      if (hash.includes('ambient') || hasSoundPreset) {
+        return 'sound';
+      }
       if (hash.includes('caffeine') || toolParam?.includes('caffeine')) {
         return 'caffeine';
       }
@@ -120,6 +136,13 @@ export default function App() {
     const target = resolveTarget();
     if (!target) {
       // A normal reload should start at the top. Explicit hash/query deep links still work.
+      window.scrollTo(0, 0);
+      return;
+    }
+    if (target === 'sound') {
+      setActiveSection('sound');
+      setIsAudioOpen(true);
+      // Keep the app at the top while the fixed, preselected sound player is opened.
       window.scrollTo(0, 0);
       return;
     }
@@ -145,13 +168,32 @@ export default function App() {
       sleepAudio.stop();
       setIsAudioPlaying(false);
     } else {
-      sleepAudio.play('mountain_wind', 0.35);
+      setIsAudioOpen(true);
+      sleepAudio.play(selectedSound, 0.35);
       setIsAudioPlaying(true);
     }
   };
 
+  const handleSelectSound = (type: AmbientSoundType) => {
+    setSelectedSound(type);
+    setIsAudioOpen(true);
+    sleepAudio.play(type, 0.35);
+    setIsAudioPlaying(true);
+  };
+
+  const handleCloseAudio = () => {
+    sleepAudio.stop();
+    setIsAudioPlaying(false);
+    setIsAudioOpen(false);
+  };
+
   const handleNavigate = (section: string) => {
     setActiveSection(section);
+    if (section === 'sound') {
+      setIsAudioOpen(true);
+      window.scrollTo(0, 0);
+      return;
+    }
     // Keep in-page navigation local to the current view. Do not persist a section hash,
     // otherwise a browser refresh restores the previous section instead of the page top.
     const element = document.getElementById(section);
@@ -220,8 +262,12 @@ export default function App() {
 
       {/* Floating Ambient Soundscape Control */}
       <AmbientAudioBar
+        isOpen={isAudioOpen}
         isPlaying={isAudioPlaying}
+        currentSound={selectedSound}
+        onSelectSound={handleSelectSound}
         onTogglePlay={handleToggleAudio}
+        onClose={handleCloseAudio}
       />
     </div>
   );
