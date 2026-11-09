@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Moon, Sun, Volume2, VolumeX, SlidersHorizontal, Coffee, Bed, Clock, BatteryCharging, Brain } from 'lucide-react';
 
 interface HeaderProps {
@@ -20,6 +20,29 @@ export const Header: React.FC<HeaderProps> = ({
   activeSection,
   onNavigate,
 }) => {
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const updateHeight = () => {
+      setHeaderHeight(el.offsetHeight);
+    };
+
+    updateHeight();
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => updateHeight());
+      ro.observe(el);
+      return () => ro.disconnect();
+    } else {
+      window.addEventListener('resize', updateHeight);
+      return () => window.removeEventListener('resize', updateHeight);
+    }
+  }, []);
+
   const navItems = [
     { id: 'calculator', label: 'Sleep Calculator', icon: Bed, hash: '#sleep-calculator' },
     { id: 'caffeine', label: 'Caffeine Calculator', icon: Coffee, hash: '#caffeine-calculator' },
@@ -29,7 +52,11 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/85 dark:bg-[#07090e]/80 border-b border-slate-200/80 dark:border-white/10 transition-colors duration-300 shadow-sm dark:shadow-none">
+    <>
+      <header
+        ref={headerRef}
+        className="fixed top-0 left-0 right-0 z-40 w-full backdrop-blur-md bg-white/90 dark:bg-[#07090e]/90 border-b border-slate-200/80 dark:border-white/10 transition-colors duration-300 shadow-sm dark:shadow-none"
+      >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Zone 1: Brand Wordmark (Tap to refresh page) */}
         <a
@@ -173,5 +200,12 @@ export const Header: React.FC<HeaderProps> = ({
         })}
       </div>
     </header>
-  );
+    {/* Always a placeholder to preserve document layout and prevent content from jumping or hiding underneath */}
+    <div
+      className="w-full shrink-0 pointer-events-none h-[118px] lg:h-16"
+      style={headerHeight ? { height: `${headerHeight}px` } : undefined}
+      aria-hidden="true"
+    />
+  </>
+);
 };
