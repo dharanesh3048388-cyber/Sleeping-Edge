@@ -157,6 +157,13 @@ test.describe('ambient sound SEO landing pages and deep links', () => {
     });
   }
 
+
+  test('sleep sounds hub links to every other available player preset', async ({ page }) => {
+    await page.goto(baseURL + '/sleep-sounds/');
+    for (const preset of ['arctic_wind', 'solar_storm', 'celestial_drone', 'binaural_delta']) {
+      await expect(page.locator('a[href="../?sound=' + preset + '#ambient-sounds"]')).toBeVisible();
+    }
+  });
   test('white-noise search landing page opens the selected player without autoplay', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(baseURL + '/white-noise-for-sleep/');
