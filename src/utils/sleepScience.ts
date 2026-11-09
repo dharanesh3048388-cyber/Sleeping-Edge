@@ -130,20 +130,30 @@ export function calculateBedtimesForWake(
 
     if (cycles === 5) {
       quality = 'recommended';
-      label = '7.5-hour sleep opportunity';
-      summary = 'Falls within the commonly recommended duration range for many adults. Individual sleep needs vary.';
+      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
+      summary = sleepMinutes < 420
+        ? 'Below the usual adult recommendation when obtained regularly.'
+        : sleepMinutes <= 540
+          ? 'Within a commonly recommended adult sleep-duration range for many people. Individual needs vary.'
+          : 'A longer sleep opportunity may suit some people. Individual needs vary.';
     } else if (cycles === 6) {
       quality = 'recommended';
-      label = '9-hour sleep opportunity';
-      summary = 'A longer sleep opportunity may suit some people. Individual sleep needs vary.';
+      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
+      summary = sleepMinutes < 420
+        ? 'Below the usual adult recommendation when obtained regularly.'
+        : sleepMinutes <= 540
+          ? 'Within a commonly recommended adult sleep-duration range for many people. Individual needs vary.'
+          : 'A longer sleep opportunity may suit some people. Individual needs vary.';
     } else if (cycles === 4) {
       quality = 'short';
-      label = '6-hour sleep opportunity';
-      summary = 'Below the usual minimum recommendation for adults when obtained regularly.';
+      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
+      summary = sleepMinutes < 420
+        ? 'Below the usual adult recommendation when obtained regularly.'
+        : 'A longer sleep opportunity may suit some people. Individual needs vary.';
     } else if (cycles === 3) {
       quality = 'short';
-      label = '4.5-hour sleep opportunity';
-      summary = 'A short sleep opportunity and below adult recommendations. It should not be treated as a regular target.';
+      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
+      summary = 'Below the usual adult recommendation when obtained regularly. It should not be treated as a regular target.';
     }
 
     results.push({
@@ -212,9 +222,6 @@ export function calculateWakeTimesForBed(
       totalBedMinutes,
       quality,
       label,
-      nremDeepPercent,
-      remPercent,
-      nremLightPercent,
       summary
     });
   });
