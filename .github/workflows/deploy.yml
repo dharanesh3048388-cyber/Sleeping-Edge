@@ -15,11 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build-test-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
@@ -31,17 +32,16 @@ jobs:
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
 
-      - name: Type-check the application before deployment
+      - name: Type-check the application
         run: bun run lint
 
-      - name: Run deterministic calculator unit tests before deployment
+      - name: Run deterministic calculator unit tests
         run: bun test tests/unit
 
       - name: Build production website
         run: bun run build
 
-
-      - name: Publish isolated static-site preview
+      - name: Package isolated static-site preview
         run: |
           set -euo pipefail
           mkdir -p dist/preview
@@ -49,10 +49,118 @@ jobs:
           rm -f dist/preview/robots.txt dist/preview/sitemap.xml dist/preview/_headers
           python3 scripts/prepare-pages-preview.py dist/preview
 
+      - name: Validate required static pages and assets
+        run: |
+          set -euo pipefail
+          for page in index sleep-calculator caffeine-calculator nap-calculator sleep-debt-calculator sleep-stages about privacy terms contact; do
+            test -s "static-site/$page/index.html"
+          done
+          test -s static-site/css/style.css
+          test -s static-site/js/main.js
+          test -s static-site/js/calculators.js
+
+      - name: Guard against placeholders and unconfigured integrations
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          pages = list(Path("static-site").rglob("*.html"))
+          assert len(pages) >= 9, f"Expected all core pages, found {len(pages)}"
+          forbidden = [
+              "YOURDOMAIN", "YOUR_FORMSPREE_ID", "B0XXXXXXXX",
+              "YOUR_AMAZON_TAG", "CONTACT@YOURDOMAIN", "INSERT YOUR"
+          ]
+          for page in pages:
+              content = page.read_text(encoding="utf-8")
+              for marker in forbidden:
+                  assert marker not in content, f"Placeholder {marker} remains in {page}"
+              assert "plausible.io/js/script.js" not in content, f"Unconfigured analytics script in {page}"
+              assert not re.search(r"""class=["'][^"']*ad-slot""", content), f"Unconfigured ad slot in {page}"
+              assert 'id="cookie-banner"' not in content, f"Inactive consent UI remains in {page}"
+          print(f"Placeholder/integration guard passed for {len(pages)} pages.")
+          PY
+
+      - name: Check static JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check static-site/js/main.js
+          node --check static-site/js/calculators.js
+
+      - name: Check static HTML local references
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          root = Path("static-site")
+          failures = []
+          for page in root.rglob("*.html"):
+              html = page.read_text(encoding="utf-8")
+              for target in re.findall(r'''(?:href|src)=["'](/[^"'#?]*)["']''', html, flags=re.I):
+                  if not (root / target.lstrip("/")).exists():
+                      failures.append(f"{page}: unresolved root path {target}")
+          if failures:
+              print("\\n".join(failures))
+              sys.exit(1)
+          print("All root-relative local HTML references resolve.")
+          PY
+
+      - name: Smoke-test preview packaging
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root = Path("dist/preview")
+          pages = list(root.rglob("*.html"))
+          assert pages, "No preview pages were packaged"
+          for page in pages:
+              html = page.read_text(encoding="utf-8")
+              assert re.search(r'<meta name="robots" content="noindex,nofollow">', html), f"Missing noindex on {page}"
+              for target in re.findall(r'''(?:href|src|action)=["'](/[^"'#?]*)["']''', html, flags=re.I):
+                  assert target.startswith("/Sleeping-Edge/preview/"), f"Unprefixed path in {page}: {target}"
+          print(f"Preview package passed for {len(pages)} pages.")
+          PY
+
+      - name: Install isolated browser-test runner
+        run: npm install --no-save --package-lock=false --legacy-peer-deps @playwright/test
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve built app and static preview for browser tests
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/sleepingedge-www/Sleeping-Edge
+          cp -R dist/. /tmp/sleepingedge-www/Sleeping-Edge/
+          python3 -m http.server 4173 --directory /tmp/sleepingedge-www > /tmp/sleepingedge-http.log 2>&1 &
+          echo $! > /tmp/sleepingedge-http.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/Sleeping-Edge/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/sleepingedge-http.log
+          exit 1
+
+      - name: Run browser regression suite before deployment
+        env:
+          SLEEPINGEDGE_BASE_URL: http://127.0.0.1:4173/Sleeping-Edge
+        run: npx playwright test tests/browser --reporter=line
+
+      - name: Stop browser-test server
+        if: always()
+        run: |
+          if [ -f /tmp/sleepingedge-http.pid ]; then
+            kill "$(cat /tmp/sleepingedge-http.pid)" || true
+          fi
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload built website
+      - name: Upload validated website
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
