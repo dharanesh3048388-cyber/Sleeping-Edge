@@ -35,10 +35,10 @@ test.describe('SleepingEdge production app', () => {
     await page.getByRole('button', { name: 'Save Preferences' }).click();
 
     await expect(page.getByLabel('Bed hour')).toHaveValue('11');
-    await expect(page.getByRole('button', { name: 'PM' })).toHaveClass(/bg-sky-600/);
+    await expect(page.getByRole('button', { name: 'PM', exact: true })).toHaveClass(/bg-sky-600/);
     await page.getByRole('button', { name: /I need to wake up at/ }).click();
     await expect(page.getByLabel('Wake hour')).toHaveValue('7');
-    await expect(page.getByRole('button', { name: 'AM' })).toHaveClass(/bg-sky-600/);
+    await expect(page.getByRole('button', { name: 'AM', exact: true })).toHaveClass(/bg-sky-600/);
   });
 
   test('mobile layout does not introduce horizontal page overflow', async ({ page }) => {
