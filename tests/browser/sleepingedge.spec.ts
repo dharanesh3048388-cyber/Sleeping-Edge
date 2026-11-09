@@ -219,7 +219,7 @@ test.describe('indexable sleep tool landing pages', () => {
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
       await expect(page.locator('h1')).toHaveCount(1);
       await expect(page.locator('h1')).toBeVisible();
-      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /[A-Za-z]{20,}/);
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{70,}/);
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replaceAll('/', '\\/') + '
   const pages = [
     '/about/', '/methodology/', '/privacy/', '/terms/', '/contact/', '/affiliate-disclosure/'
