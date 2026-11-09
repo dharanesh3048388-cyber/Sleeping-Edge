@@ -101,6 +101,33 @@ export function formatDurationHoursMinutes(minutes: number): string {
   return `${h}h ${m}m`;
 }
 
+function describeSleepOpportunity(sleepMinutes: number): {
+  quality: CycleResult['quality'];
+  label: string;
+  summary: string;
+} {
+  const label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
+  if (sleepMinutes < 420) {
+    return {
+      quality: 'short',
+      label,
+      summary: 'Below the usual adult recommendation when obtained regularly. It should not be treated as a regular target.'
+    };
+  }
+  if (sleepMinutes <= 540) {
+    return {
+      quality: 'recommended',
+      label,
+      summary: 'Within a commonly recommended adult sleep-duration range for many people. Individual needs vary.'
+    };
+  }
+  return {
+    quality: 'sufficient',
+    label,
+    summary: 'A longer sleep opportunity may suit some people. Individual needs vary.'
+  };
+}
+
 /**
  * Calculates optimal bedtimes given a desired wake time.
  * Formula: Bedtime = WakeTime - (cycles * cycleLength + latencyMinutes)
@@ -124,37 +151,7 @@ export function calculateBedtimesForWake(
     const totalBedMinutes = sleepMinutes + latencyMinutes;
     const bedtime = new Date(wakeDate.getTime() - totalBedMinutes * 60 * 1000);
 
-    let quality: CycleResult['quality'] = 'sufficient';
-    let label = 'Illustrative timing option';
-    let summary = 'A timing estimate only. It does not predict sleep stages or how refreshed you will feel.';
-
-    if (cycles === 5) {
-      quality = 'recommended';
-      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
-      summary = sleepMinutes < 420
-        ? 'Below the usual adult recommendation when obtained regularly.'
-        : sleepMinutes <= 540
-          ? 'Within a commonly recommended adult sleep-duration range for many people. Individual needs vary.'
-          : 'A longer sleep opportunity may suit some people. Individual needs vary.';
-    } else if (cycles === 6) {
-      quality = 'recommended';
-      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
-      summary = sleepMinutes < 420
-        ? 'Below the usual adult recommendation when obtained regularly.'
-        : sleepMinutes <= 540
-          ? 'Within a commonly recommended adult sleep-duration range for many people. Individual needs vary.'
-          : 'A longer sleep opportunity may suit some people. Individual needs vary.';
-    } else if (cycles === 4) {
-      quality = 'short';
-      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
-      summary = sleepMinutes < 420
-        ? 'Below the usual adult recommendation when obtained regularly.'
-        : 'A longer sleep opportunity may suit some people. Individual needs vary.';
-    } else if (cycles === 3) {
-      quality = 'short';
-      label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
-      summary = 'Below the usual adult recommendation when obtained regularly. It should not be treated as a regular target.';
-    }
+    const { quality, label, summary } = describeSleepOpportunity(sleepMinutes);
 
     results.push({
       cycles,
@@ -192,27 +189,7 @@ export function calculateWakeTimesForBed(
     const totalBedMinutes = sleepMinutes + latencyMinutes;
     const wakeTime = new Date(bedDate.getTime() + totalBedMinutes * 60 * 1000);
 
-    let quality: CycleResult['quality'] = 'sufficient';
-    let label = 'Illustrative timing option';
-    let summary = 'A timing estimate only. It does not predict sleep stages or how refreshed you will feel.';
-
-    if (cycles === 5) {
-      quality = 'recommended';
-      label = '7.5-hour sleep opportunity';
-      summary = 'Falls within the commonly recommended duration range for many adults. Individual sleep needs vary.';
-    } else if (cycles === 6) {
-      quality = 'recommended';
-      label = '9-hour sleep opportunity';
-      summary = 'A longer sleep opportunity may suit some people. Individual sleep needs vary.';
-    } else if (cycles === 4) {
-      quality = 'short';
-      label = '6-hour sleep opportunity';
-      summary = 'Below the usual minimum recommendation for adults when obtained regularly.';
-    } else if (cycles === 3) {
-      quality = 'short';
-      label = '4.5-hour sleep opportunity';
-      summary = 'A short sleep opportunity and below adult recommendations. It should not be treated as a regular target.';
-    }
+    const { quality, label, summary } = describeSleepOpportunity(sleepMinutes);
 
     results.push({
       cycles,
