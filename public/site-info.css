@@ -5,3 +5,19 @@
 .sound-grid article p{margin:.35rem 0 .85rem}
 .sound-cta{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border:1px solid #4a8c83;border-radius:12px;background:#103c3b;color:#d9fff5;text-decoration:none;font-weight:700}
 .sound-cta:hover{background:#16514c;color:#fff}
+
+/* Search landing page navigation and tool directory */
+.breadcrumbs{margin:-18px 0 26px;font-size:.84rem}
+.breadcrumbs ol{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.breadcrumbs li+li::before{content:"/";color:var(--muted);margin-right:8px}
+.breadcrumbs a{color:var(--muted)}
+.breadcrumbs [aria-current="page"]{color:var(--text)}
+.lead{max-width:760px;font-size:1.08rem;line-height:1.75;color:var(--text)}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:22px 0}
+.tool-grid article{min-width:0;padding:20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,rgba(19,34,52,.92),rgba(13,21,32,.82))}
+.tool-grid h2{font-size:1.08rem;line-height:1.35;margin:.1rem 0 .55rem}
+.tool-grid article p{margin:.35rem 0 .8rem}
+.tool-grid article>a{font-weight:650}
+main h3{font-size:1.02rem;margin:1.25rem 0 .35rem}
+main ul,main ol{padding-left:1.4rem}
+main li{padding:.12rem 0}
