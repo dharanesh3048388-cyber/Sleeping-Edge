@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BatteryCharging, Compass, AlertCircle, CheckCircle, Sunrise, Sunset, Moon, Brain } from 'lucide-react';
 import { calculateSleepDebt } from '../utils/sleepScience';
 
-type Chronotype = 'lion' | 'bear' | 'wolf' | 'dolphin';
+type Chronotype = 'earlier' | 'intermediate' | 'later' | 'variable';
 
 interface ChronotypeProfile {
   name: string;
@@ -14,37 +14,37 @@ interface ChronotypeProfile {
 }
 
 const CHRONOTYPE_PROFILES: Record<Chronotype, ChronotypeProfile> = {
-  lion: {
-    name: 'Lion (Early Lark)',
-    pattern: 'Earlier timing tendency',
-    optimalSleep: '9:30 PM – 5:30 AM',
-    peakFocus: '8:00 AM – 12:00 PM',
-    description: 'May prefer earlier sleep and wake times. This is a broad example, not a diagnostic profile.',
-    strategy: 'Schedule analytical work first thing in morning. Guard your early bedtime against late social obligations.'
+  earlier: {
+    name: 'Earlier timing tendency',
+    pattern: 'May prefer earlier sleep and wake times',
+    optimalSleep: 'No universal clock time',
+    peakFocus: 'Varies by individual',
+    description: 'Some people naturally feel more alert earlier in the day and prefer an earlier sleep schedule. This is a broad tendency, not a diagnosis.',
+    strategy: 'Keep a reasonably consistent sleep and wake schedule that allows enough sleep and fits your daily responsibilities.'
   },
-  bear: {
-    name: 'Bear (Solar Rhythm)',
-    pattern: 'Intermediate timing tendency',
-    optimalSleep: '11:00 PM – 7:00 AM',
-    peakFocus: '10:00 AM – 2:00 PM',
-    description: 'May prefer a schedule closer to conventional daytime hours. Individual sleep duration and energy patterns vary.',
-    strategy: 'Get morning sunlight immediately upon waking. Take a 20-min power nap or brief walk during the mid-afternoon trough.'
+  intermediate: {
+    name: 'Intermediate timing tendency',
+    pattern: 'May prefer middle-of-the-day schedules',
+    optimalSleep: 'No universal clock time',
+    peakFocus: 'Varies by individual',
+    description: 'Some people prefer sleep and wake times closer to conventional daytime schedules. Individual preferences and work demands vary.',
+    strategy: 'Aim for a regular schedule and adequate sleep duration. Morning light and consistent routines can help support circadian timing.'
   },
-  wolf: {
-    name: 'Wolf (Night Owl)',
-    pattern: 'Later timing tendency',
-    optimalSleep: '12:30 AM – 8:30 AM',
-    peakFocus: '5:00 PM – 10:00 PM',
-    description: 'May prefer later sleep and wake times. Work schedules and light exposure can affect how practical this timing is.',
-    strategy: 'Use warm dim amber lighting after 9 PM. Keep evening light levels comfortable and consistent; light timing can influence circadian rhythms.'
+  later: {
+    name: 'Later timing tendency',
+    pattern: 'May prefer later sleep and wake times',
+    optimalSleep: 'No universal clock time',
+    peakFocus: 'Varies by individual',
+    description: 'Some people naturally feel more alert later in the day. Social and work schedules can make it harder to follow a preferred timing.',
+    strategy: 'Keep sleep timing as consistent as practical and seek professional advice if your schedule causes persistent impairment.'
   },
-  dolphin: {
-    name: 'Dolphin (Light Sleeper)',
-    pattern: 'Variable or irregular sleep tendency',
-    optimalSleep: '11:30 PM – 6:30 AM',
-    peakFocus: '3:00 PM – 7:00 PM',
-    description: 'A popular informal label for people who describe variable or easily disrupted sleep; it is not a clinical chronotype.',
-    strategy: 'A consistent, comfortable sleep routine may help. No single room temperature or sound setup is essential for everyone.'
+  variable: {
+    name: 'Variable sleep timing',
+    pattern: 'Sleep timing varies or feels irregular',
+    optimalSleep: 'Depends on personal and work schedule',
+    peakFocus: 'Varies by individual',
+    description: 'Sleep timing can vary with routines, light exposure, work schedules and health. This category is not a clinical diagnosis.',
+    strategy: 'Track sleep and wake times for a couple of weeks. If irregularity or daytime sleepiness persists, consider discussing it with a healthcare professional.'
   }
 };
 
@@ -59,7 +59,7 @@ export const SleepDebtPlanner: React.FC = () => {
   const debtResult = calculateSleepDebt(targetHours, days);
 
   // Chronotype Quick Selector State
-  const [selectedChronotype, setSelectedChronotype] = useState<Chronotype>('bear');
+  const [selectedChronotype, setSelectedChronotype] = useState<Chronotype>('intermediate');
 
   const updateDay = (index: number, val: number) => {
     const updated = [...days];
@@ -184,9 +184,7 @@ export const SleepDebtPlanner: React.FC = () => {
                   <span>·</span>
                   <span
                     className={
-                      debtResult.severity === 'Severe'
-                        ? 'text-red-600 dark:text-red-400 font-bold'
-                        : debtResult.severity === 'Moderate'
+                      debtResult.totalDebtHours > 0
                         ? 'text-amber-600 dark:text-amber-400 font-bold'
                         : 'text-emerald-600 dark:text-emerald-400 font-bold'
                     }
@@ -217,7 +215,7 @@ export const SleepDebtPlanner: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 2: Chronotype Diagnostic */}
+      {/* Tab 2: Chronotype overview */}
       {activeTab === 'chronotype' && (
         <div className="bg-white/85 dark:bg-[#0b111e]/85 backdrop-blur-2xl border border-sky-200/80 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-xl shadow-slate-900/5 dark:shadow-2xl">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6 sm:mb-8">
@@ -264,7 +262,7 @@ export const SleepDebtPlanner: React.FC = () => {
                   <div className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
                     <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                       <Moon className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                      <span>Optimal Sleep Window</span>
+                      <span>Typical timing</span>
                     </span>
                     <span className="text-slate-900 dark:text-white font-bold">
                       {CHRONOTYPE_PROFILES[selectedChronotype].optimalSleep}
@@ -274,7 +272,7 @@ export const SleepDebtPlanner: React.FC = () => {
                   <div className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
                     <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                       <Brain className="w-4 h-4 text-sky-600 dark:text-emerald-400" />
-                      <span>Peak Cognitive Window</span>
+                      <span>Alertness pattern</span>
                     </span>
                     <span className="text-slate-900 dark:text-white font-bold">
                       {CHRONOTYPE_PROFILES[selectedChronotype].peakFocus}
@@ -286,7 +284,7 @@ export const SleepDebtPlanner: React.FC = () => {
               <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-200 dark:border-white/10 pt-4 md:pt-0 md:pl-6">
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-emerald-400 mb-2">
-                    Circadian Optimization Strategy
+                    General schedule guidance
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     {CHRONOTYPE_PROFILES[selectedChronotype].strategy}
@@ -294,8 +292,8 @@ export const SleepDebtPlanner: React.FC = () => {
                 </div>
 
                 <div className="p-3.5 rounded-lg bg-slate-100/90 dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 text-[11px] text-slate-600 dark:text-slate-400">
-                  <span className="text-slate-900 dark:text-slate-200 font-semibold">Biological rhythm: </span>
-                  Your chronotype is largely wired by genetics. Working with your natural rhythm boosts energy, while fighting it causes daily fatigue.
+                  <span className="text-slate-900 dark:text-slate-200 font-semibold">Important: </span>
+                  These informal categories are not validated diagnostic results. Alertness is influenced by sleep duration, circadian timing, health and daily routines.
                 </div>
               </div>
             </div>
