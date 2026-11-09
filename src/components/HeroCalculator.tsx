@@ -14,7 +14,6 @@ import {
 import {
   calculateBedtimesForWake,
   calculateWakeTimesForBed,
-  createTimeDate,
   formatDurationHoursMinutes,
   formatTimeDisplay,
   CycleResult
@@ -37,17 +36,24 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
 
   // Input states
   // Mode: wake_at (default: 7:00 AM)
+  // Store hours internally in 24-hour format so toggling display format never changes the selected time.
   const [wakeHour, setWakeHour] = useState<number>(7);
   const [wakeMinute, setWakeMinute] = useState<number>(0);
-  const [wakeAmpm, setWakeAmpm] = useState<'AM' | 'PM'>('AM');
 
   // Mode: sleep_at (default: 11:00 PM)
-  const [bedHour, setBedHour] = useState<number>(11);
+  const [bedHour, setBedHour] = useState<number>(23);
   const [bedMinute, setBedMinute] = useState<number>(0);
-  const [bedAmpm, setBedAmpm] = useState<'AM' | 'PM'>('PM');
 
   // Real-time tick for sleep_now
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  const createNextOccurrence = (hours: number, minutes: number): Date => {
+    const now = new Date();
+    const target = new Date(now);
+    target.setHours(hours, minutes, 0, 0);
+    if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
+    return target;
+  };
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [showFormula, setShowFormula] = useState<boolean>(false);
 
@@ -58,12 +64,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
     return () => clearInterval(timer);
   }, []);
 
-  // Compute 24h formatted inputs
-  const get24Hour = (h: number, ampm: 'AM' | 'PM'): number => {
-    if (is24Hour) return h;
-    if (ampm === 'AM') return h === 12 ? 0 : h;
-    return h === 12 ? 12 : h + 12;
-  };
+
 
   // Generate results based on mode
   let results: CycleResult[] = [];
@@ -71,21 +72,21 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
   let subPrompt = '';
 
   if (mode === 'wake_at') {
-    const target24H = get24Hour(wakeHour, wakeAmpm);
-    const targetDate = createTimeDate(target24H, wakeMinute);
+    const target24H = wakeHour;
+    const targetDate = createNextOccurrence(target24H, wakeMinute);
     results = calculateBedtimesForWake(targetDate, latencyMinutes, cycleLength, is24Hour);
     headingQuestion = `To wake at ${formatTimeDisplay(targetDate, is24Hour)}, fall asleep at:`;
-    subPrompt = `Targeting waking up naturally at the end of a 90-minute sleep cycle`;
+    subPrompt = `Illustrative timing options; actual sleep cycles vary`;
   } else if (mode === 'sleep_now') {
     results = calculateWakeTimesForBed(currentTime, latencyMinutes, cycleLength, is24Hour);
     headingQuestion = `If you drift off to sleep right now:`;
     subPrompt = `Factoring in ${latencyMinutes} min to drift off to sleep`;
   } else {
-    const bed24H = get24Hour(bedHour, bedAmpm);
-    const bedDate = createTimeDate(bed24H, bedMinute);
+    const bed24H = bedHour;
+    const bedDate = createNextOccurrence(bed24H, bedMinute);
     results = calculateWakeTimesForBed(bedDate, latencyMinutes, cycleLength, is24Hour);
     headingQuestion = `If you go to bed at ${formatTimeDisplay(bedDate, is24Hour)}, set alarm for:`;
-    subPrompt = `Wake smoothly at the completion of your sleep cycles`;
+    subPrompt = `Illustrative timing options; actual sleep cycles vary`;
   }
 
   const handleCopy = (timeStr: string, index: number, cycles: number, bedMin: number) => {
@@ -107,13 +108,13 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
           Master Your Sleep Architecture
         </div>
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3 sm:mb-4">
-          Wake at the end of the cycle.{' '}
+          Plan your sleep timing.{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300">
-            Every time.
+            With realistic estimates.
           </span>
         </h1>
         <p className="max-w-2xl mx-auto text-sm sm:text-lg text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
-          Waking mid-cycle leaves you tired and groggy. SleepingEdge calculates the exact time to fall asleep or wake up so you feel energized from the minute you open your eyes.
+          Sleep cycles vary from person to person and from night to night. SleepingEdge provides flexible timing estimates, not predictions of sleep stages or guarantees about how refreshed you will feel.
         </p>
       </div>
 
@@ -170,8 +171,11 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             <div className="flex items-center gap-1.5 sm:gap-3 bg-slate-50/90 dark:bg-slate-950/70 border border-slate-300/80 dark:border-white/15 px-3 py-2.5 sm:px-5 sm:py-4 rounded-2xl shadow-inner max-w-full">
               {/* Hour Dropdown */}
               <select
-                value={wakeHour}
-                onChange={(e) => setWakeHour(Number(e.target.value))}
+                value={is24Hour ? wakeHour : (wakeHour % 12 || 12)}
+                onChange={(e) => {
+                  const selectedHour = Number(e.target.value);
+                  setWakeHour(is24Hour ? selectedHour : (selectedHour % 12) + (wakeHour >= 12 ? 12 : 0));
+                }}
                 aria-label="Wake hour"
                 className="bg-transparent text-2xl sm:text-4xl font-bold font-mono text-slate-900 dark:text-white text-center focus:outline-none cursor-pointer border-b border-transparent hover:border-sky-500 dark:hover:border-emerald-400 pb-0.5 sm:pb-1 appearance-none px-1"
               >
@@ -203,9 +207,9 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                 <div className="flex bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/10 rounded-lg p-0.5 sm:p-1 ml-1 sm:ml-2">
                   <button
                     type="button"
-                    onClick={() => setWakeAmpm('AM')}
+                    onClick={() => setWakeHour(wakeHour % 12)}
                     className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded cursor-pointer transition-colors ${
-                      wakeAmpm === 'AM'
+                      wakeHour < 12
                         ? 'bg-sky-600 text-white font-bold dark:bg-emerald-500 dark:text-slate-950'
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
@@ -214,9 +218,9 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setWakeAmpm('PM')}
+                    onClick={() => setWakeHour((wakeHour % 12) + 12)}
                     className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded cursor-pointer transition-colors ${
-                      wakeAmpm === 'PM'
+                      wakeHour >= 12
                         ? 'bg-sky-600 text-white font-bold dark:bg-emerald-500 dark:text-slate-950'
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
@@ -231,11 +235,11 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs">
               <span className="text-slate-500 dark:text-slate-400">Quick presets:</span>
               {[
-                { label: '6:00 AM', h: 6, m: 0, ampm: 'AM' as const },
-                { label: '6:30 AM', h: 6, m: 30, ampm: 'AM' as const },
-                { label: '7:00 AM', h: 7, m: 0, ampm: 'AM' as const },
-                { label: '7:30 AM', h: 7, m: 30, ampm: 'AM' as const },
-                { label: '8:00 AM', h: 8, m: 0, ampm: 'AM' as const }
+                { label: '6:00 AM', h: 6, m: 0 },
+                { label: '6:30 AM', h: 6, m: 30 },
+                { label: '7:00 AM', h: 7, m: 0 },
+                { label: '7:30 AM', h: 7, m: 30 },
+                { label: '8:00 AM', h: 8, m: 0 }
               ].map((preset) => (
                 <button
                   key={preset.label}
@@ -243,7 +247,6 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                   onClick={() => {
                     setWakeHour(preset.h);
                     setWakeMinute(preset.m);
-                    setWakeAmpm(preset.ampm);
                   }}
                   className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-300 dark:hover:text-white dark:border-white/10 transition-colors cursor-pointer"
                 >
@@ -263,7 +266,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
               {formatTimeDisplay(currentTime, is24Hour)}
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md">
-              Drifting into bed right now? Below are your natural wake windows factoring in {latencyMinutes} min to fall asleep.
+              If you go to bed now, these estimates include {latencyMinutes} min to fall asleep.
             </p>
           </div>
         )}
@@ -275,8 +278,11 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             </label>
             <div className="flex items-center gap-1.5 sm:gap-3 bg-slate-50/90 dark:bg-slate-950/70 border border-slate-300/80 dark:border-white/15 px-3 py-2.5 sm:px-5 sm:py-4 rounded-2xl shadow-inner max-w-full">
               <select
-                value={bedHour}
-                onChange={(e) => setBedHour(Number(e.target.value))}
+                value={is24Hour ? bedHour : (bedHour % 12 || 12)}
+                onChange={(e) => {
+                  const selectedHour = Number(e.target.value);
+                  setBedHour(is24Hour ? selectedHour : (selectedHour % 12) + (bedHour >= 12 ? 12 : 0));
+                }}
                 aria-label="Bed hour"
                 className="bg-transparent text-2xl sm:text-4xl font-bold font-mono text-slate-900 dark:text-white text-center focus:outline-none cursor-pointer border-b border-transparent hover:border-sky-500 dark:hover:border-emerald-400 pb-0.5 sm:pb-1 appearance-none px-1"
               >
@@ -306,9 +312,9 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                 <div className="flex bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/10 rounded-lg p-0.5 sm:p-1 ml-1 sm:ml-2">
                   <button
                     type="button"
-                    onClick={() => setBedAmpm('AM')}
+                    onClick={() => setBedHour(bedHour % 12)}
                     className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded cursor-pointer transition-colors ${
-                      bedAmpm === 'AM'
+                      bedHour < 12
                         ? 'bg-sky-600 text-white font-bold dark:bg-emerald-500 dark:text-slate-950'
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
@@ -317,9 +323,9 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setBedAmpm('PM')}
+                    onClick={() => setBedHour((bedHour % 12) + 12)}
                     className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded cursor-pointer transition-colors ${
-                      bedAmpm === 'PM'
+                      bedHour >= 12
                         ? 'bg-sky-600 text-white font-bold dark:bg-emerald-500 dark:text-slate-950'
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
@@ -333,11 +339,11 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs">
               <span className="text-slate-500 dark:text-slate-400">Quick presets:</span>
               {[
-                { label: '10:00 PM', h: 10, m: 0, ampm: 'PM' as const },
-                { label: '10:30 PM', h: 10, m: 30, ampm: 'PM' as const },
-                { label: '11:00 PM', h: 11, m: 0, ampm: 'PM' as const },
-                { label: '11:30 PM', h: 11, m: 30, ampm: 'PM' as const },
-                { label: '12:00 AM', h: 12, m: 0, ampm: 'AM' as const }
+                { label: '10:00 PM', h: 22, m: 0 },
+                { label: '10:30 PM', h: 22, m: 30 },
+                { label: '11:00 PM', h: 23, m: 0 },
+                { label: '11:30 PM', h: 23, m: 30 },
+                { label: '12:00 AM', h: 0, m: 0 }
               ].map((preset) => (
                 <button
                   key={preset.label}
@@ -345,7 +351,6 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                   onClick={() => {
                     setBedHour(preset.h);
                     setBedMinute(preset.m);
-                    setBedAmpm(preset.ampm);
                   }}
                   className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-300 dark:hover:text-white dark:border-white/10 transition-colors cursor-pointer"
                 >
@@ -370,7 +375,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono">
               <span>Latency: {latencyMinutes}m</span>
               <span>·</span>
-              <span>Cycle: {cycleLength}m</span>
+              <span>Assumed interval: {cycleLength}m</span>
             </div>
           </div>
 
@@ -424,30 +429,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                     </div>
                   </div>
 
-                  {/* Sleep Architecture Visual Ratio Bar */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                      <span>Stage Proportions</span>
-                      <span className="font-mono text-slate-600 dark:text-slate-400">{res.nremDeepPercent}% Deep / {res.remPercent}% REM</span>
-                    </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 flex overflow-hidden">
-                      <div
-                        style={{ width: `${res.nremLightPercent}%` }}
-                        className="h-full bg-slate-400 dark:bg-slate-500"
-                        title={`Light Sleep: ${res.nremLightPercent}%`}
-                      />
-                      <div
-                        style={{ width: `${res.nremDeepPercent}%` }}
-                        className="h-full bg-sky-500 dark:bg-teal-400"
-                        title={`Deep Sleep: ${res.nremDeepPercent}%`}
-                      />
-                      <div
-                        style={{ width: `${res.remPercent}%` }}
-                        className="h-full bg-indigo-500 dark:bg-purple-400"
-                        title={`REM Dream Sleep: ${res.remPercent}%`}
-                      />
-                    </div>
-                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Sleep stages are not estimated from this timing calculation.</p>
 
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     {res.summary}
@@ -491,7 +473,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             >
               <div className="flex items-center gap-2">
                 <Info className="w-4 h-4 text-sky-600 dark:text-emerald-400" />
-                <span>How the math works (Exact scientific formula)</span>
+                <span>How the timing estimate works</span>
               </div>
               {showFormula ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
@@ -504,14 +486,14 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                     : `WakeTime = Bedtime + ${latencyMinutes} min latency + (Cycles × ${cycleLength} min)`}
                 </div>
                 <p className="leading-relaxed text-slate-600 dark:text-slate-300">
-                  Sleep moves in natural 90-minute waves through light sleep, deep physical repair, and dream sleep (REM). Waking at the end of a cycle feels effortless. Waking in the middle interrupts deep sleep and triggers morning brain fog (sleep inertia).
+                  This calculator adds or subtracts a selected interval and your estimated time to fall asleep. Sleep cycles are not fixed at 90 minutes: research describes typical cycles of roughly 80–100 minutes, with variation across the night and between people. These estimates cannot identify your sleep stage or guarantee an easier wake-up.
                 </p>
                 <div className="flex flex-wrap gap-4 text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-white/5 font-mono text-[11px]">
                   <span>1 cycle = {cycleLength} min</span>
                   <span>·</span>
                   <span>Onset latency buffer = {latencyMinutes} min</span>
                   <span>·</span>
-                  <span>Recommended nightly: 5 cycles (7.5h) or 6 cycles (9.0h)</span>
+                  <span>Adult guidance: regularly aim for at least 7 hours; individual needs vary</span>
                 </div>
               </div>
             )}

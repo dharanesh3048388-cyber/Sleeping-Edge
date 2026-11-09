@@ -20,7 +20,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
   const [bedMinute, setBedMinute] = useState<number>(0);
 
   // Time of caffeine intake: default 2:00 PM (14:00)
-  const [intakeHour, setIntakeHour] = useState<number>(14);
+  const [intakeHour, setIntakeHour] = useState<number>(() => new Date().getHours());
   const [intakeMinute, setIntakeMinute] = useState<number>(0);
 
   // Half life (default 5.5 hours)
@@ -35,8 +35,11 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
     }
   };
 
-  const bedtimeDate = createTimeDate(bedHour, bedMinute);
-  const intakeDate = createTimeDate(intakeHour, intakeMinute);
+  const now = new Date();
+  const bedtimeDate = createTimeDate(bedHour, bedMinute, now);
+  if (bedtimeDate.getTime() <= now.getTime()) bedtimeDate.setDate(bedtimeDate.getDate() + 1);
+  const intakeDate = createTimeDate(intakeHour, intakeMinute, now);
+  if (intakeDate.getTime() > bedtimeDate.getTime()) intakeDate.setDate(intakeDate.getDate() - 1);
 
   const cutoffResult = calculateCaffeineCutoff(customMg, bedtimeDate, intakeDate, halfLife, 25);
 
@@ -54,7 +57,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
           Caffeine Calculator
         </h2>
         <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-600 dark:text-slate-300">
-          Caffeine stays active in your system for 5 to 7 hours. Even if you fall asleep easily, lingering caffeine fragments deep slow-wave sleep.
+          Caffeine is cleared gradually, and its half-life varies between people. A simple estimate can show how much may remain at bedtime, but cannot predict your individual sleep response.
         </p>
       </div>
 
@@ -115,7 +118,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
               <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
                 <span>20 mg (Tea)</span>
                 <span>200 mg (Cold Brew)</span>
-                <span>400 mg (Max Safe Daily)</span>
+                <span>400 mg (FDA reference for most healthy adults)</span>
               </div>
             </div>
 
@@ -178,7 +181,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
               {showAdvanced && (
                 <div className="mt-3 p-3.5 rounded-lg bg-slate-50/90 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 space-y-2 text-xs">
                   <div className="flex justify-between items-center text-slate-700 dark:text-slate-300 font-mono">
-                    <span>Hepatic CYP1A2 Enzyme Half-life:</span>
+                    <span>Assumed caffeine half-life:</span>
                     <span className="text-sky-700 dark:text-emerald-400 font-bold">{halfLife} hours</span>
                   </div>
                   <input
@@ -191,9 +194,9 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
                     className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-600 dark:accent-emerald-400"
                   />
                   <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                    <span>4.0h (Fast metabolizer)</span>
-                    <span>5.5h (Average)</span>
-                    <span>8.0h (Sensitive / slow)</span>
+                    <span>4.0h (Shorter assumption)</span>
+                    <span>5.5h (Default assumption)</span>
+                    <span>8.0h (Longer assumption)</span>
                   </div>
                 </div>
               )}
@@ -204,13 +207,13 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
           <div className="lg:col-span-5 bg-slate-50/95 dark:bg-slate-950/70 border border-slate-200/90 dark:border-white/15 rounded-xl p-5 flex flex-col justify-between h-full shadow-sm">
             <div>
               <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mb-1">
-                Recommended Cutoff Time
+                Estimated Cutoff for 25 mg Reference
               </div>
               <div className="text-3xl sm:text-4xl font-mono font-bold text-slate-900 dark:text-white tracking-tight tabular-nums mb-1">
                 {formatTimeDisplay(cutoffResult.latestCutoffTime, is24Hour)}
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                To have less than 25mg active caffeine by bedtime, finish your last cup of {customMg}mg before this time.
+                Under this single-dose model, this is the estimated time to reach the illustrative 25 mg reference by bedtime. It is not a safety threshold or a sleep-neutral amount.
               </p>
 
               {/* Status at Bedtime */}
@@ -220,15 +223,15 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
                   <span className="font-mono text-sky-700 dark:text-emerald-400 font-bold">{cutoffResult.activeMgAtBedtime} mg</span>
                 </div>
 
-                {cutoffResult.isSafeNow ? (
+                {cutoffResult.isBelowIllustrativeReference ? (
                   <div className="flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-300 font-medium">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    <span>Caffeine cleared. Deep sleep ready.</span>
+                    <span>Below the illustrative reference; sleep effects can still occur.</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-300 font-medium">
                     <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                    <span>High caffeine remains. Expect lighter, restless sleep.</span>
+                    <span>Above the illustrative reference; individual sleep effects cannot be predicted.</span>
                   </div>
                 )}
               </div>
@@ -236,7 +239,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
               {/* Biological Clearance Time */}
               <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400 font-mono">
                 <div className="flex justify-between border-b border-slate-200 dark:border-white/5 pb-1">
-                  <span>Time needed to clear:</span>
+                  <span>Estimated time to reach reference:</span>
                   <span className="text-slate-900 dark:text-white font-bold">{cutoffResult.hoursNeededToClear} hours</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-200 dark:border-white/5 pb-1">
@@ -244,7 +247,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
                   <span className="text-slate-900 dark:text-white font-bold">{halfLife} hours</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Safe bedtime limit:</span>
+                  <span>Illustrative model reference:</span>
                   <span className="text-slate-900 dark:text-white font-bold">&lt; 25 mg</span>
                 </div>
               </div>

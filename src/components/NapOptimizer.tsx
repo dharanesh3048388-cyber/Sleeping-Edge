@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, AlertTriangle, ShieldCheck, Copy, Check, Clock } from 'lucide-react';
+import { AlertTriangle, Copy, Check, Clock } from 'lucide-react';
 import { calculateNapOptions, NapOption, formatTimeDisplay } from '../utils/sleepScience';
 
 interface NapOptimizerProps {
@@ -47,7 +47,7 @@ export const NapOptimizer: React.FC<NapOptimizerProps> = ({
           Nap Optimizer
         </h2>
         <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-600 dark:text-slate-300">
-          Avoid post-nap grogginess by waking before deep sleep begins, or commit to a full 90-minute cycle.
+          Compare a brief or longer nap opportunity. Actual sleep onset, sleep stages and post-nap alertness vary.
         </p>
       </div>
 
@@ -57,7 +57,7 @@ export const NapOptimizer: React.FC<NapOptimizerProps> = ({
           <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div>
             <span className="font-semibold text-amber-950 dark:text-amber-300">Late Afternoon Reminder: </span>
-            It is past 4:00 PM ({formatTimeDisplay(currentTime, is24Hour)}). A long nap now will make falling asleep tonight difficult. Choose a quick 20-minute power nap instead.
+            It is past 4:00 PM ({formatTimeDisplay(currentTime, is24Hour)}). A late nap may make it harder to fall asleep at your usual bedtime. Consider your schedule and how naps affect you.
           </div>
         </div>
       )}
@@ -72,18 +72,15 @@ export const NapOptimizer: React.FC<NapOptimizerProps> = ({
       </div>
 
       {/* Nap Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
         {napOptions.map((nap) => {
           const isPower = nap.id === 'power';
-          const isNasa = nap.id === 'nasa';
 
           return (
             <div
               key={nap.id}
               className={`flex flex-col justify-between p-4 sm:p-6 rounded-2xl border backdrop-blur-xl transition-all shadow-sm ${
-                isNasa
-                  ? 'bg-cyan-50/90 border-cyan-300 ring-1 ring-cyan-400/30 dark:bg-[#0f172a]/80 dark:border-cyan-500/40 dark:shadow-[0_0_20px_rgba(6,182,212,0.15)] dark:ring-cyan-500/20'
-                  : isPower
+                isPower
                   ? 'bg-sky-50/90 border-sky-300 ring-1 ring-sky-400/30 dark:bg-[#0b1322]/80 dark:border-emerald-500/30 dark:shadow-[0_0_15px_rgba(16,185,129,0.1)]'
                   : 'bg-white/85 border-slate-200 dark:bg-[#0b111e]/80 dark:border-white/10'
               }`}
@@ -93,9 +90,7 @@ export const NapOptimizer: React.FC<NapOptimizerProps> = ({
                 <div className="flex items-center justify-between text-xs mb-3">
                   <span
                     className={`font-bold tracking-wide ${
-                      isNasa
-                        ? 'text-cyan-800 dark:text-cyan-400'
-                        : isPower
+                      isPower
                         ? 'text-sky-800 dark:text-emerald-400'
                         : 'text-purple-800 dark:text-purple-400'
                     }`}
@@ -133,8 +128,7 @@ export const NapOptimizer: React.FC<NapOptimizerProps> = ({
               {/* Footer row */}
               <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
-                  <ShieldCheck className="w-3.5 h-3.5 text-sky-600 dark:text-emerald-400" />
-                  <span>Inertia: <strong className="text-slate-900 dark:text-slate-200">{nap.riskOfInertia}</strong></span>
+                  <span>Post-nap alertness varies between people.</span>
                 </div>
 
                 <button

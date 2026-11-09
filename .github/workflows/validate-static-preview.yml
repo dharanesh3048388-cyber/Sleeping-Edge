@@ -35,6 +35,9 @@ jobs:
       - name: Build the existing production app
         run: bun run build
 
+      - name: Type-check the application
+        run: bun run lint
+
       - name: Validate required pages and assets
         run: |
           set -euo pipefail
@@ -137,6 +140,9 @@ jobs:
       - name: Build production website
         run: bun run build
 
+      - name: Run deterministic calculator unit tests
+        run: bun test tests/unit
+
       - name: Install isolated browser-test runner
         run: npm install --no-save --package-lock=false --legacy-peer-deps @playwright/test
 
@@ -170,7 +176,7 @@ jobs:
       - name: Run browser regression suite
         env:
           SLEEPINGEDGE_BASE_URL: http://127.0.0.1:4173/Sleeping-Edge
-        run: npx playwright test --reporter=line
+        run: npx playwright test tests/browser --reporter=line
 
       - name: Stop local test server
         if: always()

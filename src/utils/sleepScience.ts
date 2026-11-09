@@ -15,22 +15,19 @@ export interface CycleResult {
   totalBedMinutes: number; // asleep duration + latency
   quality: 'optimal' | 'recommended' | 'sufficient' | 'minimum' | 'short';
   label: string;
-  nremDeepPercent: number;
-  remPercent: number;
-  nremLightPercent: number;
   summary: string;
 }
 
 export interface NapOption {
-  id: 'power' | 'nasa' | 'full';
+  id: 'power' | 'full';
   name: string;
   durationMinutes: number;
   wakeTimeStr: string;
   wakeDate: Date;
   benefit: string;
   targetStages: string;
-  riskOfInertia: 'None' | 'Very Low' | 'Moderate';
-  circadianImpact: 'Safe' | 'Caution' | 'High Impact';
+  riskOfInertia: 'Variable';
+  circadianImpact: 'Consider usual bedtime';
 }
 
 export interface AgeGuideline {
@@ -47,28 +44,28 @@ export const AGE_GUIDELINES: Record<string, AgeGuideline> = {
     ageRange: '14–17 years',
     recommendedHours: [8, 10],
     recommendedCycles: [5, 7],
-    note: 'Circadian phase naturally delays by ~2 hours during puberty.'
+    note: 'A later body-clock timing is common during adolescence.'
   },
   youngAdult: {
     group: 'Young Adults',
     ageRange: '18–25 years',
     recommendedHours: [7, 9],
     recommendedCycles: [5, 6],
-    note: 'Critical window for neuroplasticity and memory consolidation.'
+    note: 'Sleep needs and schedules vary across individuals.'
   },
   adult: {
     group: 'Adults',
     ageRange: '26–64 years',
     recommendedHours: [7, 9],
     recommendedCycles: [5, 6],
-    note: '5 cycles (7.5 hours) is the sweet spot for peak cognitive and metabolic health.'
+    note: 'Sleep needs vary. Most adults in this age range should regularly get at least 7 hours; individual needs can be higher.'
   },
   olderAdult: {
     group: 'Older Adults',
     ageRange: '65+ years',
     recommendedHours: [7, 8],
     recommendedCycles: [4.5, 5.5],
-    note: 'Sleep architecture shifts with lighter sleep; consistent bedtimes become vital.'
+    note: 'Sleep patterns can change with age; individual needs vary.'
   }
 };
 
@@ -104,6 +101,33 @@ export function formatDurationHoursMinutes(minutes: number): string {
   return `${h}h ${m}m`;
 }
 
+function describeSleepOpportunity(sleepMinutes: number): {
+  quality: CycleResult['quality'];
+  label: string;
+  summary: string;
+} {
+  const label = `${formatDurationHoursMinutes(sleepMinutes)} sleep opportunity`;
+  if (sleepMinutes < 420) {
+    return {
+      quality: 'short',
+      label,
+      summary: 'Below the usual adult recommendation when obtained regularly. It should not be treated as a regular target.'
+    };
+  }
+  if (sleepMinutes <= 540) {
+    return {
+      quality: 'recommended',
+      label,
+      summary: 'Within a commonly recommended adult sleep-duration range for many people. Individual needs vary.'
+    };
+  }
+  return {
+    quality: 'sufficient',
+    label,
+    summary: 'A longer sleep opportunity may suit some people. Individual needs vary.'
+  };
+}
+
 /**
  * Calculates optimal bedtimes given a desired wake time.
  * Formula: Bedtime = WakeTime - (cycles * cycleLength + latencyMinutes)
@@ -114,6 +138,9 @@ export function calculateBedtimesForWake(
   cycleLength: number = 90,
   is24Hour: boolean = false
 ): CycleResult[] {
+  if (!Number.isFinite(wakeDate.getTime()) || !Number.isFinite(latencyMinutes) || latencyMinutes < 0 || latencyMinutes > 120 || !Number.isFinite(cycleLength) || cycleLength < 60 || cycleLength > 120) {
+    throw new RangeError('Wake time, latency (0–120 minutes), and interval (60–120 minutes) must be valid.');
+  }
   const results: CycleResult[] = [];
   
   // Cycles 6 down to 3
@@ -124,33 +151,7 @@ export function calculateBedtimesForWake(
     const totalBedMinutes = sleepMinutes + latencyMinutes;
     const bedtime = new Date(wakeDate.getTime() - totalBedMinutes * 60 * 1000);
 
-    let quality: CycleResult['quality'] = 'sufficient';
-    let label = 'Sufficient';
-    let summary = 'Covers basic restorative functions';
-
-    if (cycles === 5) {
-      quality = 'optimal';
-      label = 'Optimal (Most Popular)';
-      summary = '7.5 hrs of sleep. The sweet spot to wake up sharp, energized, and rested.';
-    } else if (cycles === 6) {
-      quality = 'recommended';
-      label = 'Peak Recovery';
-      summary = '9.0 hrs of sleep. Best for workouts, recovery, and catching up on rest.';
-    } else if (cycles === 4) {
-      quality = 'sufficient';
-      label = 'Functional Minimum';
-      summary = '6.0 hrs of sleep. Good for busy mornings without the heavy fog.';
-    } else if (cycles === 3) {
-      quality = 'minimum';
-      label = 'Emergency Only';
-      summary = '4.5 hrs of sleep. Quick recharge. Alert morning, but expect an afternoon dip.';
-    }
-
-    // Dynamic sleep stage proportions by cycle depth
-    // Early cycles are deep-sleep heavy (N3), later cycles are REM heavy
-    const nremDeepPercent = Math.max(15, Math.round(28 - (cycles - 3) * 2.5));
-    const remPercent = Math.min(27, Math.round(18 + (cycles - 3) * 2.2));
-    const nremLightPercent = 100 - nremDeepPercent - remPercent;
+    const { quality, label, summary } = describeSleepOpportunity(sleepMinutes);
 
     results.push({
       cycles,
@@ -160,9 +161,6 @@ export function calculateBedtimesForWake(
       totalBedMinutes,
       quality,
       label,
-      nremDeepPercent,
-      remPercent,
-      nremLightPercent,
       summary
     });
   });
@@ -180,6 +178,9 @@ export function calculateWakeTimesForBed(
   cycleLength: number = 90,
   is24Hour: boolean = false
 ): CycleResult[] {
+  if (!Number.isFinite(bedDate.getTime()) || !Number.isFinite(latencyMinutes) || latencyMinutes < 0 || latencyMinutes > 120 || !Number.isFinite(cycleLength) || cycleLength < 60 || cycleLength > 120) {
+    throw new RangeError('Bedtime, latency (0–120 minutes), and interval (60–120 minutes) must be valid.');
+  }
   const results: CycleResult[] = [];
   const cycleCounts = [3, 4, 5, 6];
 
@@ -188,31 +189,7 @@ export function calculateWakeTimesForBed(
     const totalBedMinutes = sleepMinutes + latencyMinutes;
     const wakeTime = new Date(bedDate.getTime() + totalBedMinutes * 60 * 1000);
 
-    let quality: CycleResult['quality'] = 'sufficient';
-    let label = 'Sufficient';
-    let summary = 'Covers basic restorative functions';
-
-    if (cycles === 5) {
-      quality = 'optimal';
-      label = 'Optimal (Recommended)';
-      summary = '7.5 hrs asleep. Leaves you energized with zero morning grogginess.';
-    } else if (cycles === 6) {
-      quality = 'recommended';
-      label = 'Extended Recovery';
-      summary = '9.0 hrs asleep. Deep physical and mental recharge.';
-    } else if (cycles === 4) {
-      quality = 'sufficient';
-      label = 'Minimum Normal';
-      summary = '6.0 hrs asleep. Clean wake-up for busy days.';
-    } else if (cycles === 3) {
-      quality = 'minimum';
-      label = 'Short Night';
-      summary = '4.5 hrs asleep. Alert at wake-up, but energy drops by late afternoon.';
-    }
-
-    const nremDeepPercent = Math.max(15, Math.round(28 - (cycles - 3) * 2.5));
-    const remPercent = Math.min(27, Math.round(18 + (cycles - 3) * 2.2));
-    const nremLightPercent = 100 - nremDeepPercent - remPercent;
+    const { quality, label, summary } = describeSleepOpportunity(sleepMinutes);
 
     results.push({
       cycles,
@@ -222,9 +199,6 @@ export function calculateWakeTimesForBed(
       totalBedMinutes,
       quality,
       label,
-      nremDeepPercent,
-      remPercent,
-      nremLightPercent,
       summary
     });
   });
@@ -240,45 +214,31 @@ export function calculateNapOptions(
   latencyMinutes: number = 10,
   is24Hour: boolean = false
 ): NapOption[] {
-  const currentHour = currentTime.getHours();
-
-  // If nap is after 4:30 PM (16:30), circadian impact increases
-  const isLate = currentHour >= 16;
-  const isVeryLate = currentHour >= 18;
-
+  if (!Number.isFinite(currentTime.getTime()) || !Number.isInteger(latencyMinutes) || latencyMinutes < 0 || latencyMinutes > 60) {
+    throw new RangeError('Nap start time and latency (0–60 whole minutes) must be valid.');
+  }
   const options: NapOption[] = [
     {
       id: 'power',
-      name: 'Power Nap',
+      name: 'Brief nap option',
       durationMinutes: 20,
       wakeDate: new Date(currentTime.getTime() + (20 + latencyMinutes) * 60 * 1000),
       wakeTimeStr: formatTimeDisplay(new Date(currentTime.getTime() + (20 + latencyMinutes) * 60 * 1000), is24Hour),
-      benefit: 'Quick recharge for focus and reaction speed. Zero post-nap grogginess.',
-      targetStages: 'Light sleep only (wakes before deep sleep starts)',
-      riskOfInertia: 'None',
-      circadianImpact: isVeryLate ? 'Caution' : 'Safe'
-    },
-    {
-      id: 'nasa',
-      name: 'NASA Fatigue Nap',
-      durationMinutes: 26,
-      wakeDate: new Date(currentTime.getTime() + (26 + latencyMinutes) * 60 * 1000),
-      wakeTimeStr: formatTimeDisplay(new Date(currentTime.getTime() + (26 + latencyMinutes) * 60 * 1000), is24Hour),
-      benefit: 'Proven pilot protocol: boosts alertness by 34% and working memory by 54%.',
-      targetStages: 'Stage 2 light sleep (spindle memory lock)',
-      riskOfInertia: 'Very Low',
-      circadianImpact: isVeryLate ? 'Caution' : 'Safe'
+      benefit: 'A short nap opportunity may help with alertness for some people. Sleep onset and how you feel after waking vary.',
+      targetStages: 'Sleep stages cannot be predicted from nap duration alone.',
+      riskOfInertia: 'Variable',
+      circadianImpact: 'Consider usual bedtime'
     },
     {
       id: 'full',
-      name: 'Full Cycle Reset',
+      name: 'Longer nap option',
       durationMinutes: 90,
       wakeDate: new Date(currentTime.getTime() + (90 + latencyMinutes) * 60 * 1000),
       wakeTimeStr: formatTimeDisplay(new Date(currentTime.getTime() + (90 + latencyMinutes) * 60 * 1000), is24Hour),
-      benefit: 'Clears deep mental fatigue, resets creativity, and finishes a full dream cycle.',
-      targetStages: 'Complete cycle: light sleep, deep repair, and dream sleep',
-      riskOfInertia: 'Moderate',
-      circadianImpact: isLate ? 'High Impact' : 'Safe'
+      benefit: 'A longer nap provides more time for sleep, but may leave some people groggy or make nighttime sleep harder.',
+      targetStages: 'A 90-minute nap is not a guaranteed complete sleep cycle.',
+      riskOfInertia: 'Variable',
+      circadianImpact: 'Consider usual bedtime'
     }
   ];
 
@@ -312,13 +272,17 @@ export function calculateCaffeineCutoff(
   targetBedtime: Date,
   intakeTime: Date,
   halfLifeHours: number = 5.5,
-  safeBedtimeMgThreshold: number = 25
+  illustrativeReferenceMg: number = 25
 ): {
   activeMgAtBedtime: number;
   latestCutoffTime: Date;
   hoursNeededToClear: number;
-  isSafeNow: boolean;
+  isBelowIllustrativeReference: boolean;
 } {
+  if (!Number.isFinite(mg) || mg <= 0 || mg > 1500 || !Number.isFinite(halfLifeHours) || halfLifeHours < 3 || halfLifeHours > 9.5 || !Number.isFinite(illustrativeReferenceMg) || illustrativeReferenceMg <= 0 || !Number.isFinite(targetBedtime.getTime()) || !Number.isFinite(intakeTime.getTime())) {
+    throw new RangeError('Caffeine amount, half-life, reference amount, and times must be valid.');
+  }
+
   // Hours between intake and bedtime
   let diffMs = targetBedtime.getTime() - intakeTime.getTime();
   if (diffMs < 0) {
@@ -330,21 +294,20 @@ export function calculateCaffeineCutoff(
   // Active mg at bedtime
   const activeMgAtBedtime = mg * Math.pow(0.5, hoursElapsed / halfLifeHours);
 
-  // How many hours needed to drop to safe threshold?
-  // threshold = mg * (0.5)^(t / halfLife)
-  // t = halfLife * log2(mg / threshold)
-  const hoursNeededToClear = mg > safeBedtimeMgThreshold
-    ? halfLifeHours * (Math.log(mg / safeBedtimeMgThreshold) / Math.log(2))
+  // Time required to reach an illustrative reference amount; this is not a safety threshold.
+  // reference = mg * (0.5)^(t / halfLife)
+  const hoursNeededToClear = mg > illustrativeReferenceMg
+    ? halfLifeHours * (Math.log(mg / illustrativeReferenceMg) / Math.log(2))
     : 0;
 
   const latestCutoffTime = new Date(targetBedtime.getTime() - hoursNeededToClear * 60 * 60 * 1000);
-  const isSafeNow = activeMgAtBedtime <= safeBedtimeMgThreshold;
+  const isBelowIllustrativeReference = activeMgAtBedtime <= illustrativeReferenceMg;
 
   return {
     activeMgAtBedtime: Math.max(0, Math.round(activeMgAtBedtime * 10) / 10),
     latestCutoffTime,
     hoursNeededToClear: Math.round(hoursNeededToClear * 10) / 10,
-    isSafeNow
+    isBelowIllustrativeReference
   };
 }
 
@@ -357,39 +320,22 @@ export function calculateSleepDebt(
 ): {
   totalDebtHours: number;
   averageSleepHours: number;
-  severity: 'None' | 'Mild' | 'Moderate' | 'Severe';
-  recoveryStrategy: string;
-  recommendedDailyBonusMinutes: number;
+  totalActualHours: number;
+  totalTargetHours: number;
 } {
+  if (!Number.isFinite(dailyTargetHours) || dailyTargetHours < 4 || dailyTargetHours > 12 || past7DaysActualHours.length !== 7 || past7DaysActualHours.some((h) => !Number.isFinite(h) || h < 0 || h > 24)) {
+    throw new RangeError('Provide a daily target from 4–12 hours and exactly seven daily sleep values from 0–24 hours.');
+  }
   const totalActual = past7DaysActualHours.reduce((sum, h) => sum + h, 0);
   const totalTarget = dailyTargetHours * past7DaysActualHours.length;
-  const debt = Math.max(0, totalTarget - totalActual);
+  const shortfall = Math.max(0, totalTarget - totalActual);
   const average = totalActual / (past7DaysActualHours.length || 1);
 
-  let severity: 'None' | 'Mild' | 'Moderate' | 'Severe' = 'None';
-  let recoveryStrategy = 'Your sleep reserve is fully stocked! Maintain this regular rhythm.';
-  let recommendedDailyBonusMinutes = 0;
-
-  if (debt >= 8) {
-    severity = 'Severe';
-    recoveryStrategy = 'Add +45 to +60 minutes to your sleep window for the next 7-10 nights. Avoid sleeping in >1.5 hours on weekends to prevent circadian social jetlag.';
-    recommendedDailyBonusMinutes = 60;
-  } else if (debt >= 4) {
-    severity = 'Moderate';
-    recoveryStrategy = 'Add +30 minutes of bedtime buffer every night this week, paired with a 20-minute afternoon power nap around 1:30 PM.';
-    recommendedDailyBonusMinutes = 30;
-  } else if (debt > 0.5) {
-    severity = 'Mild';
-    recoveryStrategy = 'Easily repayable in 2 nights by going to bed 15-20 minutes earlier than normal.';
-    recommendedDailyBonusMinutes = 20;
-  }
-
   return {
-    totalDebtHours: Math.round(debt * 10) / 10,
+    totalDebtHours: Math.round(shortfall * 10) / 10,
     averageSleepHours: Math.round(average * 10) / 10,
-    severity,
-    recoveryStrategy,
-    recommendedDailyBonusMinutes
+    totalActualHours: Math.round(totalActual * 10) / 10,
+    totalTargetHours: Math.round(totalTarget * 10) / 10
   };
 }
 
@@ -402,9 +348,12 @@ export function calculateSleepEfficiency(
   awakeningsMinutes: number
 ): {
   efficiencyPercent: number;
-  rating: 'Exceptional' | 'Normal' | 'Fragmented' | 'Poor';
+  rating: 'Higher estimate' | 'Mid-range estimate' | 'Lower estimate';
   advice: string;
 } {
+  if (!Number.isFinite(timeInBedMinutes) || !Number.isFinite(timeToFallAsleepMinutes) || !Number.isFinite(awakeningsMinutes) || timeInBedMinutes < 60 || timeInBedMinutes > 900 || timeToFallAsleepMinutes < 0 || timeToFallAsleepMinutes > 180 || awakeningsMinutes < 0 || awakeningsMinutes > 240 || timeToFallAsleepMinutes + awakeningsMinutes > timeInBedMinutes) {
+    throw new RangeError('Sleep efficiency inputs are outside the supported ranges.');
+  }
   const actualAsleepMinutes = Math.max(0, timeInBedMinutes - timeToFallAsleepMinutes - awakeningsMinutes);
   const efficiency = timeInBedMinutes > 0 ? (actualAsleepMinutes / timeInBedMinutes) * 100 : 0;
   const rounded = Math.round(efficiency * 10) / 10;
@@ -412,26 +361,26 @@ export function calculateSleepEfficiency(
   if (rounded >= 90) {
     return {
       efficiencyPercent: rounded,
-      rating: 'Exceptional',
-      advice: 'Your sleep continuity is top-tier. Virtually no restorative time is lost.'
+      rating: 'Higher estimate',
+      advice: 'A larger share of your reported time in bed was spent asleep. This estimate does not measure sleep quality or health.'
     };
   } else if (rounded >= 85) {
     return {
       efficiencyPercent: rounded,
-      rating: 'Normal',
-      advice: 'Healthy baseline. Over 85% sleep efficiency indicates solid, restorative continuity.'
+      rating: 'Higher estimate',
+      advice: 'This is only a time ratio based on your estimates; it cannot establish whether sleep was restorative.'
     };
   } else if (rounded >= 75) {
     return {
       efficiencyPercent: rounded,
-      rating: 'Fragmented',
-      advice: 'Mild sleep fragmentation. Consider reducing evening screen blue light and avoiding alcohol within 3 hours of bed.'
+      rating: 'Mid-range estimate',
+      advice: 'This estimate alone cannot identify why you were awake or diagnose a sleep problem.'
     };
   } else {
     return {
       efficiencyPercent: rounded,
-      rating: 'Poor',
-      advice: 'High awake time in bed can condition insomnia. If awake for >20 min, get out of bed in dim light until drowsy.'
+      rating: 'Lower estimate',
+      advice: 'A lower estimate can have many causes. If sleep difficulties persist, discuss them with a qualified healthcare professional.'
     };
   }
 }

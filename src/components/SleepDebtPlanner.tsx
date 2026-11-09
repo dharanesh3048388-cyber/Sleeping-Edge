@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { BatteryCharging, Compass, AlertCircle, CheckCircle, Sunrise, Sunset, Moon, Brain } from 'lucide-react';
 import { calculateSleepDebt } from '../utils/sleepScience';
 
-type Chronotype = 'lion' | 'bear' | 'wolf' | 'dolphin';
+type Chronotype = 'earlier' | 'intermediate' | 'later' | 'variable';
 
 interface ChronotypeProfile {
   name: string;
-  share: string;
+  pattern: string;
   optimalSleep: string;
   peakFocus: string;
   description: string;
@@ -14,37 +14,37 @@ interface ChronotypeProfile {
 }
 
 const CHRONOTYPE_PROFILES: Record<Chronotype, ChronotypeProfile> = {
-  lion: {
-    name: 'Lion (Early Lark)',
-    share: '15–20% of population',
-    optimalSleep: '9:30 PM – 5:30 AM',
-    peakFocus: '8:00 AM – 12:00 PM',
-    description: 'Wakes naturally before the alarm full of energy. Highly productive in early hours, but fades rapidly by 8:00 PM.',
-    strategy: 'Schedule analytical work first thing in morning. Guard your early bedtime against late social obligations.'
+  earlier: {
+    name: 'Earlier timing tendency',
+    pattern: 'May prefer earlier sleep and wake times',
+    optimalSleep: 'No universal clock time',
+    peakFocus: 'Varies by individual',
+    description: 'Some people naturally feel more alert earlier in the day and prefer an earlier sleep schedule. This is a broad tendency, not a diagnosis.',
+    strategy: 'Keep a reasonably consistent sleep and wake schedule that allows enough sleep and fits your daily responsibilities.'
   },
-  bear: {
-    name: 'Bear (Solar Rhythm)',
-    share: '50–55% of population',
-    optimalSleep: '11:00 PM – 7:00 AM',
-    peakFocus: '10:00 AM – 2:00 PM',
-    description: 'Rhythm strictly follows the sun. Needs a solid 7.5–8 hours. Experiences a natural energy lull between 2:00–4:00 PM.',
-    strategy: 'Get morning sunlight immediately upon waking. Take a 20-min power nap or brief walk during the mid-afternoon trough.'
+  intermediate: {
+    name: 'Intermediate timing tendency',
+    pattern: 'May prefer middle-of-the-day schedules',
+    optimalSleep: 'No universal clock time',
+    peakFocus: 'Varies by individual',
+    description: 'Some people prefer sleep and wake times closer to conventional daytime schedules. Individual preferences and work demands vary.',
+    strategy: 'Aim for a regular schedule and adequate sleep duration. Morning light and consistent routines can help support circadian timing.'
   },
-  wolf: {
-    name: 'Wolf (Night Owl)',
-    share: '15–20% of population',
-    optimalSleep: '12:30 AM – 8:30 AM',
-    peakFocus: '5:00 PM – 10:00 PM',
-    description: 'Struggles with traditional 9-to-5 schedules. Creativity and analytical horsepower peak in late afternoon and night.',
-    strategy: 'Use warm dim amber lighting after 9 PM. Avoid blue screen light which easily suppresses your delayed melatonin onset.'
+  later: {
+    name: 'Later timing tendency',
+    pattern: 'May prefer later sleep and wake times',
+    optimalSleep: 'No universal clock time',
+    peakFocus: 'Varies by individual',
+    description: 'Some people naturally feel more alert later in the day. Social and work schedules can make it harder to follow a preferred timing.',
+    strategy: 'Keep sleep timing as consistent as practical and seek professional advice if your schedule causes persistent impairment.'
   },
-  dolphin: {
-    name: 'Dolphin (Light Sleeper)',
-    share: '10% of population',
-    optimalSleep: '11:30 PM – 6:30 AM',
-    peakFocus: '3:00 PM – 7:00 PM',
-    description: 'Often wakes with nervous energy. Prone to mid-night awakenings and light sleep architecture.',
-    strategy: 'Strict bedtime wind-down ritual. Cool bedroom temperature (65°F / 18°C) and sound masking are essential.'
+  variable: {
+    name: 'Variable sleep timing',
+    pattern: 'Sleep timing varies or feels irregular',
+    optimalSleep: 'Depends on personal and work schedule',
+    peakFocus: 'Varies by individual',
+    description: 'Sleep timing can vary with routines, light exposure, work schedules and health. This category is not a clinical diagnosis.',
+    strategy: 'Track sleep and wake times for a couple of weeks. If irregularity or daytime sleepiness persists, consider discussing it with a healthcare professional.'
   }
 };
 
@@ -59,7 +59,7 @@ export const SleepDebtPlanner: React.FC = () => {
   const debtResult = calculateSleepDebt(targetHours, days);
 
   // Chronotype Quick Selector State
-  const [selectedChronotype, setSelectedChronotype] = useState<Chronotype>('bear');
+  const [selectedChronotype, setSelectedChronotype] = useState<Chronotype>('intermediate');
 
   const updateDay = (index: number, val: number) => {
     const updated = [...days];
@@ -75,13 +75,13 @@ export const SleepDebtPlanner: React.FC = () => {
     >
       <div className="text-center mb-6 sm:mb-8">
         <div className="text-xs font-semibold tracking-widest uppercase text-sky-700 dark:text-emerald-400 mb-2">
-          Weekly Recovery
+          Weekly Sleep Comparison
         </div>
         <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2 sm:mb-3">
           Sleep Debt & Rhythm
         </h2>
         <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-600 dark:text-slate-300">
-          You cannot erase a week of lost sleep with one long weekend lie-in. Track your deficit and recover gradually without ruining Monday morning.
+          Compare your reported sleep with a personal weekly target. This is a simple arithmetic difference, not a clinical measure of sleep debt or a repayment prescription.
         </p>
       </div>
 
@@ -97,7 +97,7 @@ export const SleepDebtPlanner: React.FC = () => {
                 : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
             }`}
           >
-            7-Day Sleep Debt Recovery
+            7-Day Sleep Target Comparison
           </button>
           <button
             type="button"
@@ -108,7 +108,7 @@ export const SleepDebtPlanner: React.FC = () => {
                 : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white'
             }`}
           >
-            Chronotype Diagnostic
+            Chronotype overview
           </button>
         </div>
       </div>
@@ -174,24 +174,16 @@ export const SleepDebtPlanner: React.FC = () => {
             <div className="lg:col-span-5 bg-slate-50/95 dark:bg-slate-950/70 border border-slate-200/90 dark:border-white/15 rounded-xl p-5 flex flex-col justify-between h-full shadow-sm">
               <div>
                 <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold mb-1">
-                  Cumulative Weekly Deficit
+                  Weekly Difference from Target
                 </div>
                 <div className="text-4xl sm:text-5xl font-mono font-bold text-slate-900 dark:text-white tracking-tight tabular-nums mb-1">
                   {debtResult.totalDebtHours > 0 ? `-${debtResult.totalDebtHours}h` : '0.0h'}
                 </div>
                 <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 font-mono mb-6">
                   <span>Avg: {debtResult.averageSleepHours}h / night</span>
-                  <span>·</span>
                   <span
-                    className={
-                      debtResult.severity === 'Severe'
-                        ? 'text-red-600 dark:text-red-400 font-bold'
-                        : debtResult.severity === 'Moderate'
-                        ? 'text-amber-600 dark:text-amber-400 font-bold'
-                        : 'text-emerald-600 dark:text-emerald-400 font-bold'
-                    }
                   >
-                    {debtResult.severity} Deficit
+                    Weekly comparison
                   </span>
                 </div>
 
@@ -199,30 +191,25 @@ export const SleepDebtPlanner: React.FC = () => {
                 <div className="p-4 rounded-xl bg-sky-50/90 dark:bg-slate-900/60 border border-sky-200/80 dark:border-white/10 mb-4 shadow-xs">
                   <div className="flex items-center gap-2 text-xs font-semibold text-sky-800 dark:text-emerald-300 mb-2">
                     <BatteryCharging className="w-4 h-4 text-sky-600 dark:text-emerald-400" />
-                    <span>Scientific Recovery Plan</span>
+                    <span>How to interpret this estimate</span>
                   </div>
                   <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {debtResult.recoveryStrategy}
+                    This is an arithmetic comparison of your entered hours against your chosen target. It does not measure biological sleep debt or prescribe how much extra sleep you need.
                   </p>
                 </div>
 
-                {debtResult.recommendedDailyBonusMinutes > 0 && (
-                  <div className="flex items-center justify-between text-xs font-mono text-slate-700 dark:text-slate-300 p-3 rounded-lg bg-sky-100/70 dark:bg-emerald-950/30 border border-sky-300/60 dark:border-emerald-500/20">
-                    <span>Target Nightly Bonus:</span>
-                    <span className="text-sky-800 dark:text-emerald-400 font-bold">+{debtResult.recommendedDailyBonusMinutes} min / night</span>
-                  </div>
-                )}
+
               </div>
 
               <div className="pt-4 border-t border-slate-200 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                Sleeping in extra late on Sunday shifts your internal clock forward, making it much harder to fall asleep Sunday night.
+                If you have ongoing daytime sleepiness or difficulty sleeping, consider discussing it with a healthcare professional.
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Tab 2: Chronotype Diagnostic */}
+      {/* Tab 2: Chronotype overview */}
       {activeTab === 'chronotype' && (
         <div className="bg-white/85 dark:bg-[#0b111e]/85 backdrop-blur-2xl border border-sky-200/80 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-xl shadow-slate-900/5 dark:shadow-2xl">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6 sm:mb-8">
@@ -248,7 +235,7 @@ export const SleepDebtPlanner: React.FC = () => {
                     {type}
                   </div>
                   <div className="text-sm font-semibold mb-1">{p.name.split(' ')[0]}</div>
-                  <div className={`text-[11px] ${isSelected ? 'text-sky-100 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}>{p.share}</div>
+                  <div className={`text-[11px] ${isSelected ? 'text-sky-100 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}>{p.pattern}</div>
                 </button>
               );
             })}
@@ -269,7 +256,7 @@ export const SleepDebtPlanner: React.FC = () => {
                   <div className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
                     <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                       <Moon className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                      <span>Optimal Sleep Window</span>
+                      <span>Typical timing</span>
                     </span>
                     <span className="text-slate-900 dark:text-white font-bold">
                       {CHRONOTYPE_PROFILES[selectedChronotype].optimalSleep}
@@ -279,7 +266,7 @@ export const SleepDebtPlanner: React.FC = () => {
                   <div className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
                     <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                       <Brain className="w-4 h-4 text-sky-600 dark:text-emerald-400" />
-                      <span>Peak Cognitive Window</span>
+                      <span>Alertness pattern</span>
                     </span>
                     <span className="text-slate-900 dark:text-white font-bold">
                       {CHRONOTYPE_PROFILES[selectedChronotype].peakFocus}
@@ -291,7 +278,7 @@ export const SleepDebtPlanner: React.FC = () => {
               <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-200 dark:border-white/10 pt-4 md:pt-0 md:pl-6">
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-emerald-400 mb-2">
-                    Circadian Optimization Strategy
+                    General schedule guidance
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     {CHRONOTYPE_PROFILES[selectedChronotype].strategy}
@@ -299,8 +286,8 @@ export const SleepDebtPlanner: React.FC = () => {
                 </div>
 
                 <div className="p-3.5 rounded-lg bg-slate-100/90 dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 text-[11px] text-slate-600 dark:text-slate-400">
-                  <span className="text-slate-900 dark:text-slate-200 font-semibold">Biological rhythm: </span>
-                  Your chronotype is largely wired by genetics. Working with your natural rhythm boosts energy, while fighting it causes daily fatigue.
+                  <span className="text-slate-900 dark:text-slate-200 font-semibold">Important: </span>
+                  These informal categories are not validated diagnostic results. Alertness is influenced by sleep duration, circadian timing, health and daily routines.
                 </div>
               </div>
             </div>
