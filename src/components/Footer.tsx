@@ -46,11 +46,7 @@ export const Footer: React.FC = () => {
             <div className="max-w-md">
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                 Sleep timing and caffeine outputs are estimates based on the inputs and assumptions shown. They do not measure sleep stages or provide medical advice.
-              </p>
-              <a href="https://github.com/dharanesh3048388-cyber/Sleeping-Edge" target="_blank" rel="noreferrer" className="inline-block mt-2 underline underline-offset-4 hover:text-slate-900 dark:hover:text-white">
-                Project repository
-              </a>
-            </div>
+              </p>            </div>
           </div>
           <nav aria-label="Legal and information" className="flex flex-wrap gap-x-5 gap-y-3 border-t border-slate-200/70 dark:border-white/10 pt-5">
             {informationLinks.map((item) => (
