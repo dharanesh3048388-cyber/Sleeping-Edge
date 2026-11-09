@@ -199,28 +199,7 @@ test.describe('ambient sound SEO landing pages and deep links', () => {
   });
 });
 
-test.describe('indexable sleep tool landing pages', () => {
-  const pages = [
-    '/sleep-tools/',
-    '/sleep-calculator/',
-    '/nap-calculator/',
-    '/caffeine-calculator/',
-    '/sleep-debt-calculator/',
-    '/sleep-stages/'
-  ];
-
-  for (const path of pages) {
-    test('loads complete SEO landing page ' + path, async ({ page }) => {
-      const errors: string[] = [];
-      page.on('pageerror', error => errors.push(error.message));
-      const response = await page.goto(baseURL + path);
-      expect(response?.ok(), 'landing page response should be successful').toBeTruthy();
-
-      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
-      await expect(page.locator('h1')).toHaveCount(1);
-      await expect(page.locator('h1')).toBeVisible();
-      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{70,}/);
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replaceAll('/', '\\/') + '
+test.describe('production trust and monetization readiness pages', () => {
   const pages = [
     '/about/', '/methodology/', '/privacy/', '/terms/', '/contact/', '/affiliate-disclosure/'
   ];
@@ -253,14 +232,37 @@ test.describe('indexable sleep tool landing pages', () => {
     }
   });
 });
-));
+
+test.describe('indexable sleep tool landing pages', () => {
+  const pages = [
+    '/sleep-tools/',
+    '/sleep-calculator/',
+    '/nap-calculator/',
+    '/caffeine-calculator/',
+    '/sleep-debt-calculator/',
+    '/sleep-stages/'
+  ];
+
+  for (const path of pages) {
+    test('loads complete SEO landing page ' + path, async ({ page }) => {
+      const errors: string[] = [];
+      page.on('pageerror', error => errors.push(error.message));
+      const response = await page.goto(baseURL + path);
+      expect(response?.ok(), 'landing page response should be successful').toBeTruthy();
+
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{70,}/);
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+      expect(canonical).toContain(path);
       await expect(page.locator('meta[property="og:title"]')).toHaveCount(1);
       await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary');
       await expect(page.getByRole('navigation', { name: 'Breadcrumb' })).toBeVisible();
 
       const structuredData = await page.locator('script[type="application/ld+json"]').first().textContent();
-      const parsed = JSON.parse(structuredData || '{}');
-      const types = (parsed['@graph'] || []).map((item: { ['@type']?: string }) => item['@type']);
+      const parsed: { ['@graph']?: Array<{ ['@type']?: string }> } = JSON.parse(structuredData || '{}');
+      const types = (parsed['@graph'] || []).map(item => item['@type']);
       expect(types).toContain('WebPage');
       expect(types).toContain('BreadcrumbList');
       expect(errors, 'uncaught browser errors').toEqual([]);
@@ -290,41 +292,7 @@ test.describe('indexable sleep tool landing pages', () => {
       await page.goto(baseURL + tool.path);
       await page.getByRole('link', { name: tool.name, exact: true }).click();
       await expect(page.locator(tool.section)).toBeVisible();
-      await expect.poll(() => new URL(page.url()).hash).toBe(tool.hash);
+      await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(tool.hash);
     });
   }
-});
-
-test.describe('production trust and monetization readiness pages', () => {
-  const pages = [
-    '/about/', '/methodology/', '/privacy/', '/terms/', '/contact/', '/affiliate-disclosure/'
-  ];
-
-  for (const path of pages) {
-    test('loads production information page ' + path, async ({ page }) => {
-      const response = await page.goto(baseURL + path);
-      expect(response?.ok(), 'page response should be successful').toBeTruthy();
-      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
-      await expect(page.locator('h1')).toBeVisible();
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replaceAll('/', '\\/') + '$'));
-    });
-  }
-
-  test('public-facing production pages do not advertise repository or issue-tracker destinations', async ({ page }) => {
-    await page.goto(baseURL + '/');
-    const footer = page.getByRole('contentinfo');
-    await expect(footer.getByRole('link', { name: /repository|github|source code/i })).toHaveCount(0);
-    await expect(page.locator('a[href*="github.com/"]')).toHaveCount(0);
-    await page.goto(baseURL + '/contact/');
-    await expect(page.locator('a[href*="github.com/"]')).toHaveCount(0);
-    await expect(page.getByText(/issue tracker/i)).toHaveCount(0);
-  });
-
-  test('footer exposes all production trust links', async ({ page }) => {
-    await page.goto(baseURL + '/');
-    const footer = page.getByRole('navigation', { name: 'Legal and information' });
-    for (const label of ['Sleep sounds', 'About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
-      await expect(footer.getByRole('link', { name: label })).toBeVisible();
-    }
-  });
 });
