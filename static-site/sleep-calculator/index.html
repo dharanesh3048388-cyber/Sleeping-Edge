@@ -3,104 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sleep Cycle Calculator - Bedtime & Wake Time Planner | SleepingEdge</title>
-  <meta name="description" content="Calculate the exact time to fall asleep or wake up based on 90-minute sleep cycles and a 15-minute fall-asleep buffer. Prevent sleep inertia and morning grogginess.">
-  <link rel="canonical" href="https://YOURDOMAIN.com/sleep-calculator/">
-  
-  <!-- Open Graph -->
+  <title>Sleep & Bedtime Calculator | SleepingEdge</title>
+  <meta name="description" content="Plan sleep and wake times with adjustable sleep-onset estimates and illustrative intervals. Sleep cycles vary, so results are planning options—not predictions of sleep stages.">
+  <meta name="keywords" content="sleep calculator, bedtime calculator, wake time calculator, sleep planning">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Sleep Cycle Calculator - Bedtime & Wake Time Planner">
-  <meta property="og:description" content="Compute exact bedtimes and alarm times to wake up naturally between 90-minute cycles. Free, fast, and scientific.">
-  <meta property="og:url" content="https://YOURDOMAIN.com/sleep-calculator/">
-  <meta property="og:image" content="https://YOURDOMAIN.com/og-sleep-calc.jpg">
-  
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Sleep Cycle Calculator - SleepingEdge">
-  <meta name="twitter:description" content="Calculate your bedtime to wake up refreshed at the end of a 90-minute sleep cycle.">
-  
+  <meta property="og:title" content="Sleep & Bedtime Calculator | SleepingEdge">
+  <meta property="og:description" content="Explore illustrative bedtime and wake-time options with a customizable sleep-onset estimate.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Sleep & Bedtime Calculator | SleepingEdge">
+  <meta name="twitter:description" content="Plan sleep and wake times with transparent assumptions. Actual sleep cycles vary.">
   <link rel="stylesheet" href="/css/style.css">
-  <script defer data-domain="YOURDOMAIN.com" src="https://plausible.io/js/script.js"></script>
-
-  <!-- Structured Data: WebApplication & FAQPage -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "name": "SleepingEdge Sleep Cycle Calculator",
-        "url": "https://YOURDOMAIN.com/sleep-calculator/",
-        "applicationCategory": "HealthApplication",
-        "operatingSystem": "All",
-        "browserRequirements": "Requires JavaScript",
-        "description": "Calculates optimal bedtimes and wake times based on 90-minute ultradian sleep cycles.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How does the sleep cycle calculator work?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The calculator counts backward or forward in 90-minute increments from your desired wake time or bedtime, adding a 15-minute buffer for sleep onset latency so you awaken during light sleep instead of deep slow-wave sleep."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is sleep inertia?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sleep inertia is the physiological state of grogginess and reduced cognitive speed experienced when forced awake in the middle of Stage N3 deep sleep. It can impair reaction times for up to 2 hours."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is 7.5 hours better than 8 hours?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "For many adults, yes. 7.5 hours corresponds to exactly five 90-minute cycles (450 minutes). Waking at 8 hours can interrupt the start of a sixth cycle, resulting in sudden awakening during deep sleep."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I adjust the time it takes me to fall asleep?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Our calculator provides a customizable sleep latency field defaulting to the AASM 15-minute clinical average, which you can adjust from 0 to 120 minutes."
-            }
-          }
-        ]
-      }
-    ]
-  }
-  </script>
 </head>
 <body>
-
-  <!-- Site Header -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="/" class="brand-link" aria-label="SleepingEdge Homepage">
         Sleeping<span class="brand-accent">Edge</span>
       </a>
-
       <nav aria-label="Main Navigation">
         <ul class="nav-links">
-          <li><a href="/sleep-calculator/" class="nav-link active">Sleep Cycles</a></li>
-          <li><a href="/caffeine-calculator/" class="nav-link">Caffeine Cutoff</a></li>
-          <li><a href="/nap-calculator/" class="nav-link">Power Naps</a></li>
+          <li><a href="/sleep-calculator/" class="nav-link active">Sleep Planner</a></li>
+          <li><a href="/caffeine-calculator/" class="nav-link">Caffeine</a></li>
+          <li><a href="/nap-calculator/" class="nav-link">Naps</a></li>
           <li><a href="/sleep-debt-calculator/" class="nav-link">Sleep Debt</a></li>
           <li><a href="/sleep-stages/" class="nav-link">Sleep Stages</a></li>
         </ul>
       </nav>
-
       <div class="header-actions">
         <button id="theme-toggle-btn" class="btn-icon" type="button" aria-label="Toggle dark and light mode"></button>
         <button id="mobile-menu-btn" class="btn-icon mobile-nav-toggle" type="button" aria-expanded="false" aria-label="Open navigation menu">
@@ -108,188 +36,96 @@
         </button>
       </div>
     </div>
-
     <div id="mobile-menu" class="mobile-menu">
       <ul class="mobile-nav-links">
-        <li><a href="/sleep-calculator/" class="nav-link active">Sleep Cycles</a></li>
-        <li><a href="/caffeine-calculator/" class="nav-link">Caffeine Cutoff</a></li>
-        <li><a href="/nap-calculator/" class="nav-link">Power Naps</a></li>
+        <li><a href="/sleep-calculator/" class="nav-link active">Sleep Planner</a></li>
+        <li><a href="/caffeine-calculator/" class="nav-link">Caffeine</a></li>
+        <li><a href="/nap-calculator/" class="nav-link">Naps</a></li>
         <li><a href="/sleep-debt-calculator/" class="nav-link">Sleep Debt</a></li>
         <li><a href="/sleep-stages/" class="nav-link">Sleep Stages</a></li>
-        <li><a href="/about/" class="nav-link">About Us</a></li>
+        <li><a href="/about/" class="nav-link">About</a></li>
         <li><a href="/contact/" class="nav-link">Contact</a></li>
       </ul>
     </div>
   </header>
 
   <main class="container">
-    <div class="ad-slot ad-top-banner">
-      <span class="ad-slot-label">Advertisement</span>
-      <div class="ad-inner-content"></div>
-    </div>
-
     <section class="hero-section">
-      <span class="badge-tag">90-Minute Ultradian Sleep Math</span>
-      <h1 class="hero-title">
-        Sleep Cycle & Bedtime Calculator
-      </h1>
-      <p class="hero-lead">
-        Wake up refreshed by finishing full sleep cycles. Plan your bedtime backward from your alarm or forward from when you lay down.
-      </p>
+      <span class="badge-tag">Sleep timing planner</span>
+      <h1 class="hero-title">Sleep & Bedtime Calculator</h1>
+      <p class="hero-lead">Explore bedtime or wake-time options using a sleep-onset estimate and adjustable planning intervals. Prioritize enough total sleep; the calculator cannot predict your personal sleep stages.</p>
     </section>
 
-    <!-- Main Calculator Console Card -->
-    <div class="calc-card">
+    <section class="calc-card" aria-label="Sleep timing calculator">
       <div class="tab-group" role="tablist" aria-label="Sleep Calculator Mode">
-        <button type="button" class="tab-btn sleep-mode-tab active" data-mode="wake_at" role="tab" aria-selected="true">
-          I need to wake up at
-        </button>
-        <button type="button" class="tab-btn sleep-mode-tab" data-mode="sleep_now" role="tab" aria-selected="false">
-          If I sleep right now
-        </button>
-        <button type="button" class="tab-btn sleep-mode-tab" data-mode="bed_at" role="tab" aria-selected="false">
-          I go to bed at
-        </button>
+        <button type="button" class="tab-btn sleep-mode-tab active" data-mode="wake_at" role="tab" aria-selected="true">I need to wake up at</button>
+        <button type="button" class="tab-btn sleep-mode-tab" data-mode="sleep_now" role="tab" aria-selected="false">If I sleep right now</button>
+        <button type="button" class="tab-btn sleep-mode-tab" data-mode="bed_at" role="tab" aria-selected="false">I go to bed at</button>
       </div>
 
       <form id="sleep-calc-form" novalidate>
         <div class="form-grid form-grid-2">
           <div id="sleep-input-time-wrap" class="form-group">
             <label id="sleep-time-label" for="sleep-time" class="form-label">Desired Wake-Up Time</label>
-            <div style="display:flex; gap:0.5rem;">
-              <input type="time" id="sleep-time" class="form-input" value="07:00" required>
-              <select id="sleep-ampm" class="form-select" style="max-width: 90px;" aria-label="AM or PM">
-                <option value="AM" selected>AM</option>
-                <option value="PM">PM</option>
-              </select>
-            </div>
+            <input type="time" id="sleep-time" class="form-input" value="07:00" required>
           </div>
-
           <div class="form-group">
             <label for="sleep-latency" class="form-label">
-              <span>Fall-Asleep Buffer (minutes)</span>
+              <span>Estimated time to fall asleep (minutes)</span>
               <span style="font-size:0.75rem; color:var(--text-muted)">Default: 15 min</span>
             </label>
-            <input type="number" id="sleep-latency" class="form-input" value="15" min="0" max="120">
+            <input type="number" id="sleep-latency" class="form-input" value="15" min="0" max="120" step="1" inputmode="numeric">
           </div>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
           <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-secondary); cursor:pointer;">
             <input type="checkbox" id="sleep-format-24h">
-            <span>Use 24-hour military clock</span>
+            <span>Use 24-hour time display</span>
           </label>
         </div>
 
         <div id="sleep-calc-feedback" class="input-feedback" role="alert"></div>
-
-        <button type="submit" class="btn-primary">Calculate Sleep Cycles</button>
+        <button type="submit" class="btn-primary">Calculate illustrative options</button>
       </form>
 
       <div id="sleep-calc-results" class="results-container" aria-live="polite"></div>
-
       <div class="medical-disclaimer">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:0.15rem; color:var(--accent-amber);"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-        <div>
-          <strong>Estimates Only, Not Medical Advice:</strong> Calculations are based on clinical adult averages (90-minute sleep cycles and 15-minute sleep onset latency). Individual biological rhythms vary. If you suffer from chronic insomnia or sleep apnea, consult a qualified physician.
-        </div>
+        <strong>Planning estimates, not medical advice:</strong>
+        The interval used by this tool is an adjustable arithmetic assumption. Sleep cycles differ between people and across the night. These results do not identify sleep stages, predict sleep inertia, or guarantee that a particular wake time will feel better.
       </div>
-    </div>
-
-    <div class="ad-slot ad-in-content">
-      <span class="ad-slot-label">Advertisement</span>
-      <div class="ad-inner-content"></div>
-    </div>
-
-    <!-- Recommended Sleep Products -->
-    <section class="recommended-block">
-      <div class="recommended-title">Recommended Sleep Recovery Gear</div>
-      <div class="recommended-sub">Tools curated by sleep specialists to preserve your circadian rhythm and deep sleep stages.</div>
-
-      <div class="product-grid">
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Circadian Light Control</div>
-            <h3 class="product-name">100% Zero-Pressure Blackout Eye Mask</h3>
-            <p class="product-desc">Deep contoured eye cups allow rapid eye movement (REM) with zero pressure on eyelids, ensuring natural melatonin synthesis.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
-        </article>
-
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Acoustic Shielding</div>
-            <h3 class="product-name">Precision White & Pink Noise Machine</h3>
-            <p class="product-desc">Real non-looping acoustic fan and digital pink noise mask sudden decibel spikes from city traffic and disruptive household noise.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
-        </article>
-
-        <article class="product-card">
-          <div>
-            <div class="product-tag">Melatonin Defense</div>
-            <h3 class="product-name">Evening Blue Light Blocking Glasses</h3>
-            <p class="product-desc">Filters 99.5% of melanopsin-stimulating 450–480nm spectrum emitted by phone, monitor, and tablet screens before bedtime.</p>
-          </div>
-          <a href="https://www.amazon.com/dp/B0XXXXXXXX?tag=YOUR_AMAZON_TAG-20" class="product-btn" target="_blank" rel="sponsored nofollow noopener">View on Amazon &rarr;</a>
-        </article>
-      </div>
-
-      <p class="affiliate-disclosure">
-        Affiliate Disclosure: SleepingEdge participates in affiliate programs, including the Amazon Services LLC Associates Program. When you purchase through links on our site, we may earn an affiliate commission at no extra cost to you.
-      </p>
     </section>
 
-    <!-- Editorial Explanation (300-500 Words) -->
     <article class="guide-section">
       <div class="guide-content">
-        <h2>How the 90-Minute Sleep Cycle Formula Works</h2>
-        <p>
-          The human body relies on an internal biological clock called the <strong>circadian pacemaker</strong>, located in the suprachiasmatic nucleus of the hypothalamus. During the night, your sleep progresses through rhythmic cycles lasting an average of 90 minutes.
-        </p>
-        <p>
-          During the initial 90-minute cycle of the night, your body prioritizes <em>NREM Stage 3 (Slow-Wave Deep Sleep)</em>, characterized by synchronized delta brain waves. During this stage, your blood pressure drops, cellular tissue is repaired, and cortisol levels decline. As the night progresses into the fourth, fifth, and sixth cycles, your brain shifts toward <em>REM (Rapid Eye Movement)</em> sleep, where high-frequency neural firing consolidates complex memories and creative connections.
-        </p>
-        <p>
-          The secret to waking up alert and refreshed is timing your alarm to coincide with the end of a cycle, when your brain naturally drifts into light Stage N1 or N2 sleep. Waking during deep slow-wave sleep causes intense <strong>sleep inertia</strong>, creating mental fog and grogginess that can linger for hours.
-        </p>
-        <h3>The 15-Minute Sleep Latency Factor</h3>
-        <p>
-          Many generic sleep calculators simply divide hours by 1.5, assuming you fall asleep the second your head hits the mattress. In clinical polysomnography, the duration required to fall asleep is known as <strong>sleep onset latency</strong>. For healthy individuals, this window averages 10 to 20 minutes. SleepingEdge integrates a standardized 15-minute buffer into every calculation so your alarm aligns precisely with completed biological cycles.
-        </p>
+        <h2>How to use sleep timing estimates</h2>
+        <p>Choose whether you have a target wake time, are planning to try sleeping now, or have a planned bedtime. The calculator adds the sleep-onset buffer you enter and displays several illustrative intervals.</p>
+        <p>Human sleep cycles are not fixed at exactly 90 minutes. Their duration and the balance of non-REM and REM sleep change through the night and vary from person to person. A clock-based calculator cannot determine whether you are in light sleep or deep sleep when an alarm sounds.</p>
+        <h3>Prioritize sufficient sleep opportunity</h3>
+        <p>For most adults, regularly allowing at least seven hours of sleep is a useful general starting point, although individual sleep needs vary. Do not shorten sleep solely to match a calculator's interval. Consistent schedules and adequate sleep opportunity matter more than trying to time an assumed cycle boundary.</p>
+        <h3>About the fall-asleep estimate</h3>
+        <p>The sleep-onset buffer is a personal planning input, not a clinical measurement. Adjust it to reflect your own estimate, and remember that it can vary from night to night.</p>
       </div>
     </article>
 
-    <!-- FAQ Section -->
     <section class="faq-section">
-      <h2 class="faq-title">Sleep Cycle Frequently Asked Questions</h2>
+      <h2 class="faq-title">Sleep planning questions</h2>
       <div class="faq-list">
         <div class="faq-item">
-          <button class="faq-question" type="button">How does the sleep cycle calculator work?</button>
-          <div class="faq-answer">
-            The calculator counts backward or forward in 90-minute increments from your desired wake time or bedtime, adding a 15-minute buffer for sleep onset latency so you awaken during light sleep instead of deep slow-wave sleep.
-          </div>
+          <button class="faq-question" type="button">Does this calculator know when I enter deep or REM sleep?</button>
+          <div class="faq-answer">No. It performs clock arithmetic using the interval and sleep-onset estimate you enter. It does not measure brain activity or predict your sleep stages.</div>
         </div>
-
         <div class="faq-item">
-          <button class="faq-question" type="button">What is sleep inertia?</button>
-          <div class="faq-answer">
-            Sleep inertia is the physiological state of grogginess and reduced cognitive speed experienced when forced awake in the middle of Stage N3 deep sleep. It can impair reaction times for up to 2 hours.
-          </div>
+          <button class="faq-question" type="button">Are all sleep cycles exactly 90 minutes?</button>
+          <div class="faq-answer">No. Sleep-cycle duration varies between individuals and across a single night. The interval in this calculator is only a planning assumption, not a biological prediction.</div>
         </div>
-
         <div class="faq-item">
-          <button class="faq-question" type="button">Is 7.5 hours better than 8 hours?</button>
-          <div class="faq-answer">
-            For many adults, yes. 7.5 hours corresponds to exactly five 90-minute cycles (450 minutes). Waking at 8 hours can interrupt the start of a sixth cycle, resulting in sudden awakening during deep sleep.
-          </div>
+          <button class="faq-question" type="button">Should I choose less sleep to match an interval?</button>
+          <div class="faq-answer">No. Do not reduce your sleep opportunity to fit an assumed cycle. Prioritize enough total sleep and a consistent schedule.</div>
         </div>
-
         <div class="faq-item">
-          <button class="faq-question" type="button">Can I adjust the time it takes me to fall asleep?</button>
-          <div class="faq-answer">
-            Yes. Our calculator provides a customizable sleep latency field defaulting to the AASM 15-minute clinical average, which you can adjust from 0 to 120 minutes.
-          </div>
+          <button class="faq-question" type="button">What does the fall-asleep buffer mean?</button>
+          <div class="faq-answer">It is the number of minutes you estimate it usually takes you to fall asleep. It is an input to the calculation, not a diagnosis or a measurement.</div>
         </div>
       </div>
     </section>
@@ -300,74 +136,34 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <h3>SleepingEdge</h3>
-          <p>Scientific circadian rhythm tools, sleep cycle optimization, and caffeine clearance calculators designed to maximize human recovery.</p>
+          <p>Browser-based sleep planning tools with transparent assumptions. Results are estimates and are not medical advice.</p>
         </div>
-
         <div>
           <div class="footer-links-title">Calculators</div>
           <ul class="footer-links-list">
-            <li><a href="/sleep-calculator/">Sleep Cycle Calculator</a></li>
-            <li><a href="/caffeine-calculator/">Caffeine Cutoff Calculator</a></li>
-            <li><a href="/nap-calculator/">Power Nap Calculator</a></li>
+            <li><a href="/sleep-calculator/">Sleep Planner</a></li>
+            <li><a href="/caffeine-calculator/">Caffeine Calculator</a></li>
+            <li><a href="/nap-calculator/">Nap Calculator</a></li>
             <li><a href="/sleep-debt-calculator/">Sleep Debt Planner</a></li>
-            <li><a href="/sleep-stages/">Sleep Stages & Efficiency</a></li>
+            <li><a href="/sleep-stages/">Sleep Stages</a></li>
           </ul>
         </div>
-
         <div>
-          <div class="footer-links-title">Legal & Company</div>
+          <div class="footer-links-title">Information</div>
           <ul class="footer-links-list">
-            <li><a href="/about/">About Us</a></li>
-            <li><a href="/contact/">Contact Us</a></li>
-            <li><a href="/privacy/">Privacy Policy</a></li>
-            <li><a href="/terms/">Terms of Use</a></li>
-            <li><a href="javascript:void(0)" onclick="openCookiePreferences()">Cookie Preferences</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
           </ul>
         </div>
       </div>
-
       <div class="footer-bottom">
-        <div>&copy; 2026 SleepingEdge. All rights reserved. Free for personal use.</div>
-        <div>Estimates only · Not medical advice.</div>
+        <div>&copy; 2026 SleepingEdge. Free for personal use.</div>
+        <div>Planning estimates only · Not medical advice.</div>
       </div>
     </div>
   </footer>
-
-  <!-- Cookie Consent Banner & Modal -->
-  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-live="polite">
-    <div class="container cookie-content">
-      <div class="cookie-text">
-        We use essential cookies to maintain site functionality, anonymous analytics, and partner advertising. Read our <a href="/privacy/">Privacy Policy</a>.
-      </div>
-      <div class="cookie-actions">
-        <button id="btn-cookie-accept" class="btn-cookie btn-cookie-accept" type="button">Accept All</button>
-        <button id="btn-cookie-reject" class="btn-cookie" type="button">Reject Non-Essential</button>
-        <button id="btn-cookie-manage" class="btn-cookie" type="button">Preferences</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="cookie-modal" class="cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title">
-    <div class="cookie-modal-card">
-      <h3 id="cookie-modal-title" style="font-size:1.25rem; font-weight:800; margin-bottom:1rem;">Cookie Preferences</h3>
-      <div class="cookie-pref-group">
-        <div><strong>Strictly Necessary</strong><div style="font-size:0.75rem; color:var(--text-muted)">Required for core site functionality.</div></div>
-        <input type="checkbox" checked disabled>
-      </div>
-      <div class="cookie-pref-group">
-        <div><strong>Analytics</strong><div style="font-size:0.75rem; color:var(--text-muted)">Anonymous telemetry to improve calculators.</div></div>
-        <input type="checkbox" id="consent-analytics" checked>
-      </div>
-      <div class="cookie-pref-group">
-        <div><strong>Advertising</strong><div style="font-size:0.75rem; color:var(--text-muted)">Contextual display advertising.</div></div>
-        <input type="checkbox" id="consent-advertising" checked>
-      </div>
-      <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem;">
-        <button id="btn-cookie-close-modal" class="btn-cookie" type="button">Cancel</button>
-        <button id="btn-cookie-save-prefs" class="btn-cookie btn-cookie-accept" type="button">Save Preferences</button>
-      </div>
-    </div>
-  </div>
 
   <script src="/js/main.js"></script>
   <script src="/js/calculators.js"></script>
