@@ -25,8 +25,9 @@ This repository change prepares the current GitHub Pages production app for a gl
 - AdSense: not configured; no ad script or publisher ID is included.
 - Affiliate IDs: not configured; no tracked affiliate links are included.
 - Analytics: no analytics ID or analytics script is added by this change.
-- Contact: public GitHub issue tracker is provided for non-sensitive feedback only; it is not a private support channel.
+- Contact: no direct support or private privacy-request channel is currently available; one must be added before commercial launch.
 - Legal operator identity: not supplied; no person, company, address or email is invented.
+- Repository visibility: the source repository is public and the temporary Pages address identifies the account and repository. A custom domain can change the visitor-facing address, but cannot make browser-delivered HTML, CSS or JavaScript private.
 
 ## Release gate
 Do not enable ads, affiliate tracking or analytics until real account details, consent requirements, privacy disclosures and production domain have been confirmed. A successful build or this checklist does not guarantee AdSense approval, search ranking, traffic or revenue.

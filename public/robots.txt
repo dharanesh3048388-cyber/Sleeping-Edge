@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /preview/
 
 Sitemap: https://dharanesh3048388-cyber.github.io/Sleeping-Edge/sitemap.xml
