@@ -176,7 +176,7 @@ jobs:
       - name: Run browser regression suite
         env:
           SLEEPINGEDGE_BASE_URL: http://127.0.0.1:4173/Sleeping-Edge
-        run: npx playwright test --reporter=line
+        run: npx playwright test tests/browser --reporter=line
 
       - name: Stop local test server
         if: always()
