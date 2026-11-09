@@ -235,17 +235,17 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs">
               <span className="text-slate-500 dark:text-slate-400">Quick presets:</span>
               {[
-                { label: '6:00 AM', h: 6, m: 0, ampm: 'AM' as const },
-                { label: '6:30 AM', h: 6, m: 30, ampm: 'AM' as const },
-                { label: '7:00 AM', h: 7, m: 0, ampm: 'AM' as const },
-                { label: '7:30 AM', h: 7, m: 30, ampm: 'AM' as const },
-                { label: '8:00 AM', h: 8, m: 0, ampm: 'AM' as const }
+                { label: '6:00 AM', h: 6, m: 0 },
+                { label: '6:30 AM', h: 6, m: 30 },
+                { label: '7:00 AM', h: 7, m: 0 },
+                { label: '7:30 AM', h: 7, m: 30 },
+                { label: '8:00 AM', h: 8, m: 0 }
               ].map((preset) => (
                 <button
                   key={preset.label}
                   type="button"
                   onClick={() => {
-                    setWakeHour((preset.h % 12) + (preset.ampm === 'PM' ? 12 : 0));
+                    setWakeHour(preset.h);
                     setWakeMinute(preset.m);
                   }}
                   className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-300 dark:hover:text-white dark:border-white/10 transition-colors cursor-pointer"
@@ -339,17 +339,17 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs">
               <span className="text-slate-500 dark:text-slate-400">Quick presets:</span>
               {[
-                { label: '10:00 PM', h: 10, m: 0, ampm: 'PM' as const },
-                { label: '10:30 PM', h: 10, m: 30, ampm: 'PM' as const },
-                { label: '11:00 PM', h: 11, m: 0, ampm: 'PM' as const },
-                { label: '11:30 PM', h: 11, m: 30, ampm: 'PM' as const },
-                { label: '12:00 AM', h: 12, m: 0, ampm: 'AM' as const }
+                { label: '10:00 PM', h: 22, m: 0 },
+                { label: '10:30 PM', h: 22, m: 30 },
+                { label: '11:00 PM', h: 23, m: 0 },
+                { label: '11:30 PM', h: 23, m: 30 },
+                { label: '12:00 AM', h: 0, m: 0 }
               ].map((preset) => (
                 <button
                   key={preset.label}
                   type="button"
                   onClick={() => {
-                    setBedHour((preset.h % 12) + (preset.ampm === 'PM' ? 12 : 0));
+                    setBedHour(preset.h);
                     setBedMinute(preset.m);
                   }}
                   className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-300 dark:hover:text-white dark:border-white/10 transition-colors cursor-pointer"
