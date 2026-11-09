@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "static-site/**"
+      - "public/**"
+      - "scripts/validate-production-readiness.py"
       - "src/**"
       - "tests/**"
       - "index.html"
@@ -37,6 +39,9 @@ jobs:
 
       - name: Type-check the application
         run: bun run lint
+
+      - name: Validate production SEO and monetization foundation
+        run: python3 scripts/validate-production-readiness.py
 
       - name: Validate required pages and assets
         run: |
