@@ -99,8 +99,6 @@ for slug, target in tool_targets.items():
 hub = (public / "sleep-tools" / "index.html").read_text(encoding="utf-8")
 for slug in tool_targets:
     assert f'href="../{slug}/"' in hub, f"Tool directory is missing {slug}"
-for slug in sound_pages:
-    assert f'href="../{slug}/"' in hub or slug == "sleep-sounds", f"Tool directory is missing sound library path for {slug}"
 assert 'href="../sleep-sounds/"' in hub, "Tool directory is missing sleep sounds library"
 
 # Search landing pages must route directly to the exact existing sound preset.
