@@ -6,7 +6,6 @@ interface StageInfo {
   name: string;
   frequency: string;
   pattern: string;
-  color: string;
   primaryRole: string;
   description: string;
 }
@@ -17,7 +16,6 @@ const STAGES: StageInfo[] = [
     name: 'Stage 1 (Light Drift)',
     frequency: 'Theta Waves',
     pattern: 'Transition into sleep',
-    color: 'bg-slate-400 text-slate-900',
     primaryRole: 'Falling asleep',
     description: 'The transition from wakefulness into sleep. Brief awakenings and the experience of waking vary.'
   },
@@ -26,7 +24,6 @@ const STAGES: StageInfo[] = [
     name: 'Stage 2 (Light Sleep)',
     frequency: 'Sleep Spindles',
     pattern: 'Often the largest NREM stage',
-    color: 'bg-teal-400 text-teal-950',
     primaryRole: 'Memory & learning',
     description: 'A common stage of NREM sleep associated with sleep spindles and other patterns measured in a sleep study.'
   },
@@ -35,7 +32,6 @@ const STAGES: StageInfo[] = [
     name: 'Stage 3 (Deep Sleep)',
     frequency: 'Delta Waves',
     pattern: 'More common earlier in the night',
-    color: 'bg-emerald-400 text-emerald-950',
     primaryRole: 'Physical repair & immunity',
     description: 'Deep NREM sleep is usually more prominent earlier in the night. The effects of waking from it vary and cannot be predicted by a simple timer.'
   },
@@ -44,7 +40,6 @@ const STAGES: StageInfo[] = [
     name: 'REM (Dream Sleep)',
     frequency: 'Active Brain Waves',
     pattern: 'Often longer later in the night',
-    color: 'bg-purple-400 text-purple-950',
     primaryRole: 'Mental clarity & mood balance',
     description: 'REM sleep involves vivid brain activity and temporary muscle atonia. Dreaming can occur in REM and other sleep stages.'
   }
@@ -131,10 +126,10 @@ export const SleepArchitectureSection: React.FC = () => {
               <span className="text-slate-500 dark:text-slate-400 font-medium">When cut short: </span>
               <span className="text-slate-900 dark:text-slate-200 font-normal">
                 {activeStage.id === 'rem'
-                  ? 'Lower focus, mood irritability, and slower problem-solving.'
+                  ? 'Sleep supports mood and cognitive function, but effects vary.'
                   : activeStage.id === 'n3'
-                  ? 'Physical fatigue, slower muscle recovery, and persistent brain fog.'
-                  : 'General tiredness and fragmented rest.'}
+                  ? 'Deep sleep contributes to normal physical and physiological processes.'
+                  : 'Sleep supports health; the effects of stage disruption vary.'}
               </span>
             </div>
             <div className="p-3 rounded-lg bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 shadow-2xs">
