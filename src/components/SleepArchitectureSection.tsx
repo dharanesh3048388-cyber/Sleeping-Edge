@@ -4,7 +4,6 @@ import { Activity, ShieldAlert, Sparkles, Brain, HeartPulse } from 'lucide-react
 interface StageInfo {
   id: string;
   name: string;
-  frequency: string;
   pattern: string;
   primaryRole: string;
   description: string;
@@ -14,7 +13,6 @@ const STAGES: StageInfo[] = [
   {
     id: 'n1',
     name: 'Stage 1 (Light Drift)',
-    frequency: 'Theta Waves',
     pattern: 'Transition into sleep',
     primaryRole: 'Falling asleep',
     description: 'The transition from wakefulness into sleep. Brief awakenings and the experience of waking vary.'
@@ -22,7 +20,6 @@ const STAGES: StageInfo[] = [
   {
     id: 'n2',
     name: 'Stage 2 (Light Sleep)',
-    frequency: 'Sleep Spindles',
     pattern: 'Often the largest NREM stage',
     primaryRole: 'Memory & learning',
     description: 'A common stage of NREM sleep associated with sleep spindles and other patterns measured in a sleep study.'
@@ -30,7 +27,6 @@ const STAGES: StageInfo[] = [
   {
     id: 'n3',
     name: 'Stage 3 (Deep Sleep)',
-    frequency: 'Delta Waves',
     pattern: 'More common earlier in the night',
     primaryRole: 'Physical repair & immunity',
     description: 'Deep NREM sleep is usually more prominent earlier in the night. The effects of waking from it vary and cannot be predicted by a simple timer.'
@@ -38,7 +34,6 @@ const STAGES: StageInfo[] = [
   {
     id: 'rem',
     name: 'REM (Dream Sleep)',
-    frequency: 'Active Brain Waves',
     pattern: 'Often longer later in the night',
     primaryRole: 'Mental clarity & mood balance',
     description: 'REM sleep involves vivid brain activity and temporary muscle atonia. Dreaming can occur in REM and other sleep stages.'
@@ -112,7 +107,6 @@ export const SleepArchitectureSection: React.FC = () => {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-mono text-slate-600 dark:text-slate-400">
-              <div>Wave: <strong className="text-slate-900 dark:text-white">{activeStage.frequency}</strong></div>
               <div>Pattern: <strong className="text-slate-900 dark:text-white">{activeStage.pattern}</strong></div>
             </div>
           </div>
