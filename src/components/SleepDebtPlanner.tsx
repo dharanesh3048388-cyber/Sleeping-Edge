@@ -75,7 +75,7 @@ export const SleepDebtPlanner: React.FC = () => {
     >
       <div className="text-center mb-6 sm:mb-8">
         <div className="text-xs font-semibold tracking-widest uppercase text-sky-700 dark:text-emerald-400 mb-2">
-          Weekly Recovery
+          Weekly Sleep Comparison
         </div>
         <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2 sm:mb-3">
           Sleep Debt & Rhythm
@@ -181,13 +181,7 @@ export const SleepDebtPlanner: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 font-mono mb-6">
                   <span>Avg: {debtResult.averageSleepHours}h / night</span>
-                  <span>·</span>
                   <span
-                    className={
-                      debtResult.totalDebtHours > 0
-                        ? 'text-amber-600 dark:text-amber-400 font-bold'
-                        : 'text-emerald-600 dark:text-emerald-400 font-bold'
-                    }
                   >
                     Weekly comparison
                   </span>
@@ -200,7 +194,7 @@ export const SleepDebtPlanner: React.FC = () => {
                     <span>How to interpret this estimate</span>
                   </div>
                   <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                    This is the difference between the hours you entered and your chosen target. It does not measure biological sleep debt or tell you exactly how much extra sleep to add.
+                    This is an arithmetic comparison of your entered hours against your chosen target. It does not measure biological sleep debt or prescribe how much extra sleep you need.
                   </p>
                 </div>
 
