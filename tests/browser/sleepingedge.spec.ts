@@ -133,3 +133,28 @@ test.describe('static preview', () => {
     await expect(page.locator('#caffeine-results .result-card').first()).toBeVisible();
   });
 });
+
+
+test.describe('production trust and monetization readiness pages', () => {
+  const pages = [
+    '/about/', '/methodology/', '/privacy/', '/terms/', '/contact/', '/affiliate-disclosure/'
+  ];
+
+  for (const path of pages) {
+    test('loads production information page ' + path, async ({ page }) => {
+      const response = await page.goto(baseURL + path);
+      expect(response?.ok(), 'page response should be successful').toBeTruthy();
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replaceAll('/', '\\/') + '$'));
+    });
+  }
+
+  test('footer exposes all production trust links', async ({ page }) => {
+    await page.goto(baseURL + '/');
+    const footer = page.getByRole('navigation', { name: 'Legal and information' });
+    for (const label of ['About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
+      await expect(footer.getByRole('link', { name: label })).toBeVisible();
+    }
+  });
+});
