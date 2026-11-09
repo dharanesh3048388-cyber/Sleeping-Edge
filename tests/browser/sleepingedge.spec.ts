@@ -135,7 +135,6 @@ test.describe('static preview', () => {
 });
 
 
-
 test.describe('ambient sound SEO landing pages and deep links', () => {
   const soundPages = [
     '/sleep-sounds/',
@@ -153,40 +152,8 @@ test.describe('ambient sound SEO landing pages and deep links', () => {
       expect(response?.ok(), 'page response should be successful').toBeTruthy();
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
       await expect(page.locator('h1')).toBeVisible();
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replaceAll('/', '\\\\/') + '
-  const pages = [
-    '/about/', '/methodology/', '/privacy/', '/terms/', '/contact/', '/affiliate-disclosure/'
-  ];
-
-  for (const path of pages) {
-    test('loads production information page ' + path, async ({ page }) => {
-      const response = await page.goto(baseURL + path);
-      expect(response?.ok(), 'page response should be successful').toBeTruthy();
-      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
-      await expect(page.locator('h1')).toBeVisible();
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(path.replaceAll('/', '\\/') + '$'));
-    });
-  }
-
-  test('public-facing production pages do not advertise repository or issue-tracker destinations', async ({ page }) => {
-    await page.goto(baseURL + '/');
-    const footer = page.getByRole('contentinfo');
-    await expect(footer.getByRole('link', { name: /repository|github|source code/i })).toHaveCount(0);
-    await expect(page.locator('a[href*="github.com/"]')).toHaveCount(0);
-    await page.goto(baseURL + '/contact/');
-    await expect(page.locator('a[href*="github.com/"]')).toHaveCount(0);
-    await expect(page.getByText(/issue tracker/i)).toHaveCount(0);
-  });
-
-  test('footer exposes all production trust links', async ({ page }) => {
-    await page.goto(baseURL + '/');
-    const footer = page.getByRole('navigation', { name: 'Legal and information' });
-    for (const label of ['About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
-      await expect(footer.getByRole('link', { name: label })).toBeVisible();
-    }
-  });
-});
-));
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+      expect(canonical).toContain(path);
     });
   }
 
@@ -208,7 +175,7 @@ test.describe('ambient sound SEO landing pages and deep links', () => {
     await expect(player).toHaveCount(0);
   });
 
-  test('pink-noise query parameter preselects the matching sound', async ({ page }) => {
+  test('pink-noise query parameter preselects the matching sound without autoplay', async ({ page }) => {
     await page.goto(baseURL + '/?sound=pink_noise#ambient-sounds');
     const player = page.getByRole('region', { name: 'Ambient noise and sleep soundscape player' });
     await expect(player).toBeVisible();
@@ -245,7 +212,7 @@ test.describe('production trust and monetization readiness pages', () => {
   test('footer exposes all production trust links', async ({ page }) => {
     await page.goto(baseURL + '/');
     const footer = page.getByRole('navigation', { name: 'Legal and information' });
-    for (const label of ['About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
+    for (const label of ['Sleep sounds', 'About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
       await expect(footer.getByRole('link', { name: label })).toBeVisible();
     }
   });
