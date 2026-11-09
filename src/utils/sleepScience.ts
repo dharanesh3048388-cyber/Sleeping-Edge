@@ -19,7 +19,7 @@ export interface CycleResult {
 }
 
 export interface NapOption {
-  id: 'power' | 'nasa' | 'full';
+  id: 'power' | 'full';
   name: string;
   durationMinutes: number;
   wakeTimeStr: string;
@@ -224,12 +224,6 @@ export function calculateNapOptions(
   latencyMinutes: number = 10,
   is24Hour: boolean = false
 ): NapOption[] {
-  const currentHour = currentTime.getHours();
-
-  // If nap is after 4:30 PM (16:30), circadian impact increases
-  const isLate = currentHour >= 16;
-  const isVeryLate = currentHour >= 18;
-
   const options: NapOption[] = [
     {
       id: 'power',
