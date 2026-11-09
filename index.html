@@ -5,83 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="no-referrer" />
     <script>
-      // Enforce Dark Mode (Northern Lights Aurora) as default on opening
+      // Restore the visitor's saved theme when available; default to Aurora dark mode.
       try {
-        localStorage.removeItem('sleepingedge_theme');
+        const savedTheme = localStorage.getItem('sleepingedge_theme');
+        document.documentElement.classList.toggle('dark', savedTheme !== 'light');
+      } catch {
         document.documentElement.classList.add('dark');
-      } catch (e) {}
+      }
     </script>
-    <title>SleepingEdge · Sleep Calculator & Caffeine Calculator</title>
-    <meta name="description" content="Free scientific Sleep Calculator and Caffeine Cutoff Calculator. Calculate exact 90-minute sleep cycles, caffeine clearance half-life, and power nap windows." />
-    <meta name="keywords" content="caffeine calculator, caffeine cutoff calculator, sleep calculator, sleep cycle calculator, power nap calculator, sleep debt recovery, 90 minute sleep cycle, bedtime calculator" />
+<title>SleepingEdge · Sleep Calculator & Caffeine Calculator</title>
+    <meta name="description" content="Free sleep and bedtime planning tools, nap timing, caffeine estimates and sleep-debt arithmetic. Explore illustrative schedules based on your inputs—not predictions of your sleep stages." />
+    <meta name="keywords" content="sleep calculator, bedtime calculator, wake up time calculator, nap calculator, caffeine calculator, sleep debt calculator, sleep planning" />
     <meta property="og:title" content="SleepingEdge · Sleep Calculator & Caffeine Calculator" />
-    <meta property="og:description" content="Calculate your exact sleep cycles and caffeine cutoff time. Wake up refreshed at the end of natural cycles and optimize deep sleep." />
+    <meta property="og:description" content="Plan sleep and wake times, explore nap options and estimate caffeine clearance with transparent, illustrative calculations." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="SleepingEdge" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="SleepingEdge · Sleep Calculator & Caffeine Calculator" />
-    <meta name="twitter:description" content="Calculate your exact sleep cycles and caffeine cutoff time. Science-backed, 100% free, no sign-up required." />
+    <meta name="twitter:description" content="Free sleep planning, nap timing, caffeine estimates and sleep-debt tools. No account required." />
 
-    <!-- Schema.org JSON-LD Structured Data for Caffeine Calculator & Sleep Calculator -->
+    <link rel="canonical" href="https://dharanesh3048388-cyber.github.io/Sleeping-Edge/" />
+    <meta property="og:url" content="https://dharanesh3048388-cyber.github.io/Sleeping-Edge/" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebApplication",
-          "@id": "https://sleepingedge.com/#app",
-          "name": "SleepingEdge Sleep & Caffeine Calculator",
-          "applicationCategory": "HealthApplication",
-          "operatingSystem": "All",
-          "url": "https://sleepingedge.com",
-          "description": "Scientific sleep cycle calculator, caffeine cutoff calculator, nap optimizer, and sleep debt planner.",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-          },
-          "featureList": [
-            "Caffeine Cutoff & Clearance Half-Life Calculator",
-            "90-Minute Sleep Cycle Bedtime & Wake Time Planning",
-            "Power Nap Optimization (20min, 60min, 90min)",
-            "7-Day Cumulative Sleep Debt Recovery",
-            "Medical-grade White & Pink Noise Synthesizer"
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "@id": "https://sleepingedge.com/#faq",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "How does the caffeine calculator determine my cutoff time?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "The caffeine calculator models caffeine clearance using the clinical hepatic CYP1A2 half-life (average 5 to 7 hours). It calculates the exact hour you must stop drinking coffee, energy drinks, or tea so that less than 25mg of active caffeine remains at bedtime, protecting restorative deep sleep."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "When should I stop drinking caffeine before bed?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "For a standard 200mg coffee and an 11:00 PM bedtime, your recommended caffeine cutoff is typically between 1:00 PM and 2:00 PM (at least 9 to 10 hours prior to sleep) to allow complete clearance."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Why is waking up at the end of a 90-minute sleep cycle better?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Human sleep naturally occurs in 90-minute cycles transitioning from Light Sleep (N1/N2) to Deep Slow-Wave Sleep (N3) and REM. Waking at the completion of a cycle avoids waking from Stage 3 deep sleep, eliminating sleep inertia and morning grogginess."
-              }
-            }
-          ]
-        }
-      ]
+      "@type": "WebApplication",
+      "name": "SleepingEdge Sleep Planning Tools",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "url": "https://dharanesh3048388-cyber.github.io/Sleeping-Edge/",
+      "description": "Free browser-based tools for sleep and wake-time planning, nap timing, caffeine estimates and sleep-debt arithmetic.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     }
     </script>
-    <script>
+<script>
       // Defensive guard for Chrome extensions attempting to monkey-patch window.fetch
       try {
         const _origFetch = window.fetch ? window.fetch.bind(window) : undefined;
