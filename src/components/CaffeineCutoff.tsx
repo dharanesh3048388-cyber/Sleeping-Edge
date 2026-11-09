@@ -20,7 +20,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
   const [bedMinute, setBedMinute] = useState<number>(0);
 
   // Time of caffeine intake: default 2:00 PM (14:00)
-  const [intakeHour, setIntakeHour] = useState<number>(14);
+  const [intakeHour, setIntakeHour] = useState<number>(() => new Date().getHours());
   const [intakeMinute, setIntakeMinute] = useState<number>(0);
 
   // Half life (default 5.5 hours)
@@ -38,7 +38,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
   const now = new Date();
   const bedtimeDate = createTimeDate(bedHour, bedMinute, now);
   if (bedtimeDate.getTime() <= now.getTime()) bedtimeDate.setDate(bedtimeDate.getDate() + 1);
-  const intakeDate = createTimeDate(intakeHour, intakeMinute, bedtimeDate);
+  const intakeDate = createTimeDate(intakeHour, intakeMinute, now);
   if (intakeDate.getTime() > bedtimeDate.getTime()) intakeDate.setDate(intakeDate.getDate() - 1);
 
   const cutoffResult = calculateCaffeineCutoff(customMg, bedtimeDate, intakeDate, halfLife, 25);
