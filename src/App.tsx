@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { NorthernLightsCanvas } from './components/NorthernLightsCanvas';
 import { MannsPlanetCanvas } from './components/MannsPlanetCanvas';
 import { Header } from './components/Header';
@@ -93,7 +93,7 @@ export default function App() {
   };
 
   // Deep linking and SEO direct navigation (e.g. #caffeine-calculator, #sleep-calculator, or ?tool=caffeine)
-  useEffect(() => {
+  useLayoutEffect(() => {
     const resolveTarget = () => {
       const hash = window.location.hash.toLowerCase().replace('#', '');
       const params = new URLSearchParams(window.location.search);
@@ -118,6 +118,11 @@ export default function App() {
     };
 
     const target = resolveTarget();
+    if (!target) {
+      // A normal reload should start at the top. Explicit hash/query deep links still work.
+      window.scrollTo(0, 0);
+      return;
+    }
     if (target) {
       setActiveSection(target);
       // Small timeout to allow full DOM mount
@@ -147,16 +152,8 @@ export default function App() {
 
   const handleNavigate = (section: string) => {
     setActiveSection(section);
-    const hashMap: Record<string, string> = {
-      calculator: 'sleep-calculator',
-      caffeine: 'caffeine-calculator',
-      naps: 'nap-optimizer',
-      recovery: 'sleep-debt',
-      science: 'sleep-stages'
-    };
-    if (window.history?.replaceState) {
-      window.history.replaceState(null, '', `#${hashMap[section] || section}`);
-    }
+    // Keep in-page navigation local to the current view. Do not persist a section hash,
+    // otherwise a browser refresh restores the previous section instead of the page top.
     const element = document.getElementById(section);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
