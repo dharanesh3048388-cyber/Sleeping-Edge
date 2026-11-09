@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 const informationLinks = [
+  { label: 'Sleep sounds', path: 'sleep-sounds/' },
   { label: 'About', path: 'about/' },
   { label: 'Methodology', path: 'methodology/' },
   { label: 'Privacy', path: 'privacy/' },

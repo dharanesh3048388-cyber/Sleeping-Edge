@@ -1,29 +1,35 @@
 import React, { useState } from 'react';
-import { Volume2, X, Timer, ChevronDown, ChevronUp } from 'lucide-react';
+import { Volume2, X, Timer, ChevronDown, ChevronUp, Play, Pause } from 'lucide-react';
 import { sleepAudio, AmbientSoundType, SOUND_PROFILES } from '../utils/audioEngine';
 
 interface AmbientAudioBarProps {
+  isOpen: boolean;
   isPlaying: boolean;
-  onTogglePlay: () => void;
+  currentSound: AmbientSoundType;
+  onSelectSound: (type: AmbientSoundType, volume: number) => void;
+  onTogglePlay: (volume?: number) => void;
+  onClose: () => void;
 }
 
 export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
+  isOpen,
   isPlaying,
+  currentSound,
+  onSelectSound,
   onTogglePlay,
+  onClose,
 }) => {
-  const [currentSound, setCurrentSound] = useState<AmbientSoundType>('mountain_wind');
   const [volume, setVolume] = useState<number>(0.35);
   const [timerMinutes, setTimerMinutes] = useState<number>(30);
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<'all' | 'soundscapes' | 'noise'>('all');
 
-  if (!isPlaying) return null;
+  if (!isOpen) return null;
 
   const activeProfile = SOUND_PROFILES.find((s) => s.id === currentSound) || SOUND_PROFILES[0];
 
   const handleSelectSound = (type: AmbientSoundType) => {
-    setCurrentSound(type);
-    sleepAudio.play(type, volume);
+    onSelectSound(type, volume);
   };
 
   const handleVolumeChange = (newVol: number) => {
@@ -38,12 +44,13 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
 
   const filteredProfiles = SOUND_PROFILES.filter((p) => {
     if (activeCategoryFilter === 'soundscapes') return p.category === 'Soundscape';
-    if (activeCategoryFilter === 'noise') return p.category !== 'Soundscape';
+    if (activeCategoryFilter === 'noise') return p.category === 'Color Noise';
     return true;
   });
 
   return (
     <div
+      id="ambient-sounds"
       role="region"
       aria-label="Ambient noise and sleep soundscape player"
       className="fixed bottom-3 right-3 left-3 sm:left-auto sm:right-4 sm:bottom-4 z-40 max-w-md w-auto sm:w-[26rem] bg-white/95 dark:bg-[#0b111e]/95 backdrop-blur-2xl border border-sky-300/70 dark:border-emerald-500/30 rounded-2xl p-3.5 sm:p-4 shadow-2xl text-xs transition-all duration-300 ring-1 ring-sky-400/20 dark:ring-emerald-400/10 max-h-[82vh] overflow-y-auto"
@@ -67,10 +74,19 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
           </button>
           <button
             type="button"
-            onClick={onTogglePlay}
+            onClick={() => onTogglePlay(volume)}
+            className="p-1.5 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+            title={isPlaying ? 'Pause ambient sound' : 'Play selected ambient sound'}
+            aria-label={isPlaying ? 'Pause ambient sound' : 'Play ambient sound'}
+          >
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
             className="p-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-            title="Stop ambient noise"
-            aria-label="Stop audio"
+            title="Close ambient sound player"
+            aria-label="Close ambient sound player"
           >
             <X className="w-4 h-4" />
           </button>
@@ -90,6 +106,11 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
             <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
               {activeProfile.recommendedFor}
             </p>
+            {!isPlaying && (
+              <p className="mt-2 text-[11px] text-sky-700 dark:text-emerald-300">
+                Ready when you are. Press Play to start; audio never starts automatically.
+              </p>
+            )}
           </div>
 
           {/* Category Filter Chips */}
@@ -125,7 +146,7 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
                   : 'bg-slate-100 text-slate-600 hover:text-slate-900 dark:bg-slate-900 dark:text-slate-400 hover:dark:text-white'
               }`}
             >
-              Color Noise ({SOUND_PROFILES.filter((s) => s.category !== 'Soundscape').length})
+              Color Noise ({SOUND_PROFILES.filter((s) => s.category === 'Color Noise').length})
             </button>
           </div>
 

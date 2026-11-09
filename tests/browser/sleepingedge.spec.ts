@@ -135,6 +135,62 @@ test.describe('static preview', () => {
 });
 
 
+test.describe('ambient sound SEO landing pages and deep links', () => {
+  const soundPages = [
+    '/sleep-sounds/',
+    '/white-noise-for-sleep/',
+    '/pink-noise-for-sleep/',
+    '/brown-noise-for-sleep/',
+    '/rain-sounds-for-sleep/',
+    '/ocean-sounds-for-sleep/',
+    '/wind-sounds-for-sleep/'
+  ];
+
+  for (const path of soundPages) {
+    test('loads indexable ambient sound page ' + path, async ({ page }) => {
+      const response = await page.goto(baseURL + path);
+      expect(response?.ok(), 'page response should be successful').toBeTruthy();
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
+      await expect(page.locator('h1')).toBeVisible();
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+      expect(canonical).toContain(path);
+    });
+  }
+
+
+  test('sleep sounds hub links to every other available player preset', async ({ page }) => {
+    await page.goto(baseURL + '/sleep-sounds/');
+    for (const preset of ['arctic_wind', 'solar_storm', 'celestial_drone', 'binaural_delta']) {
+      await expect(page.locator('a[href="../?sound=' + preset + '#ambient-sounds"]')).toBeVisible();
+    }
+  });
+  test('white-noise search landing page opens the selected player without autoplay', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(baseURL + '/white-noise-for-sleep/');
+    await page.getByRole('link', { name: /Open white noise player/i }).click();
+
+    const player = page.getByRole('region', { name: 'Ambient noise and sleep soundscape player' });
+    await expect(player).toBeVisible();
+    await expect(player.getByText('Pure White Noise')).toBeVisible();
+    await expect(player.getByRole('button', { name: 'Play ambient sound' })).toBeVisible();
+    await expect(player.getByRole('button', { name: 'Pause ambient sound' })).toHaveCount(0);
+
+    await player.getByRole('button', { name: 'Play ambient sound' }).click();
+    await expect(player.getByRole('button', { name: 'Pause ambient sound' })).toBeVisible();
+    await player.getByRole('button', { name: 'Pause ambient sound' }).click();
+    await player.getByRole('button', { name: 'Close ambient sound player' }).click();
+    await expect(player).toHaveCount(0);
+  });
+
+  test('pink-noise query parameter preselects the matching sound without autoplay', async ({ page }) => {
+    await page.goto(baseURL + '/?sound=pink_noise#ambient-sounds');
+    const player = page.getByRole('region', { name: 'Ambient noise and sleep soundscape player' });
+    await expect(player).toBeVisible();
+    await expect(player.getByText('Pure Pink Noise')).toBeVisible();
+    await expect(player.getByRole('button', { name: 'Play ambient sound' })).toBeVisible();
+  });
+});
+
 test.describe('production trust and monetization readiness pages', () => {
   const pages = [
     '/about/', '/methodology/', '/privacy/', '/terms/', '/contact/', '/affiliate-disclosure/'
@@ -163,7 +219,7 @@ test.describe('production trust and monetization readiness pages', () => {
   test('footer exposes all production trust links', async ({ page }) => {
     await page.goto(baseURL + '/');
     const footer = page.getByRole('navigation', { name: 'Legal and information' });
-    for (const label of ['About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
+    for (const label of ['Sleep sounds', 'About', 'Methodology', 'Privacy', 'Terms', 'Advertising & affiliates', 'Contact']) {
       await expect(footer.getByRole('link', { name: label })).toBeVisible();
     }
   });
