@@ -35,6 +35,9 @@ jobs:
       - name: Build the existing production app
         run: bun run build
 
+      - name: Type-check the application
+        run: bun run lint
+
       - name: Validate required pages and assets
         run: |
           set -euo pipefail
@@ -136,6 +139,9 @@ jobs:
 
       - name: Build production website
         run: bun run build
+
+      - name: Run deterministic calculator unit tests
+        run: bun test
 
       - name: Install isolated browser-test runner
         run: npm install --no-save --package-lock=false --legacy-peer-deps @playwright/test
