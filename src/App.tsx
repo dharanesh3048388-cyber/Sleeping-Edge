@@ -17,14 +17,19 @@ import { AmbientAudioBar } from './components/AmbientAudioBar';
 import { Footer } from './components/Footer';
 import { sleepAudio } from './utils/audioEngine';
 
+const readPreference = (key: string): string | null => {
+  try { return window.localStorage.getItem(key); } catch { return null; }
+};
+const writePreference = (key: string, value: string): void => {
+  try { window.localStorage.setItem(key, value); } catch { /* Continue with in-memory state. */ }
+};
+const removePreference = (key: string): void => {
+  try { window.localStorage.removeItem(key); } catch { /* Continue with in-memory state. */ }
+};
+
 export default function App() {
-  // Theme state: Default strictly to Dark Mode (Northern Lights Aurora) when opening
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    try {
-      localStorage.removeItem('sleepingedge_theme');
-    } catch {}
-    return true;
-  });
+  // Respect the saved theme; use Northern Lights dark mode for first-time visitors.
+  const [isDark, setIsDark] = useState<boolean>(() => readPreference('sleepingedge_theme') !== 'light');
 
   // Soundscape state
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
@@ -32,20 +37,18 @@ export default function App() {
   // Settings / Calibration state
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [latencyMinutes, setLatencyMinutes] = useState<number>(() => {
-    const saved = localStorage.getItem('sleepingedge_latency');
-    return saved ? Number(saved) : 14;
+    const saved = Number(readPreference('sleepingedge_latency'));
+    return Number.isFinite(saved) && saved >= 5 && saved <= 45 ? saved : 14;
   });
   const [cycleLength, setCycleLength] = useState<number>(() => {
-    const saved = localStorage.getItem('sleepingedge_cycle');
-    return saved ? Number(saved) : 90;
+    const saved = Number(readPreference('sleepingedge_cycle'));
+    return Number.isFinite(saved) && saved >= 75 && saved <= 110 ? saved : 90;
   });
   const [is24Hour, setIs24Hour] = useState<boolean>(() => {
-    const saved = localStorage.getItem('sleepingedge_24h');
-    return saved ? saved === 'true' : false;
+    return readPreference('sleepingedge_24h') === 'true';
   });
   const [ageGroup, setAgeGroup] = useState<string>(() => {
-    const saved = localStorage.getItem('sleepingedge_age');
-    return saved || 'adult';
+    return readPreference('sleepingedge_age') || 'adult';
   });
 
   const [activeSection, setActiveSection] = useState<string>('calculator');
@@ -53,32 +56,29 @@ export default function App() {
   // Sync dark class on html tag
   useEffect(() => {
     const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    root.classList.toggle('dark', isDark);
+    writePreference('sleepingedge_theme', isDark ? 'dark' : 'light');
   }, [isDark]);
 
   // Persist preferences
   const handleLatencyChange = (val: number) => {
     setLatencyMinutes(val);
-    localStorage.setItem('sleepingedge_latency', val.toString());
+    writePreference('sleepingedge_latency', val.toString());
   };
 
   const handleCycleLengthChange = (val: number) => {
     setCycleLength(val);
-    localStorage.setItem('sleepingedge_cycle', val.toString());
+    writePreference('sleepingedge_cycle', val.toString());
   };
 
   const handleToggle24Hour = (val: boolean) => {
     setIs24Hour(val);
-    localStorage.setItem('sleepingedge_24h', val.toString());
+    writePreference('sleepingedge_24h', val.toString());
   };
 
   const handleAgeGroupChange = (val: string) => {
     setAgeGroup(val);
-    localStorage.setItem('sleepingedge_age', val);
+    writePreference('sleepingedge_age', val);
   };
 
   const handleResetDefaults = () => {
@@ -86,10 +86,10 @@ export default function App() {
     setCycleLength(90);
     setIs24Hour(false);
     setAgeGroup('adult');
-    localStorage.removeItem('sleepingedge_latency');
-    localStorage.removeItem('sleepingedge_cycle');
-    localStorage.removeItem('sleepingedge_24h');
-    localStorage.removeItem('sleepingedge_age');
+    removePreference('sleepingedge_latency');
+    removePreference('sleepingedge_cycle');
+    removePreference('sleepingedge_24h');
+    removePreference('sleepingedge_age');
   };
 
   // Deep linking and SEO direct navigation (e.g. #caffeine-calculator, #sleep-calculator, or ?tool=caffeine)
