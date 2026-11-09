@@ -44,7 +44,7 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
 
   const filteredProfiles = SOUND_PROFILES.filter((p) => {
     if (activeCategoryFilter === 'soundscapes') return p.category === 'Soundscape';
-    if (activeCategoryFilter === 'noise') return p.category !== 'Soundscape';
+    if (activeCategoryFilter === 'noise') return p.category === 'Color Noise';
     return true;
   });
 
@@ -146,7 +146,7 @@ export const AmbientAudioBar: React.FC<AmbientAudioBarProps> = ({
                   : 'bg-slate-100 text-slate-600 hover:text-slate-900 dark:bg-slate-900 dark:text-slate-400 hover:dark:text-white'
               }`}
             >
-              Color Noise ({SOUND_PROFILES.filter((s) => s.category !== 'Soundscape').length})
+              Color Noise ({SOUND_PROFILES.filter((s) => s.category === 'Color Noise').length})
             </button>
           </div>
 
