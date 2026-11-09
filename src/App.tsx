@@ -163,21 +163,21 @@ export default function App() {
     }
   }, []);
 
-  const handleToggleAudio = () => {
+  const handleToggleAudio = (volume = 0.35) => {
     if (isAudioPlaying) {
       sleepAudio.stop();
       setIsAudioPlaying(false);
     } else {
       setIsAudioOpen(true);
-      sleepAudio.play(selectedSound, 0.35);
+      sleepAudio.play(selectedSound, volume);
       setIsAudioPlaying(true);
     }
   };
 
-  const handleSelectSound = (type: AmbientSoundType) => {
+  const handleSelectSound = (type: AmbientSoundType, volume: number) => {
     setSelectedSound(type);
     setIsAudioOpen(true);
-    sleepAudio.play(type, 0.35);
+    sleepAudio.play(type, volume);
     setIsAudioPlaying(true);
   };
 
