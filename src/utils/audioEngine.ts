@@ -1,9 +1,8 @@
 /**
  * SleepingEdge Sleep Audio Synthesizer
- * High-precision procedural Web Audio API sound generator.
- * Zero external audio files, zero bandwidth, zero latency.
- * Engineered to match medical-grade white/pink noise sleep machines
- * and high-fidelity ambient soundscapes.
+ * Procedural Web Audio API sound generator.
+ * Sound is synthesised in the visitor's browser; no audio files are downloaded.
+ * These sounds are listening options, not medical treatments.
  */
 
 export type AmbientSoundType =
@@ -22,7 +21,7 @@ export interface SoundProfile {
   id: AmbientSoundType;
   name: string;
   tagline: string;
-  category: 'Clinical Color Noise' | 'Soundscape' | 'Brainwave Entrainment';
+  category: 'Color Noise' | 'Soundscape' | 'Brainwave Entrainment';
   recommendedFor: string;
   spectrum: string;
 }
@@ -34,7 +33,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     name: 'Mountain Wind',
     tagline: 'High-altitude pine & alpine pass gale',
     category: 'Soundscape',
-    recommendedFor: 'Deep respiratory grounding & cold mountain atmosphere',
+    recommendedFor: 'An airy, wind-like texture for listeners who enjoy atmospheric sound.',
     spectrum: 'Dual-pole resonant sweep'
   },
   {
@@ -42,7 +41,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     name: 'Deep Ocean',
     tagline: 'Subsurface oceanic tidal swell & abyssal rumble',
     category: 'Soundscape',
-    recommendedFor: 'Womb-like tranquility & slow breathing rhythm',
+    recommendedFor: 'A low, wave-like texture for listeners who prefer deeper ambient sound.',
     spectrum: 'Infrasonic wave surge (40–180Hz)'
   },
   {
@@ -50,7 +49,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     name: 'Solar Storm',
     tagline: 'Cosmic plasma drone & heliosphere flux',
     category: 'Soundscape',
-    recommendedFor: 'Silencing racing thoughts & meditative sleep induction',
+    recommendedFor: 'A synthetic tonal ambience for quiet listening; no specific sleep effect is established.',
     spectrum: 'Harmonic plasma resonance'
   },
   {
@@ -58,7 +57,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     name: 'Glacial Arctic Wind',
     tagline: 'Mann’s Planet atmospheric wind',
     category: 'Soundscape',
-    recommendedFor: 'Immersive alpine tranquility & cool wind drift',
+    recommendedFor: 'A filtered, airy ambience inspired by moving wind.',
     spectrum: 'Dynamic resonant sweep'
   },
   {
@@ -66,7 +65,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     name: 'Celestial Cosmic Drone',
     tagline: 'Warm analog harmonic pads',
     category: 'Soundscape',
-    recommendedFor: 'Bedtime meditation, winding down & tension release',
+    recommendedFor: 'A steady harmonic drone for listeners who prefer tonal ambience.',
     spectrum: 'Rich harmonic detuned 5ths'
   },
   {
@@ -74,7 +73,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     name: 'Midnight Rain on Glass',
     tagline: 'Organic stochastic rain cadence',
     category: 'Soundscape',
-    recommendedFor: 'Continuous natural rhythmic soothing',
+    recommendedFor: 'A rain-like texture for listeners who prefer steady natural-sounding ambience.',
     spectrum: 'Acoustic stochastic filter'
   },
 
@@ -83,24 +82,24 @@ export const SOUND_PROFILES: SoundProfile[] = [
     id: 'pink_noise',
     name: 'Pure Pink Noise',
     tagline: '1/f equal energy per octave',
-    category: 'Clinical Color Noise',
-    recommendedFor: 'Synchronizes slow-wave deep sleep & memory storage',
+    category: 'Color Noise',
+    recommendedFor: 'A softer, lower-frequency-weighted noise texture; personal preference varies.',
     spectrum: 'Balanced warmth (-3dB/oct)'
   },
   {
     id: 'brown_noise',
     name: 'Deep Brown Noise',
     tagline: '1/f² low-frequency acoustic warmth',
-    category: 'Clinical Color Noise',
-    recommendedFor: 'Quieting racing thoughts, ADHD calm & anxiety relief',
+    category: 'Color Noise',
+    recommendedFor: 'A bass-heavy noise texture; choose it only if you find the sound comfortable.',
     spectrum: 'Heavy deep rumble (-6dB/oct)'
   },
   {
     id: 'white_noise',
     name: 'Pure White Noise',
     tagline: 'Uniform multi-frequency sound shield',
-    category: 'Clinical Color Noise',
-    recommendedFor: 'Acoustic masking for traffic, snoring & city sounds',
+    category: 'Color Noise',
+    recommendedFor: 'Broad-spectrum sound may mask some steady background noise; results vary.',
     spectrum: 'Full spectrum flat'
   },
   {
@@ -108,7 +107,7 @@ export const SOUND_PROFILES: SoundProfile[] = [
     name: 'Binaural Delta (2.5 Hz)',
     tagline: '108 Hz + 110.5 Hz carrier sine waves',
     category: 'Brainwave Entrainment',
-    recommendedFor: 'Inducing deep delta sleep state (best with headphones)',
+    recommendedFor: 'A two-tone listening experiment; it is not proven to induce a particular sleep stage.',
     spectrum: 'Sub-harmonic carrier'
   }
 ];
@@ -423,7 +422,7 @@ class SleepAudioEngine {
     this.activeNodes.push(...oscillators, noiseSource, plasmaFilter, fluxLfo, fluxLfoGain, plasmaGain, masterFilter);
   }
 
-  // --- 4. Pure Clinical Pink Noise ---
+  // --- 4. Pink Noise ---
   private startPinkNoise() {
     if (!this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
