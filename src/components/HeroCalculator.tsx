@@ -14,7 +14,6 @@ import {
 import {
   calculateBedtimesForWake,
   calculateWakeTimesForBed,
-  createTimeDate,
   formatDurationHoursMinutes,
   formatTimeDisplay,
   CycleResult
@@ -48,6 +47,14 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
 
   // Real-time tick for sleep_now
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  const createNextOccurrence = (hours: number, minutes: number): Date => {
+    const now = new Date();
+    const target = new Date(now);
+    target.setHours(hours, minutes, 0, 0);
+    if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
+    return target;
+  };
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [showFormula, setShowFormula] = useState<boolean>(false);
 
@@ -72,20 +79,20 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
 
   if (mode === 'wake_at') {
     const target24H = get24Hour(wakeHour, wakeAmpm);
-    const targetDate = createTimeDate(target24H, wakeMinute);
+    const targetDate = createNextOccurrence(target24H, wakeMinute);
     results = calculateBedtimesForWake(targetDate, latencyMinutes, cycleLength, is24Hour);
     headingQuestion = `To wake at ${formatTimeDisplay(targetDate, is24Hour)}, fall asleep at:`;
-    subPrompt = `Targeting waking up naturally at the end of a 90-minute sleep cycle`;
+    subPrompt = `Illustrative timing options; actual sleep cycles vary`;
   } else if (mode === 'sleep_now') {
     results = calculateWakeTimesForBed(currentTime, latencyMinutes, cycleLength, is24Hour);
     headingQuestion = `If you drift off to sleep right now:`;
     subPrompt = `Factoring in ${latencyMinutes} min to drift off to sleep`;
   } else {
     const bed24H = get24Hour(bedHour, bedAmpm);
-    const bedDate = createTimeDate(bed24H, bedMinute);
+    const bedDate = createNextOccurrence(bed24H, bedMinute);
     results = calculateWakeTimesForBed(bedDate, latencyMinutes, cycleLength, is24Hour);
     headingQuestion = `If you go to bed at ${formatTimeDisplay(bedDate, is24Hour)}, set alarm for:`;
-    subPrompt = `Wake smoothly at the completion of your sleep cycles`;
+    subPrompt = `Illustrative timing options; actual sleep cycles vary`;
   }
 
   const handleCopy = (timeStr: string, index: number, cycles: number, bedMin: number) => {
@@ -107,13 +114,13 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
           Master Your Sleep Architecture
         </div>
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3 sm:mb-4">
-          Wake at the end of the cycle.{' '}
+          Plan your sleep timing.{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300">
-            Every time.
+            With realistic estimates.
           </span>
         </h1>
         <p className="max-w-2xl mx-auto text-sm sm:text-lg text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
-          Waking mid-cycle leaves you tired and groggy. SleepingEdge calculates the exact time to fall asleep or wake up so you feel energized from the minute you open your eyes.
+          Sleep cycles vary from person to person and from night to night. SleepingEdge provides flexible timing estimates, not predictions of sleep stages or guarantees about how refreshed you will feel.
         </p>
       </div>
 
@@ -263,7 +270,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
               {formatTimeDisplay(currentTime, is24Hour)}
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md">
-              Drifting into bed right now? Below are your natural wake windows factoring in {latencyMinutes} min to fall asleep.
+              If you go to bed now, these estimates include {latencyMinutes} min to fall asleep.
             </p>
           </div>
         )}
@@ -424,30 +431,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                     </div>
                   </div>
 
-                  {/* Sleep Architecture Visual Ratio Bar */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                      <span>Stage Proportions</span>
-                      <span className="font-mono text-slate-600 dark:text-slate-400">{res.nremDeepPercent}% Deep / {res.remPercent}% REM</span>
-                    </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 flex overflow-hidden">
-                      <div
-                        style={{ width: `${res.nremLightPercent}%` }}
-                        className="h-full bg-slate-400 dark:bg-slate-500"
-                        title={`Light Sleep: ${res.nremLightPercent}%`}
-                      />
-                      <div
-                        style={{ width: `${res.nremDeepPercent}%` }}
-                        className="h-full bg-sky-500 dark:bg-teal-400"
-                        title={`Deep Sleep: ${res.nremDeepPercent}%`}
-                      />
-                      <div
-                        style={{ width: `${res.remPercent}%` }}
-                        className="h-full bg-indigo-500 dark:bg-purple-400"
-                        title={`REM Dream Sleep: ${res.remPercent}%`}
-                      />
-                    </div>
-                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Sleep stages are not estimated from this timing calculation.</p>
 
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     {res.summary}
@@ -491,7 +475,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             >
               <div className="flex items-center gap-2">
                 <Info className="w-4 h-4 text-sky-600 dark:text-emerald-400" />
-                <span>How the math works (Exact scientific formula)</span>
+                <span>How the timing estimate works</span>
               </div>
               {showFormula ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
@@ -504,14 +488,14 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
                     : `WakeTime = Bedtime + ${latencyMinutes} min latency + (Cycles × ${cycleLength} min)`}
                 </div>
                 <p className="leading-relaxed text-slate-600 dark:text-slate-300">
-                  Sleep moves in natural 90-minute waves through light sleep, deep physical repair, and dream sleep (REM). Waking at the end of a cycle feels effortless. Waking in the middle interrupts deep sleep and triggers morning brain fog (sleep inertia).
+                  This calculator adds or subtracts a selected interval and your estimated time to fall asleep. Sleep cycles are not fixed at 90 minutes: research describes typical cycles of roughly 80–100 minutes, with variation across the night and between people. These estimates cannot identify your sleep stage or guarantee an easier wake-up.
                 </p>
                 <div className="flex flex-wrap gap-4 text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-white/5 font-mono text-[11px]">
                   <span>1 cycle = {cycleLength} min</span>
                   <span>·</span>
                   <span>Onset latency buffer = {latencyMinutes} min</span>
                   <span>·</span>
-                  <span>Recommended nightly: 5 cycles (7.5h) or 6 cycles (9.0h)</span>
+                  <span>Adult guidance: regularly aim for at least 7 hours; individual needs vary</span>
                 </div>
               </div>
             )}
