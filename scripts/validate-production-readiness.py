@@ -13,7 +13,9 @@ for slug in required:
     assert "YOURDOMAIN" not in html and "YOUR_EMAIL" not in html, f"Unresolved placeholder in {slug}"
 
 robots = (public / "robots.txt").read_text(encoding="utf-8")
-assert "Disallow: /preview/" in robots, "Preview must remain excluded from crawling"
+# Preview HTML carries noindex,nofollow. Crawlers must be allowed to fetch it
+# so they can actually discover and honor that page-level directive.
+assert "Disallow: /preview/" not in robots, "Do not block crawlers from reading preview noindex tags"
 sitemap_path = public / "sitemap.xml"
 xml = ET.parse(sitemap_path).getroot()
 ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
@@ -22,6 +24,12 @@ assert locs and all("dharanesh3048388-cyber.github.io/Sleeping-Edge/" in url for
 assert not any("/preview/" in url or "YOURDOMAIN" in url for url in locs)
 for slug in required:
     assert any(url.endswith(f"/{slug}/") for url in locs), f"Sitemap missing {slug}"
+
+# The static site is deployed only as a noindex preview below /preview/.
+# Its own nested robots.txt is not the host's crawler policy, and its old
+# standalone sitemap used an unresolved custom-domain placeholder.
+assert not (root / "static-site" / "robots.txt").exists(), "Do not ship a misleading nested preview robots.txt"
+assert not (root / "static-site" / "sitemap.xml").exists(), "Do not ship a placeholder preview sitemap"
 
 # Public-facing pages must never expose direct repository or issue-tracker links.
 public_files = [root / "index.html", root / "src/components/Footer.tsx"] + [public / slug / "index.html" for slug in required] + list((root / "static-site").rglob("*.html"))
@@ -36,6 +44,10 @@ preview_files = list((root / "static-site").rglob("*.html"))
 for path in preview_files:
     body = path.read_text(encoding="utf-8")
     assert "github.com/" not in body.lower(), f"Direct GitHub link found in preview page {path}"
+
+readiness = (root / "MONETIZATION_READINESS.md").read_text(encoding="utf-8")
+assert "no direct support or private privacy-request channel is currently available" in readiness.lower()
+assert "public github issue tracker is provided" not in readiness.lower()
 
 home = (root / "index.html").read_text(encoding="utf-8")
 assert "https://dharanesh3048388-cyber.github.io/Sleeping-Edge/" in home
