@@ -41,6 +41,50 @@ test.describe('SleepingEdge production app', () => {
     await expect(page.getByRole('button', { name: 'AM', exact: true })).toHaveClass(/bg-sky-600/);
   });
 
+  test('fixed header stays visible and its spacer prevents content overlap on mobile and desktop', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto(baseURL + '/');
+
+      const header = page.locator('header').first();
+      await expect(header).toBeVisible();
+      const initialLayout = await page.evaluate(() => {
+        const headerElement = document.querySelector('header');
+        const spacer = headerElement?.nextElementSibling as HTMLElement | null;
+        const main = document.querySelector('main');
+        if (!headerElement || !spacer || !main) return null;
+        return {
+          position: getComputedStyle(headerElement).position,
+          headerHeight: headerElement.getBoundingClientRect().height,
+          spacerHeight: spacer.getBoundingClientRect().height,
+          mainTop: main.getBoundingClientRect().top
+        };
+      });
+
+      expect(initialLayout).not.toBeNull();
+      expect(initialLayout?.position).toBe('fixed');
+      expect(initialLayout!.spacerHeight).toBeGreaterThanOrEqual(initialLayout!.headerHeight - 1);
+      expect(initialLayout!.mainTop).toBeGreaterThanOrEqual(initialLayout!.headerHeight - 1);
+
+      await page.evaluate(() => window.scrollTo({ top: 700, behavior: 'instant' }));
+      await expect.poll(() => header.evaluate(element => Math.round(element.getBoundingClientRect().top))).toBe(0);
+    }
+  });
+
+  test('normal page text remains selectable and theme choice survives a reload', async ({ page }) => {
+    await page.goto(baseURL + '/');
+    await expect(page.getByRole('heading', { name: /Plan your sleep timing/i })).toBeVisible();
+
+    const selectionMode = await page.locator('body').evaluate(element => getComputedStyle(element).userSelect);
+    expect(selectionMode).not.toBe('none');
+
+    await page.getByRole('button', { name: 'Switch to Light Mode' }).click();
+    await expect(page.locator('html')).not.toHaveClass(/dark/);
+    await page.reload();
+    await expect(page.locator('html')).not.toHaveClass(/dark/);
+    await expect(page.getByRole('button', { name: 'Switch to Dark Mode' })).toBeVisible();
+  });
+
   test('mobile layout does not introduce horizontal page overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(baseURL + '/');
