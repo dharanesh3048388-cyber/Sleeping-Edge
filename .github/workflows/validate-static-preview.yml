@@ -141,7 +141,7 @@ jobs:
         run: bun run build
 
       - name: Run deterministic calculator unit tests
-        run: bun test
+        run: bun test tests/unit
 
       - name: Install isolated browser-test runner
         run: npm install --no-save --package-lock=false --legacy-peer-deps @playwright/test
