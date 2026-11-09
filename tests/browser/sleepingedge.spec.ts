@@ -78,11 +78,11 @@ test.describe('SleepingEdge production app', () => {
     const selectionMode = await page.locator('body').evaluate(element => getComputedStyle(element).userSelect);
     expect(selectionMode).not.toBe('none');
 
-    await page.getByRole('button', { name: 'Switch to Light Mode' }).click();
+    await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
     await expect(page.locator('html')).not.toHaveClass(/dark/);
     await page.reload();
     await expect(page.locator('html')).not.toHaveClass(/dark/);
-    await expect(page.getByRole('button', { name: 'Switch to Dark Mode' })).toBeVisible();
+    await expect(page.getByRole('switch', { name: 'Switch to Dark Mode' })).toBeVisible();
   });
 
   test('mobile layout does not introduce horizontal page overflow', async ({ page }) => {
