@@ -375,7 +375,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono">
               <span>Latency: {latencyMinutes}m</span>
               <span>·</span>
-              <span>Cycle: {cycleLength}m</span>
+              <span>Assumed interval: {cycleLength}m</span>
             </div>
           </div>
 
