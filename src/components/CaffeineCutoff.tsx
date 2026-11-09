@@ -57,7 +57,7 @@ export const CaffeineCutoff: React.FC<CaffeineCutoffProps> = ({ is24Hour }) => {
           Caffeine Calculator
         </h2>
         <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-600 dark:text-slate-300">
-          Caffeine stays active in your system for 5 to 7 hours. Even if you fall asleep easily, lingering caffeine fragments deep slow-wave sleep.
+          Caffeine is cleared gradually, and its half-life varies between people. A simple estimate can show how much may remain at bedtime, but cannot predict your individual sleep response.
         </p>
       </div>
 
