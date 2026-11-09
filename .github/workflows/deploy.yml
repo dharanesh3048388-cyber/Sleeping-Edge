@@ -31,6 +31,12 @@ jobs:
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
 
+      - name: Type-check the application before deployment
+        run: bun run lint
+
+      - name: Run deterministic calculator unit tests before deployment
+        run: bun test tests/unit
+
       - name: Build production website
         run: bun run build
 

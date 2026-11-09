@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { X, RotateCcw, Moon, Sun } from 'lucide-react';
 import { AGE_GUIDELINES } from '../utils/sleepScience';
 
@@ -36,6 +36,17 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
   if (!isOpen) return null;
 
   const currentAgeInfo = AGE_GUIDELINES[ageGroup] || AGE_GUIDELINES.adult;
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    closeButtonRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/75 backdrop-blur-md">
@@ -56,6 +67,7 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
             </p>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             className="p-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
@@ -145,6 +157,9 @@ export const PreferencesDrawer: React.FC<PreferencesDrawerProps> = ({
           </div>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-1">
             {currentAgeInfo.note}
+          </p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            These age-based ranges are informational only; changing this selection does not alter the calculator's timing results.
           </p>
         </div>
 
