@@ -177,30 +177,26 @@ export function calculateWakeTimesForBed(
     const wakeTime = new Date(bedDate.getTime() + totalBedMinutes * 60 * 1000);
 
     let quality: CycleResult['quality'] = 'sufficient';
-    let label = 'Sufficient';
-    let summary = 'Covers basic restorative functions';
+    let label = 'Illustrative timing option';
+    let summary = 'A timing estimate only. It does not predict sleep stages or how refreshed you will feel.';
 
     if (cycles === 5) {
-      quality = 'optimal';
-      label = 'Optimal (Recommended)';
-      summary = '7.5 hrs asleep. Leaves you energized with zero morning grogginess.';
+      quality = 'recommended';
+      label = '7.5-hour sleep opportunity';
+      summary = 'Falls within the commonly recommended duration range for many adults. Individual sleep needs vary.';
     } else if (cycles === 6) {
       quality = 'recommended';
-      label = 'Extended Recovery';
-      summary = '9.0 hrs asleep. Deep physical and mental recharge.';
+      label = '9-hour sleep opportunity';
+      summary = 'A longer sleep opportunity may suit some people. Individual sleep needs vary.';
     } else if (cycles === 4) {
-      quality = 'sufficient';
-      label = 'Minimum Normal';
-      summary = '6.0 hrs asleep. Clean wake-up for busy days.';
+      quality = 'short';
+      label = '6-hour sleep opportunity';
+      summary = 'Below the usual minimum recommendation for adults when obtained regularly.';
     } else if (cycles === 3) {
-      quality = 'minimum';
-      label = 'Short Night';
-      summary = '4.5 hrs asleep. Alert at wake-up, but energy drops by late afternoon.';
+      quality = 'short';
+      label = '4.5-hour sleep opportunity';
+      summary = 'A short sleep opportunity and below adult recommendations. It should not be treated as a regular target.';
     }
-
-    const nremDeepPercent = Math.max(15, Math.round(28 - (cycles - 3) * 2.5));
-    const remPercent = Math.min(27, Math.round(18 + (cycles - 3) * 2.2));
-    const nremLightPercent = 100 - nremDeepPercent - remPercent;
 
     results.push({
       cycles,
