@@ -142,4 +142,17 @@ assert "public github issue tracker is provided" not in readiness.lower()
 home = (root / "index.html").read_text(encoding="utf-8")
 assert f'"https://dharanesh3048388-cyber.github.io/Sleeping-Edge/"' in home
 assert "YOURDOMAIN" not in home
+# Sleep evidence page must stay accurate about provenance and its lack of clinician review.
+methodology = (public / "methodology" / "index.html").read_text(encoding="utf-8")
+assert "not currently clinician-reviewed" in methodology.lower(), "Do not imply clinical review without a verified reviewer"
+for source in [
+    "https://www.cdc.gov/sleep/about/index.html",
+    "https://aasm.org/resources/pdf/pressroom/adult-sleep-duration-consensus.pdf",
+    "https://www.nhlbi.nih.gov/health/sleep/stages-of-sleep",
+    "https://pubmed.ncbi.nlm.nih.gov/36870101/",
+]:
+    assert source in methodology, f"Missing authoritative sleep reference: {source}"
+assert "80–100 minutes" in methodology or "80-100 minutes" in methodology or "80–100" in methodology, "Sleep-cycle range must remain sourced"
+assert "not a universal biological constant" in methodology, "90-minute setting must be described as an assumption"
+
 print(f"Production SEO/trust validation passed: {len(trust_pages)} trust pages, {len(sound_pages)} sound pages, {len(tool_pages)} tool pages and {len(locs)} sitemap URLs.")
