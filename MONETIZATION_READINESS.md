@@ -14,7 +14,7 @@ This repository change prepares the current GitHub Pages production app for a gl
 2. **Publisher:** create the actual AdSense publisher account and add the verified site. Do not paste IDs into source control. Configure the official script only after approval and policy review.
 3. **Consent:** choose a Google-certified CMP appropriate to the target regions. Configure consent signals and regional behaviour before personalised advertising or non-essential tracking. Do not invent a consent banner or claim consent compliance without a working vendor configuration.
 4. **Analytics:** optionally create GA4 and Search Console properties. Add verified measurement IDs through protected deployment secrets/configuration, not committed source. Gate non-essential analytics on the chosen consent approach and never transmit raw sleep/caffeine inputs or calculator results.
-5. **Contact/legal:** provide a real monitored contact channel and the correct operator/business details and jurisdiction. Have privacy, terms, advertising disclosures and any required cookie notices reviewed for the actual operating entity and countries served.
+5. **Contact/legal:** a public Contact page now opens the visitor's own mail application with a pre-filled email to the owner-supplied Outlook address. No contact form, form processor, message database or paid spam product is used. The operator's legal identity, business address and jurisdiction still need to be provided and the legal pages reviewed for the actual operating entity and countries served.
 6. **Affiliates:** apply to relevant programmes; use real approved tracking IDs only; disclose qualifying links close to recommendations; maintain editorial independence and check programme rules.
 7. **Content quality:** publish original, useful, reviewed sleep education with named, qualified reviewers only when their consent and credentials are verified. Cite primary/authoritative sources and keep pages current. Avoid mass-produced thin SEO pages.
 8. **Performance/accessibility:** run mobile Core Web Vitals, keyboard/screen-reader, contrast, privacy and cross-browser checks on the deployed custom-domain build. Keep ads away from calculator controls and reserve layout space to avoid layout shifts.
@@ -25,7 +25,7 @@ This repository change prepares the current GitHub Pages production app for a gl
 - AdSense: not configured; no ad script or publisher ID is included.
 - Affiliate IDs: not configured; no tracked affiliate links are included.
 - Analytics: no analytics ID or analytics script is added by this change.
-- Contact: no direct support or private privacy-request channel is currently available; one must be added before commercial launch.
+- Contact: direct email link configured to the owner-supplied Outlook mailbox; mail is sent by the visitor through their own email provider, not through a website form.
 - Legal operator identity: not supplied; no person, company, address or email is invented.
 - Repository visibility: the source repository is public and the temporary Pages address identifies the account and repository. A custom domain can change the visitor-facing address, but cannot make browser-delivered HTML, CSS or JavaScript private.
 
@@ -38,5 +38,5 @@ Do not enable ads, affiliate tracking or analytics until real account details, c
 - Use standard Google Analytics 4 directly at no charge only after the owner creates the property and provides its Measurement ID. Keep analytics disabled until an appropriate opt-in/consent design and privacy notice are in place.
 - Do not depend on OpenSEO: its published free allowance is a one-time $0.50 signup credit with no monthly refill.
 - Do not depend on Windsor.ai: its published forever-free tier falls back to one data source and one account after its trial, so it does not provide a durable combined Search Console + GA4 setup.
-- Contact-form service selection must remain within a genuinely $0 recurring-cost plan. Evaluate its delivery reliability, data handling, privacy terms, spam protection, rate limits and free-tier submission cap before production use. Never enable a paid upgrade or overage.
-- Keep all recipient addresses, delivery keys and provider credentials out of public HTML, JavaScript and Git history. Store provider-side recipient configuration or deployment secrets only.
+- Contact is intentionally handled through a visitor-initiated mailto link. This avoids a website form endpoint, server-side message database, form subscription, CAPTCHA bill and automated form-spam surface. It depends on the visitor having an email application configured.
+- The public contact mailbox is intentionally displayed because the owner supplied it for public contact. No email password, mailbox login, OAuth token or delivery credential is stored in the website or GitHub repository.
