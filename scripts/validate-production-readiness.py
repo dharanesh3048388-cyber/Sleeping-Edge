@@ -136,10 +136,32 @@ for path in public_files:
     assert "github.com/" not in body.lower(), f"Clickable GitHub destination found in {path}"
 
 readiness = (root / "MONETIZATION_READINESS.md").read_text(encoding="utf-8")
-assert "no direct support or private privacy-request channel is currently available" in readiness.lower()
+contact = (public / "contact" / "index.html").read_text(encoding="utf-8")
+privacy = (public / "privacy" / "index.html").read_text(encoding="utf-8")
+terms = (public / "terms" / "index.html").read_text(encoding="utf-8")
+assert "mailto:IndianCreativeStudios@outlook.com" in contact, "Contact page must offer the owner-approved email link"
+assert "opens the email application" in contact.lower(), "Contact page must explain mailto behavior"
+assert "<form" not in contact.lower(), "Contact must not introduce a website form"
+assert "does not collect the message through a website form" in contact.lower(), "Contact privacy explanation is missing"
+assert "recipient mailbox at IndianCreativeStudios@outlook.com" in privacy, "Privacy policy must disclose email routing"
+assert "opens your configured email application" in terms, "Terms must explain email contact"
+assert "no contact form" in readiness.lower(), "Zero-cost contact approach must remain documented"
 assert "public github issue tracker is provided" not in readiness.lower()
 
 home = (root / "index.html").read_text(encoding="utf-8")
 assert f'"https://dharanesh3048388-cyber.github.io/Sleeping-Edge/"' in home
 assert "YOURDOMAIN" not in home
+# Sleep evidence page must stay accurate about provenance and its lack of clinician review.
+methodology = (public / "methodology" / "index.html").read_text(encoding="utf-8")
+assert "not currently clinician-reviewed" in methodology.lower(), "Do not imply clinical review without a verified reviewer"
+for source in [
+    "https://www.cdc.gov/sleep/about/index.html",
+    "https://aasm.org/resources/pdf/pressroom/adult-sleep-duration-consensus.pdf",
+    "https://www.nhlbi.nih.gov/health/sleep/stages-of-sleep",
+    "https://pubmed.ncbi.nlm.nih.gov/36870101/",
+]:
+    assert source in methodology, f"Missing authoritative sleep reference: {source}"
+assert "80–100 minutes" in methodology or "80-100 minutes" in methodology or "80–100" in methodology, "Sleep-cycle range must remain sourced"
+assert "not a universal biological constant" in methodology, "90-minute setting must be described as an assumption"
+
 print(f"Production SEO/trust validation passed: {len(trust_pages)} trust pages, {len(sound_pages)} sound pages, {len(tool_pages)} tool pages and {len(locs)} sitemap URLs.")
