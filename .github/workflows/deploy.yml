@@ -47,6 +47,9 @@ jobs:
       - name: Test optional Google integration preparation
         run: python3 scripts/prepare-google-integrations.py --self-test
 
+      - name: Check optional GA4 loader syntax
+        run: node --check public/site-analytics.js
+
       - name: Inject owner-configured Google integrations
         env:
           GSC_VERIFICATION_TOKEN: ${{ secrets.GSC_VERIFICATION_TOKEN }}
