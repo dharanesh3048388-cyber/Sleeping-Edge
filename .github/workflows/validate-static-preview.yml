@@ -5,7 +5,7 @@ on:
     paths:
       - "static-site/**"
       - "public/**"
-      - "scripts/validate-production-readiness.py"
+      - "scripts/validate-production-readiness.py"\n      - "scripts/prepare-google-integrations.py"
       - "src/**"
       - "tests/**"
       - "index.html"
@@ -42,6 +42,9 @@ jobs:
 
       - name: Validate production SEO and monetization foundation
         run: python3 scripts/validate-production-readiness.py
+
+      - name: Test optional Google integration preparation
+        run: python3 scripts/prepare-google-integrations.py --self-test
 
       - name: Validate required pages and assets
         run: |
