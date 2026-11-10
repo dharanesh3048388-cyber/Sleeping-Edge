@@ -43,7 +43,7 @@ Do not enable ads, affiliate tracking or analytics until real account details, c
 
 ## Free Google measurement setup
 - Google Search Console is free. Create a URL-prefix property for `https://dharanesh3048388-cyber.github.io/Sleeping-Edge/`, choose HTML tag verification and copy only the `content` value from Google's meta tag. Add it in GitHub repository Settings → Secrets and variables → Actions → New repository secret, named `GSC_VERIFICATION_TOKEN`.
-- Create one Google Analytics 4 property and Web data stream for the same site. Copy the `G-...` Measurement ID. Add it under Settings → Secrets and variables → Actions → Variables → New repository variable, named `GA4_MEASUREMENT_ID`.
+- Create one Google Analytics 4 property and Web data stream for the same site. In the Web stream settings, switch Enhanced Measurement OFF so this intentionally limited setup records only basic page views. Copy the `G-...` Measurement ID. Add it under Settings → Secrets and variables → Actions → Variables → New repository variable, named `GA4_MEASUREMENT_ID`.
 - Once values are present, the next deployment injects the Search Console verification meta tag into the homepage and the optional GA4 loader into production HTML. No tag is added to the noindex preview. GA4 does not load before visitor opt-in.
 - The owner must sign in to Search Console once, click Verify, and submit `https://dharanesh3048388-cyber.github.io/Sleeping-Edge/sitemap.xml` in the Sitemaps report. Google account ownership and property access cannot be completed through this GitHub integration.
 - The current sitemap and robots.txt already point to each other correctly. Sitemap submission is a discovery hint, not a ranking or indexing guarantee.
