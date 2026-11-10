@@ -136,7 +136,16 @@ for path in public_files:
     assert "github.com/" not in body.lower(), f"Clickable GitHub destination found in {path}"
 
 readiness = (root / "MONETIZATION_READINESS.md").read_text(encoding="utf-8")
-assert "no direct support or private privacy-request channel is currently available" in readiness.lower()
+contact = (public / "contact" / "index.html").read_text(encoding="utf-8")
+privacy = (public / "privacy" / "index.html").read_text(encoding="utf-8")
+terms = (public / "terms" / "index.html").read_text(encoding="utf-8")
+assert "mailto:IndianCreativeStudios@outlook.com" in contact, "Contact page must offer the owner-approved email link"
+assert "opens the email application" in contact.lower(), "Contact page must explain mailto behavior"
+assert "<form" not in contact.lower(), "Contact must not introduce a website form"
+assert "does not collect the message through a website form" in contact.lower(), "Contact privacy explanation is missing"
+assert "recipient mailbox at IndianCreativeStudios@outlook.com" in privacy, "Privacy policy must disclose email routing"
+assert "opens your configured email application" in terms, "Terms must explain email contact"
+assert "no contact form" in readiness.lower(), "Zero-cost contact approach must remain documented"
 assert "public github issue tracker is provided" not in readiness.lower()
 
 home = (root / "index.html").read_text(encoding="utf-8")
