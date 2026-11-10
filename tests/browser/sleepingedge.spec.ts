@@ -353,7 +353,7 @@ test.describe('optional Google Analytics consent', () => {
     await expect(consentDialog).toBeVisible();
     await page.getByRole('button', { name: 'Accept optional analytics' }).click();
     await expect.poll(() => googleTagRequests).toBe(1);
-    expect(await page.evaluate(() => (window as any).__sleepingEdgeFakeGoogleTagLoaded)).toBe(true);
+    await expect.poll(() => page.evaluate(() => (window as any).__sleepingEdgeFakeGoogleTagLoaded)).toBe(true);
 
     const granted = await page.evaluate(() => {
       const entries = ((window as any).dataLayer || []).filter((entry: any) =>
