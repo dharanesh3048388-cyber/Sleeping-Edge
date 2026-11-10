@@ -309,3 +309,71 @@ test.describe('indexable sleep tool landing pages', () => {
     });
   }
 });
+
+
+test.describe('optional Google Analytics consent', () => {
+  test('blocks GA4 before choice, respects rejection and permits later opt-in/revocation', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.removeItem('sleepingedge_analytics_consent_v1');
+    });
+
+    let googleTagRequests = 0;
+    await page.route('https://www.googletagmanager.com/gtag/js**', async route => {
+      googleTagRequests += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: 'window.__sleepingEdgeFakeGoogleTagLoaded = true;'
+      });
+    });
+
+    await page.goto(baseURL + '/');
+    await page.evaluate(async () => {
+      (window as any).SLEEPINGEDGE_GA4_ID = 'G-TEST12345';
+      await new Promise<void>((resolve, reject) => {
+        const loader = document.createElement('script');
+        loader.src = '/Sleeping-Edge/site-analytics.js';
+        loader.onload = () => resolve();
+        loader.onerror = () => reject(new Error('Local analytics loader failed'));
+        document.head.appendChild(loader);
+      });
+    });
+
+    const consentDialog = page.getByRole('dialog', { name: 'Your privacy choices' });
+    await expect(consentDialog).toBeVisible();
+    expect(googleTagRequests, 'Google tag must not load before visitor choice').toBe(0);
+
+    await page.getByRole('button', { name: 'Reject optional analytics' }).click();
+    await expect.poll(() => page.evaluate(() =>
+      localStorage.getItem('sleepingedge_analytics_consent_v1')
+    )).toBe('rejected');
+    expect(googleTagRequests, 'Rejecting must not load Google Analytics').toBe(0);
+
+    await page.getByRole('button', { name: 'Analytics preferences' }).click();
+    await expect(consentDialog).toBeVisible();
+    await page.getByRole('button', { name: 'Accept optional analytics' }).click();
+    await expect.poll(() => googleTagRequests).toBe(1);
+    await expect.poll(() => page.evaluate(() => (window as any).__sleepingEdgeFakeGoogleTagLoaded)).toBe(true);
+
+    const granted = await page.evaluate(() => {
+      const entries = ((window as any).dataLayer || []).filter((entry: any) =>
+        entry[0] === 'consent' && entry[1] === 'update'
+      );
+      return entries[entries.length - 1]?.[2]?.analytics_storage;
+    });
+    expect(granted).toBe('granted');
+
+    await page.getByRole('button', { name: 'Analytics preferences' }).click();
+    await expect(consentDialog).toBeVisible();
+    await page.getByRole('button', { name: 'Reject optional analytics' }).click();
+
+    const revoked = await page.evaluate(() => {
+      const entries = ((window as any).dataLayer || []).filter((entry: any) =>
+        entry[0] === 'consent' && entry[1] === 'update'
+      );
+      return entries[entries.length - 1]?.[2]?.analytics_storage;
+    });
+    expect(revoked).toBe('denied');
+    expect(googleTagRequests, 'Consent updates must not reload the Google tag').toBe(1);
+  });
+});
