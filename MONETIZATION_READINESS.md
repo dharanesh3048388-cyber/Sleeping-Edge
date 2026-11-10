@@ -13,7 +13,7 @@ This repository change prepares the current GitHub Pages production app for a gl
 1. **Domain:** choose and purchase a brand-appropriate domain; configure DNS, HTTPS and GitHub Pages custom domain. Then update canonical URLs, Open Graph URLs, robots.txt and sitemap.xml together and verify redirects/Search Console coverage.
 2. **Publisher:** create the actual AdSense publisher account and add the verified site. Do not paste IDs into source control. Configure the official script only after approval and policy review.
 3. **Consent:** choose a Google-certified CMP appropriate to the target regions. Configure consent signals and regional behaviour before personalised advertising or non-essential tracking. Do not invent a consent banner or claim consent compliance without a working vendor configuration.
-4. **Analytics:** optionally create GA4 and Search Console properties. Add verified measurement IDs through protected deployment secrets/configuration, not committed source. Gate non-essential analytics on the chosen consent approach and never transmit raw sleep/caffeine inputs or calculator results.
+4. **Google measurement:** create Google Search Console and a standard Google Analytics 4 property directly with Google at no charge. Search Console needs owner verification; use the URL-prefix property and add the verification token as the GitHub Actions secret `GSC_VERIFICATION_TOKEN`. Add the GA4 web-stream ID as repository variable `GA4_MEASUREMENT_ID`. Deployment injects these only at build time. GA4 is basic-consent-gated: its tag does not load until a visitor accepts optional analytics. Never transmit raw sleep/caffeine inputs or calculator results.
 5. **Contact/legal:** a public Contact page now opens the visitor's own mail application with a pre-filled email to the owner-supplied Outlook address. No contact form, form processor, message database or paid spam product is used. The operator's legal identity, business address and jurisdiction still need to be provided and the legal pages reviewed for the actual operating entity and countries served.
 6. **Affiliates:** apply to relevant programmes; use real approved tracking IDs only; disclose qualifying links close to recommendations; maintain editorial independence and check programme rules.
 7. **Content quality:** publish original, useful, reviewed sleep education with named, qualified reviewers only when their consent and credentials are verified. Cite primary/authoritative sources and keep pages current. Avoid mass-produced thin SEO pages.
@@ -24,7 +24,7 @@ This repository change prepares the current GitHub Pages production app for a gl
 - Custom domain: not supplied; no custom domain is configured by this change.
 - AdSense: not configured; no ad script or publisher ID is included.
 - Affiliate IDs: not configured; no tracked affiliate links are included.
-- Analytics: no analytics ID or analytics script is added by this change.
+- Analytics: optional GA4 integration code is present but inactive until a real `GA4_MEASUREMENT_ID` is configured. Even when configured, the Google tag loads only after visitor opt-in.
 - Contact: direct email link configured to the owner-supplied Outlook mailbox; mail is sent by the visitor through their own email provider, not through a website form.
 - Legal operator identity: not supplied; no person, company, address or email is invented.
 - Repository visibility: the source repository is public and the temporary Pages address identifies the account and repository. A custom domain can change the visitor-facing address, but cannot make browser-delivered HTML, CSS or JavaScript private.
@@ -40,3 +40,10 @@ Do not enable ads, affiliate tracking or analytics until real account details, c
 - Do not depend on Windsor.ai: its published forever-free tier falls back to one data source and one account after its trial, so it does not provide a durable combined Search Console + GA4 setup.
 - Contact is intentionally handled through a visitor-initiated mailto link. This avoids a website form endpoint, server-side message database, form subscription, CAPTCHA bill and automated form-spam surface. It depends on the visitor having an email application configured.
 - The public contact mailbox is intentionally displayed because the owner supplied it for public contact. No email password, mailbox login, OAuth token or delivery credential is stored in the website or GitHub repository.
+
+## Free Google measurement setup
+- Google Search Console is free. Create a URL-prefix property for `https://dharanesh3048388-cyber.github.io/Sleeping-Edge/`, choose HTML tag verification and copy only the `content` value from Google's meta tag. Add it in GitHub repository Settings → Secrets and variables → Actions → New repository secret, named `GSC_VERIFICATION_TOKEN`.
+- Create one Google Analytics 4 property and Web data stream for the same site. Copy the `G-...` Measurement ID. Add it under Settings → Secrets and variables → Actions → Variables → New repository variable, named `GA4_MEASUREMENT_ID`.
+- Once values are present, the next deployment injects the Search Console verification meta tag into the homepage and the optional GA4 loader into production HTML. No tag is added to the noindex preview. GA4 does not load before visitor opt-in.
+- The owner must sign in to Search Console once, click Verify, and submit `https://dharanesh3048388-cyber.github.io/Sleeping-Edge/sitemap.xml` in the Sitemaps report. Google account ownership and property access cannot be completed through this GitHub integration.
+- The current sitemap and robots.txt already point to each other correctly. Sitemap submission is a discovery hint, not a ranking or indexing guarantee.
