@@ -31,3 +31,12 @@ This repository change prepares the current GitHub Pages production app for a gl
 
 ## Release gate
 Do not enable ads, affiliate tracking or analytics until real account details, consent requirements, privacy disclosures and production domain have been confirmed. A successful build or this checklist does not guarantee AdSense approval, search ranking, traffic or revenue.
+
+## Zero-paid-services policy
+- Operating requirement: no paid subscriptions, paid trials that auto-convert, pay-as-you-go APIs, paid SEO platforms, paid analytics platforms or paid spam/CAPTCHA products.
+- Search Console is used directly at no charge; Google confirms it is a free service. Search Console property ownership verification still requires the owner to sign in to their Google account and complete the verification step.
+- Use standard Google Analytics 4 directly at no charge only after the owner creates the property and provides its Measurement ID. Keep analytics disabled until an appropriate opt-in/consent design and privacy notice are in place.
+- Do not depend on OpenSEO: its published free allowance is a one-time $0.50 signup credit with no monthly refill.
+- Do not depend on Windsor.ai: its published forever-free tier falls back to one data source and one account after its trial, so it does not provide a durable combined Search Console + GA4 setup.
+- Contact-form service selection must remain within a genuinely $0 recurring-cost plan. Evaluate its delivery reliability, data handling, privacy terms, spam protection, rate limits and free-tier submission cap before production use. Never enable a paid upgrade or overage.
+- Keep all recipient addresses, delivery keys and provider credentials out of public HTML, JavaScript and Git history. Store provider-side recipient configuration or deployment secrets only.
