@@ -148,6 +148,20 @@ assert "opens your configured email application" in terms, "Terms must explain e
 assert "no contact form" in readiness.lower(), "Zero-cost contact approach must remain documented"
 assert "public github issue tracker is provided" not in readiness.lower()
 
+# Commercial transparency pages must describe the current inactive state and future safeguards.
+about = (public / "about" / "index.html").read_text(encoding="utf-8")
+affiliate = (public / "affiliate-disclosure" / "index.html").read_text(encoding="utf-8")
+for phrase in ["not currently clinician-reviewed", "legal name of the operator", "commercial relationships"]:
+    assert phrase in about.lower(), f"About page missing transparency statement: {phrase}"
+for phrase in ["no active display advertisements", "near the relevant recommendation", "As an Amazon Associate I earn from qualifying purchases", "calculator inputs"]:
+    assert phrase.lower() in affiliate.lower(), f"Advertising/affiliate disclosure missing: {phrase}"
+for phrase in ["no advertising network", "calculator inputs or results", "web beacons", "Analytics preferences", "legal name", "third-party"]:
+    assert phrase.lower() in privacy.lower(), f"Privacy policy missing: {phrase}"
+for phrase in ["no active advertising network", "operator's legal identity", "not a medical provider", "commercial relationships"]:
+    assert phrase.lower() in terms.lower(), f"Terms missing: {phrase}"
+for phrase in ["Google-certified CMP", "IAB Transparency and Consent Framework", "sensitive health-related", "As an Amazon Associate I earn from qualifying purchases", "no paid"]:
+    assert phrase.lower() in readiness.lower(), f"Monetisation checklist missing: {phrase}"
+
 home = (root / "index.html").read_text(encoding="utf-8")
 assert f'"https://dharanesh3048388-cyber.github.io/Sleeping-Edge/"' in home
 assert "YOURDOMAIN" not in home
