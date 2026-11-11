@@ -10,7 +10,7 @@ This is an operational checklist for the current GitHub Pages release. It is not
 - Affiliates: no affiliate programme, tracking ID or commission-generating link is active.
 - Analytics: optional GA4 code is inactive until the owner configures `GA4_MEASUREMENT_ID`. When configured, it loads only after an affirmative analytics choice. The analytics preferences control is injected into the footer by the analytics script only when GA4 is configured.
 - Calculator privacy: calculator inputs and results are not intentionally sent to a SleepingEdge application server or GA4.
-- Contact: direct visitor-initiated mailto to the owner-supplied `IndianCreativeStudios@outlook.com`; no web form, message database or paid form service.
+- Contact: direct visitor-initiated mailto to the owner-supplied `IndianCreativeStudios@outlook.com`; no contact form, web form, message database or paid form service.
 - Operator identity: the legal name, business address and operating jurisdiction have not yet been supplied. They must not be guessed or fabricated.
 - No paid recurring tools, paid trials that auto-convert, pay-as-you-go APIs, paid SEO platforms, paid analytics platforms or paid CAPTCHA products are permitted by the project requirement.
 
