@@ -212,8 +212,6 @@ export default function App() {
         <Header
           isDark={isDark}
           onToggleTheme={() => setIsDark(!isDark)}
-          isAudioPlaying={isAudioPlaying}
-          onToggleAudio={handleToggleAudio}
           onOpenSettings={() => setIsSettingsOpen(true)}
           activeSection={activeSection}
           onNavigate={handleNavigate}

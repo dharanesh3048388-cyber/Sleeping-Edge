@@ -172,17 +172,30 @@ test.describe('ambient sound SEO landing pages and deep links', () => {
       await expect(page.locator('a[href="../?sound=' + preset + '#ambient-sounds"]')).toBeVisible();
     }
   });
-  test('Sleep Sounds is the single user-facing category name for the sound player', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(baseURL + '/');
+  test('Sleep Sounds navigation is the only header entry and retains the complete player', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto(baseURL + '/');
 
-    await page.getByRole('link', { name: 'Sleep Sounds', exact: true }).click();
-    const player = page.getByRole('region', { name: 'Sleep sounds player' });
-    await expect(player).toBeVisible();
-    await expect(player.getByText('Sleep Sounds', { exact: true })).toBeVisible();
-    await expect(player.getByText('Ambient Noise Generator', { exact: true })).toHaveCount(0);
-    await expect(player.getByRole('button', { name: /Soundscapes/ })).toBeVisible();
-    await expect(player.getByRole('button', { name: /Color Noise/ })).toBeVisible();
+      // The redundant header speaker shortcut must not return on either layout.
+      await expect(page.getByRole('button', { name: 'Open Sleep Sounds player' })).toHaveCount(0);
+      await expect(page.getByRole('button', { name: 'Pause sleep sounds' })).toHaveCount(0);
+
+      // The single Sleep Sounds navigation item remains the entry point.
+      const soundLink = page.getByRole('link', { name: 'Sleep Sounds', exact: true }).first();
+      await expect(soundLink).toBeVisible();
+      await soundLink.click();
+
+      const player = page.getByRole('region', { name: 'Sleep sounds player' });
+      await expect(player).toBeVisible();
+      await expect(player.getByText('Sleep Sounds', { exact: true })).toBeVisible();
+      await expect(player.getByText('Ambient Noise Generator', { exact: true })).toHaveCount(0);
+      await expect(player.getByRole('button', { name: /Soundscapes/ })).toBeVisible();
+      await expect(player.getByRole('button', { name: /Color Noise/ })).toBeVisible();
+      await expect(player.getByRole('button', { name: 'Play sleep sounds' })).toBeVisible();
+      await expect(player.getByLabel('Volume level')).toBeVisible();
+      await expect(player.getByText('Auto-off Timer:')).toBeVisible();
+    }
   });
 
   test('white-noise search landing page opens the selected player without autoplay', async ({ page }) => {

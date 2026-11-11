@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Moon, Sun, Volume2, VolumeX, SlidersHorizontal, Coffee, Bed, Clock, BatteryCharging, Brain } from 'lucide-react';
+import { Moon, Sun, Volume2, SlidersHorizontal, Coffee, Bed, Clock, BatteryCharging, Brain } from 'lucide-react';
 
 interface HeaderProps {
   isDark: boolean;
   onToggleTheme: () => void;
-  isAudioPlaying: boolean;
-  onToggleAudio: () => void;
   onOpenSettings: () => void;
   activeSection: string;
   onNavigate: (section: string) => void;
@@ -14,8 +12,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   isDark,
   onToggleTheme,
-  isAudioPlaying,
-  onToggleAudio,
   onOpenSettings,
   activeSection,
   onNavigate,
@@ -101,34 +97,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Zone 3: Actions (Sleep Sounds, Settings, Theme Toggle) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Sleep Sounds Player Toggle */}
-          <button
-            type="button"
-            onClick={onToggleAudio}
-            title={isAudioPlaying ? 'Pause sleep sounds' : 'Open Sleep Sounds player'}
-            aria-label={isAudioPlaying ? 'Pause sleep sounds' : 'Open Sleep Sounds player'}
-            className={`relative flex items-center justify-center h-10 px-2.5 sm:px-3 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
-              isAudioPlaying
-                ? 'bg-sky-500/15 text-sky-700 border-sky-400 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-400/50 shadow-sm'
-                : 'bg-slate-100 text-slate-700 border-slate-300/80 hover:bg-slate-200 hover:text-slate-900 dark:bg-white/5 dark:text-slate-300 dark:border-white/10 dark:hover:bg-white/10 dark:hover:text-white'
-            }`}
-          >
-            {isAudioPlaying ? (
-              <Volume2 className="w-4 h-4 text-sky-600 dark:text-emerald-400 animate-pulse shrink-0" />
-            ) : (
-              <VolumeX className="w-4 h-4 shrink-0" />
-            )}
-            <span className="hidden md:inline font-medium ml-1.5">
-              {isAudioPlaying ? 'Playing' : 'Sleep Sounds'}
-            </span>
-            {isAudioPlaying && (
-              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 dark:bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500 dark:bg-emerald-500"></span>
-              </span>
-            )}
-          </button>
-
           {/* Preferences / Custom Settings */}
           <button
             type="button"
