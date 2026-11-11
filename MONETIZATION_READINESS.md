@@ -1,49 +1,51 @@
-# SleepingEdge — monetization readiness checklist
+# SleepingEdge — monetisation and trust readiness
 
-This repository change prepares the current GitHub Pages production app for a global English-language audience and an eventual advertising + affiliate model. It does not activate monetisation.
+This is an operational checklist for the current GitHub Pages release. It is not a legal opinion, an AdSense approval guarantee or a promise of revenue.
 
-## Implemented in this foundation PR
-- Production crawl rules and sitemap for the root React app and its trust pages.
-- Public About, Methodology, Privacy, Terms, Contact and Advertising/Affiliate Disclosure pages.
-- Footer navigation to those pages.
-- A CI guard for production metadata, page presence, sitemap validity and placeholder/domain leakage.
-- No fabricated publisher, analytics, affiliate, contact or legal identity values.
+## Current production truth
+- Public site: https://dharanesh3048388-cyber.github.io/Sleeping-Edge/
+- Hosting: GitHub Pages. No custom domain is configured.
+- Public trust pages: About, Methodology, Privacy, Terms, Contact and Advertising & Affiliate Disclosure.
+- Ads: no ad network, publisher ID, ad script or paid sponsorship is active.
+- Affiliates: no affiliate programme, tracking ID or commission-generating link is active.
+- Analytics: optional GA4 code is inactive until the owner configures `GA4_MEASUREMENT_ID`. When configured, it loads only after an affirmative analytics choice. The analytics preferences control is injected into the footer by the analytics script only when GA4 is configured.
+- Calculator privacy: calculator inputs and results are not intentionally sent to a SleepingEdge application server or GA4.
+- Contact: direct visitor-initiated mailto to the owner-supplied `IndianCreativeStudios@outlook.com`; no contact form, web form, message database or paid form service.
+- Operator identity: the legal name, business address and operating jurisdiction have not yet been supplied. They must not be guessed or fabricated.
+- No paid recurring tools, paid trials that auto-convert, pay-as-you-go APIs, paid SEO platforms, paid analytics platforms or paid CAPTCHA products are permitted by the project requirement.
 
-## Owner actions before commercial launch
-1. **Domain:** choose and purchase a brand-appropriate domain; configure DNS, HTTPS and GitHub Pages custom domain. Then update canonical URLs, Open Graph URLs, robots.txt and sitemap.xml together and verify redirects/Search Console coverage.
-2. **Publisher:** create the actual AdSense publisher account and add the verified site. Do not paste IDs into source control. Configure the official script only after approval and policy review.
-3. **Consent:** choose a Google-certified CMP appropriate to the target regions. Configure consent signals and regional behaviour before personalised advertising or non-essential tracking. Do not invent a consent banner or claim consent compliance without a working vendor configuration.
-4. **Google measurement:** create Google Search Console and a standard Google Analytics 4 property directly with Google at no charge. Search Console needs owner verification; use the URL-prefix property and add the verification token as the GitHub Actions secret `GSC_VERIFICATION_TOKEN`. Add the GA4 web-stream ID as repository variable `GA4_MEASUREMENT_ID`. Deployment injects these only at build time. GA4 is basic-consent-gated: its tag does not load until a visitor accepts optional analytics. Never transmit raw sleep/caffeine inputs or calculator results.
-5. **Contact/legal:** a public Contact page now opens the visitor's own mail application with a pre-filled email to the owner-supplied Outlook address. No contact form, form processor, message database or paid spam product is used. The operator's legal identity, business address and jurisdiction still need to be provided and the legal pages reviewed for the actual operating entity and countries served.
-6. **Affiliates:** apply to relevant programmes; use real approved tracking IDs only; disclose qualifying links close to recommendations; maintain editorial independence and check programme rules.
-7. **Content quality:** publish original, useful, reviewed sleep education with named, qualified reviewers only when their consent and credentials are verified. Cite primary/authoritative sources and keep pages current. Avoid mass-produced thin SEO pages.
-8. **Performance/accessibility:** run mobile Core Web Vitals, keyboard/screen-reader, contrast, privacy and cross-browser checks on the deployed custom-domain build. Keep ads away from calculator controls and reserve layout space to avoid layout shifts.
+## What is already in place
+- Public About, Methodology, Privacy, Terms, Contact and Advertising/Affiliate Disclosure pages, linked from the production footer.
+- Sitemap and robots.txt for the canonical GitHub Pages URL.
+- Browser-based calculators without account registration or a SleepingEdge calculator-history database.
+- A basic optional GA4 consent gate. It is not an advertising CMP and does not provide an IAB TCF consent string.
+- Privacy and terms language that distinguishes the current inactive monetisation state from future possibilities.
+- CI validation for public pages, canonical URLs, metadata, sitemap entries, contact flow and medical evidence transparency.
 
-## Current configuration truth
-- Temporary host: https://dharanesh3048388-cyber.github.io/Sleeping-Edge/.
-- Custom domain: not supplied; no custom domain is configured by this change.
-- AdSense: not configured; no ad script or publisher ID is included.
-- Affiliate IDs: not configured; no tracked affiliate links are included.
-- Analytics: optional GA4 integration code is present but inactive until a real `GA4_MEASUREMENT_ID` is configured. Even when configured, the Google tag loads only after visitor opt-in.
-- Contact: direct email link configured to the owner-supplied Outlook mailbox; mail is sent by the visitor through their own email provider, not through a website form.
-- Legal operator identity: not supplied; no person, company, address or email is invented.
-- Repository visibility: the source repository is public and the temporary Pages address identifies the account and repository. A custom domain can change the visitor-facing address, but cannot make browser-delivered HTML, CSS or JavaScript private.
+## Required owner/legal work before commercial launch
+1. **Identify the actual operator.** Decide whether SleepingEdge is operated by an individual or a registered business. Supply the accurate legal name, country/state of operation and a legitimate business/contact address where legally required. Publish only truthful details. Do not invent a company, office, registration number or professional qualification.
+2. **Confirm legal jurisdiction and review.** Have a qualified professional review the Privacy Policy, Terms, advertising disclosures and consumer-facing claims for the actual operator and intended markets. The current pages are general working drafts, not legal certification. Determine which privacy, consumer, advertising and tax obligations apply.
+3. **Review India DPDP commencement.** The Digital Personal Data Protection Act, 2023 and DPDP Rules, 2025 have a phased commencement schedule. Check the latest official Gazette notifications and MeitY material at launch and before each material data-processing change; do not assume all provisions commenced on the same date.
+4. **Domain and ownership.** Choose a suitable custom domain if desired, configure DNS/HTTPS/GitHub Pages and update canonical URLs, Open Graph URLs, robots.txt, sitemap.xml and Search Console together. The current GitHub Pages URL is the only production canonical.
+5. **Google AdSense application.** Apply only with truthful operator and payment details. Wait for site approval before adding ad code. Approval and revenue are not guaranteed. Keep content original, useful, accessible and maintained; avoid thin doorway pages and misleading SEO pages. Review Google Publisher Policies and AdSense Program Policies before and after approval.
+6. **Ad placement and page suitability.** Do not put ads over, beside or in a way that resembles navigation, buttons, calculator inputs, sound controls, results or downloads. Do not encourage clicks. Avoid placing ads on pages that lack substantive content or are primarily utility/action surfaces if the provider's policy restricts those placements. Keep ads visibly labelled and reserve layout space to avoid layout shifts.
+7. **Sensitive health-related advertising.** Sleep and caffeine use can reveal or imply health-related interests. Do not send calculator inputs/results or inferred health information to ad networks or use it to build personalised advertising audiences. Check current Google restrictions on personalised advertising and sensitive categories before configuring any ad product.
+8. **Consent and regional advertising.** The current GA4 accept/reject prompt is only a basic analytics choice. It is not an advertising consent platform. If serving personalised Google ads to visitors in the EEA, UK or Switzerland, Google requires a Google-certified CMP integrated with the IAB Transparency and Consent Framework. Review Google's current certified CMP list and choose an eligible option that meets the zero-paid requirement; do not serve personalised ads in those regions until the correct consent implementation is in place. Review other regional consent requirements as well.
+9. **Privacy update before tags.** Before any ad, affiliate tracking or new analytics provider is enabled, update the Privacy Policy to name the actual provider(s), describe cookies/similar technologies, data categories, purposes, recipients, retention and visitor choices. Link the relevant provider privacy information. Google's publisher policy requires clear disclosure of data use and third-party cookie/web-beacon/IP practices.
+10. **Affiliate programme setup.** Join only programmes for which the operator is eligible. Use genuine approved IDs and permitted link formats. Add a plain-language commission disclosure close to each relevant link or recommendation, not only in the global policy. If enrolled in Amazon Associates, display the exact required statement: “As an Amazon Associate I earn from qualifying purchases.” Do not display it before actually joining.
+11. **Editorial and health trust.** Keep source citations and limitations current. Do not claim “doctor reviewed”, “clinically proven”, medical efficacy or endorsement unless supported by genuine documented review/evidence and permission. Disclose material product relationships on the relevant page.
+12. **Test after monetisation changes.** Re-run mobile/desktop browser tests, keyboard/accessibility checks, performance/Core Web Vitals, privacy-consent tests, ad-layout checks and link verification. Verify no ad request occurs before the required consent and that no calculator values are transmitted.
 
-## Release gate
-Do not enable ads, affiliate tracking or analytics until real account details, consent requirements, privacy disclosures and production domain have been confirmed. A successful build or this checklist does not guarantee AdSense approval, search ranking, traffic or revenue.
+## Zero-paid-service implementation preference
+- Use Google Search Console and standard GA4 directly where appropriate; both have free standard offerings.
+- Do not purchase SEO tools, analytics platforms, spam services or paid CMP subscriptions without explicit owner approval. If no suitable free certified CMP is available for a region, do not serve personalised ads there until a compliant no-cost solution is confirmed.
+- Do not insert ad tags, affiliate IDs, sample publisher IDs, placeholder tracking codes or fake legal identities into source control.
+- A successful build or published policy page does not mean legal compliance, ad-network approval, indexing, rankings or income is guaranteed.
 
-## Zero-paid-services policy
-- Operating requirement: no paid subscriptions, paid trials that auto-convert, pay-as-you-go APIs, paid SEO platforms, paid analytics platforms or paid spam/CAPTCHA products.
-- Search Console is used directly at no charge; Google confirms it is a free service. Search Console property ownership verification still requires the owner to sign in to their Google account and complete the verification step.
-- Use standard Google Analytics 4 directly at no charge only after the owner creates the property and provides its Measurement ID. Keep analytics disabled until an appropriate opt-in/consent design and privacy notice are in place.
-- Do not depend on OpenSEO: its published free allowance is a one-time $0.50 signup credit with no monthly refill.
-- Do not depend on Windsor.ai: its published forever-free tier falls back to one data source and one account after its trial, so it does not provide a durable combined Search Console + GA4 setup.
-- Contact is intentionally handled through a visitor-initiated mailto link. This avoids a website form endpoint, server-side message database, form subscription, CAPTCHA bill and automated form-spam surface. It depends on the visitor having an email application configured.
-- The public contact mailbox is intentionally displayed because the owner supplied it for public contact. No email password, mailbox login, OAuth token or delivery credential is stored in the website or GitHub repository.
-
-## Free Google measurement setup
-- Google Search Console is free. Create a URL-prefix property for `https://dharanesh3048388-cyber.github.io/Sleeping-Edge/`, choose HTML tag verification and copy only the `content` value from Google's meta tag. Add it in GitHub repository Settings → Secrets and variables → Actions → New repository secret, named `GSC_VERIFICATION_TOKEN`.
-- Create one Google Analytics 4 property and Web data stream for the same site. In the Web stream settings, switch Enhanced Measurement OFF so this intentionally limited setup records only basic page views. Copy the `G-...` Measurement ID. Add it under Settings → Secrets and variables → Actions → Variables → New repository variable, named `GA4_MEASUREMENT_ID`.
-- Once values are present, the next deployment injects the Search Console verification meta tag into the homepage and the optional GA4 loader into production HTML. No tag is added to the noindex preview. GA4 does not load before visitor opt-in.
-- The owner must sign in to Search Console once, click Verify, and submit `https://dharanesh3048388-cyber.github.io/Sleeping-Edge/sitemap.xml` in the Sitemaps report. Google account ownership and property access cannot be completed through this GitHub integration.
-- The current sitemap and robots.txt already point to each other correctly. Sitemap submission is a discovery hint, not a ranking or indexing guarantee.
+## Official policy references to re-check at launch
+- Google Publisher Policies: https://support.google.com/adsense/answer/10502938
+- AdSense Program Policies: https://support.google.com/adsense/answer/48182
+- Google CMP requirements for EEA/UK/Switzerland publishers: https://support.google.com/adsense/answer/13554116
+- FTC affiliate endorsement guidance: https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking
+- Amazon Associates disclosure requirements: https://affiliate-program.amazon.in/help/node/topic/GPXFHVYZMTGPUMPE
+- MeitY DPDP Rules, 2025: https://www.meity.gov.in/documents/act-and-policies/digital-personal-data-protection-rules-2025-gDOxUjMtQWa
