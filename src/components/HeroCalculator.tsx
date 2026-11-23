@@ -113,7 +113,7 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
             With realistic estimates.
           </span>
         </h1>
-        <p className="max-w-2xl mx-auto text-sm sm:text-lg text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
+        <p data-testid="sleep-cycle-disclaimer" className="max-w-2xl mx-auto text-sm sm:text-lg text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
           Sleep cycles vary from person to person and from night to night. SleepingEdge provides flexible timing estimates, not predictions of sleep stages or guarantees about how refreshed you will feel.
         </p>
       </div>
