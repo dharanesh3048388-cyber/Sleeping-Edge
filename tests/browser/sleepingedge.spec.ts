@@ -71,6 +71,33 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
+  test('hero sleep-cycle disclaimer remains readable in light and dark themes', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(baseURL + '/');
+
+    const disclaimer = page.getByTestId('sleep-cycle-disclaimer');
+    await expect(disclaimer).toBeVisible();
+    await expect(disclaimer).toContainText('Sleep cycles vary from person to person');
+
+    const lightStyles = await disclaimer.evaluate(element => ({
+      color: getComputedStyle(element).color,
+      fontWeight: getComputedStyle(element).fontWeight,
+      fontSize: getComputedStyle(element).fontSize
+    }));
+    expect(lightStyles.color).toBe('rgb(30, 41, 59)');
+    expect(Number(lightStyles.fontWeight)).toBeGreaterThanOrEqual(500);
+
+    await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
+    await expect(page.locator('html')).not.toHaveClass(/dark/);
+    const visibleLightColor = await disclaimer.evaluate(element => getComputedStyle(element).color);
+    expect(visibleLightColor).toBe('rgb(30, 41, 59)');
+
+    await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
+    await expect(page.locator('html')).toHaveClass(/dark/);
+    const darkColor = await disclaimer.evaluate(element => getComputedStyle(element).color);
+    expect(darkColor).toBe('rgb(226, 232, 240)');
+  });
+
   test('a fresh visit defaults to dark mode even when the device prefers light', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(baseURL + '/');
