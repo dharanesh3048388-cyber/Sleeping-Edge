@@ -79,6 +79,9 @@ test.describe('SleepingEdge production app', () => {
     await expect(disclaimer).toBeVisible();
     await expect(disclaimer).toContainText('Sleep cycles vary from person to person');
 
+    // New visitors default to dark mode; explicitly switch to light before checking its colour.
+    await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
+    await expect(page.locator('html')).not.toHaveClass(/dark/);
     const lightStyles = await disclaimer.evaluate(element => ({
       color: getComputedStyle(element).color,
       fontWeight: getComputedStyle(element).fontWeight,
@@ -86,11 +89,6 @@ test.describe('SleepingEdge production app', () => {
     }));
     expect(lightStyles.color).toBe('rgb(30, 41, 59)');
     expect(Number(lightStyles.fontWeight)).toBeGreaterThanOrEqual(500);
-
-    await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
-    await expect(page.locator('html')).not.toHaveClass(/dark/);
-    const visibleLightColor = await disclaimer.evaluate(element => getComputedStyle(element).color);
-    expect(visibleLightColor).toBe('rgb(30, 41, 59)');
 
     await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
     await expect(page.locator('html')).toHaveClass(/dark/);
