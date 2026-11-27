@@ -71,33 +71,39 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
-  test('hero sleep-cycle disclaimer remains readable in light and dark themes', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(baseURL + '/');
+  test('hero sleep-cycle disclaimer uses high-contrast text styling on mobile and desktop', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto(baseURL + '/');
 
-    const disclaimer = page.getByTestId('sleep-cycle-disclaimer');
-    await expect(disclaimer).toBeVisible();
-    await expect(disclaimer).toContainText('Sleep cycles vary from person to person');
+      const disclaimer = page.getByTestId('sleep-cycle-disclaimer');
+      await expect(disclaimer).toBeVisible();
+      await expect(disclaimer).toContainText('Sleep cycles vary from person to person');
 
-    // New visitors default to dark mode; explicitly switch to light before checking its colour.
-    await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
-    await expect(page.locator('html')).not.toHaveClass(/dark/);
-    const lightStyles = await disclaimer.evaluate(element => ({
-      color: getComputedStyle(element).color,
-      fontWeight: getComputedStyle(element).fontWeight,
-      classes: Array.from(element.classList)
-    }));
-    // Tailwind may serialize colours as modern OKLCH rather than legacy RGB.
-    // Assert the semantic theme utility and that the browser resolves a real colour.
-    expect(lightStyles.classes).toContain('text-slate-800');
-    expect(lightStyles.classes).toContain('dark:text-slate-200');
-    expect(lightStyles.color).not.toBe('');
-    expect(Number(lightStyles.fontWeight)).toBeGreaterThanOrEqual(500);
+      // Check the light theme specifically: white text plus a dark text-only halo
+      // keeps the disclaimer legible over the existing photographic hero image.
+      await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
+      await expect(page.locator('html')).not.toHaveClass(/dark/);
+      const lightStyles = await disclaimer.evaluate(element => {
+        const styles = getComputedStyle(element);
+        return {
+          color: styles.color,
+          fontWeight: styles.fontWeight,
+          textShadow: styles.textShadow,
+          classes: Array.from(element.classList)
+        };
+      });
+      expect(lightStyles.classes).toContain('text-white');
+      expect(lightStyles.classes).toContain('font-semibold');
+      expect(lightStyles.color).toBe('rgb(255, 255, 255)');
+      expect(lightStyles.textShadow).not.toBe('none');
+      expect(Number(lightStyles.fontWeight)).toBeGreaterThanOrEqual(600);
 
-    await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
-    await expect(page.locator('html')).toHaveClass(/dark/);
-    const darkColor = await disclaimer.evaluate(element => getComputedStyle(element).color);
-    expect(darkColor).not.toBe(lightStyles.color);
+      await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
+      await expect(page.locator('html')).toHaveClass(/dark/);
+      const darkColor = await disclaimer.evaluate(element => getComputedStyle(element).color);
+      expect(darkColor).not.toBe(lightStyles.color);
+    }
   });
 
   test('a fresh visit defaults to dark mode even when the device prefers light', async ({ page }) => {
