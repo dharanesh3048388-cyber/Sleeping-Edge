@@ -37,8 +37,8 @@ const getRequestedAmbientSound = (): AmbientSoundType | null => {
 };
 
 export default function App() {
-  // Respect the saved theme; use Northern Lights dark mode for first-time visitors.
-  const [isDark, setIsDark] = useState<boolean>(() => readPreference('sleepingedge_theme') !== 'light');
+  // Every fresh page load starts in Northern Lights dark mode. Visitors can still switch themes for the current session.
+  const [isDark, setIsDark] = useState<boolean>(true);
 
   // Soundscape state. Deep links preselect and open a sound, but never autoplay it.
   const [selectedSound, setSelectedSound] = useState<AmbientSoundType>(() => getRequestedAmbientSound() ?? 'mountain_wind');
@@ -68,7 +68,7 @@ export default function App() {
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle('dark', isDark);
-    writePreference('sleepingedge_theme', isDark ? 'dark' : 'light');
+    // Theme selection is session-only; a fresh visit always starts in dark mode.
   }, [isDark]);
 
   // Persist preferences
