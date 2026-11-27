@@ -104,12 +104,12 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
     >
       {/* Title & Tagline */}
       <div className="text-center mb-8 sm:mb-10">
-        <div className="text-xs font-semibold tracking-widest uppercase text-sky-700 dark:text-emerald-400 mb-2">
+        <div className="text-xs font-semibold tracking-widest uppercase text-white dark:text-emerald-400 mb-2 [text-shadow:0_1px_5px_rgba(2,12,27,0.95)]">
           Master Your Sleep Architecture
         </div>
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3 sm:mb-4">
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white dark:text-white mb-3 sm:mb-4 [text-shadow:0_2px_8px_rgba(2,12,27,0.95)]">
           Plan your sleep timing.{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300">
+          <span className="text-white dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300 [text-shadow:0_2px_8px_rgba(2,12,27,0.95)]">
             With realistic estimates.
           </span>
         </h1>
