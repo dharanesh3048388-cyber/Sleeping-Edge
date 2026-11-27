@@ -106,7 +106,7 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
-  test('a fresh visit defaults to dark mode even when the device prefers light'  test('a fresh visit defaults to dark mode even when the device prefers light', async ({ page }) => {
+  test('a fresh visit defaults to dark mode even when the device prefers light', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(baseURL + '/');
 
