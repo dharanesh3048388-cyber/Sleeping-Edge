@@ -110,7 +110,11 @@ test.describe('SleepingEdge production app', () => {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
       await page.setViewportSize(viewport);
       await page.goto(baseURL + '/');
-      await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
+      const themeSwitch = page.getByRole('switch');
+      if (await themeSwitch.getAttribute('aria-checked') === 'true') {
+        await themeSwitch.click();
+      }
+      await expect(page.locator('html')).not.toHaveClass(/dark/);
 
       const eyebrow = page.getByText('Master Your Sleep Architecture', { exact: true });
       const title = page.getByRole('heading', { name: /Plan your sleep timing/i });
