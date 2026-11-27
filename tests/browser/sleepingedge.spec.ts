@@ -164,15 +164,16 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
-  test('a fresh visit defaults to dark mode even when the device prefers light', async ({ page }) => {
+  test('every fresh visit starts in dark mode, even with a previously saved light preference', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light' });
+    await page.addInitScript(() => localStorage.setItem('sleepingedge_theme', 'light'));
     await page.goto(baseURL + '/');
 
     await expect(page.locator('html')).toHaveClass(/dark/);
     await expect(page.getByRole('switch', { name: 'Switch to Light Mode' })).toHaveAttribute('aria-checked', 'true');
   });
 
-  test('normal page text remains selectable and theme choice survives a reload', async ({ page }) => {
+  test('normal page text remains selectable and theme switching works until the next fresh visit', async ({ page }) => {
     await page.goto(baseURL + '/');
     await expect(page.getByRole('heading', { name: /Plan your sleep timing/i })).toBeVisible();
 
@@ -181,9 +182,11 @@ test.describe('SleepingEdge production app', () => {
 
     await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
     await expect(page.locator('html')).not.toHaveClass(/dark/);
-    await page.reload();
-    await expect(page.locator('html')).not.toHaveClass(/dark/);
     await expect(page.getByRole('switch', { name: 'Switch to Dark Mode' })).toBeVisible();
+
+    await page.reload();
+    await expect(page.locator('html')).toHaveClass(/dark/);
+    await expect(page.getByRole('switch', { name: 'Switch to Light Mode' })).toHaveAttribute('aria-checked', 'true');
   });
 
   test('mobile layout does not introduce horizontal page overflow', async ({ page }) => {
