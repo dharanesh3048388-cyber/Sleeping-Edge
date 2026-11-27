@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { NorthernLightsCanvas } from './components/NorthernLightsCanvas';
 import { MannsPlanetCanvas } from './components/MannsPlanetCanvas';
+import { CometOverlay } from './components/CometOverlay';
 import { Header } from './components/Header';
 import { HeroCalculator } from './components/HeroCalculator';
 import { NapOptimizer } from './components/NapOptimizer';
@@ -206,6 +207,7 @@ export default function App() {
     <div className="min-h-screen relative font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-sky-500/30 dark:selection:bg-emerald-500/30 selection:text-sky-950 dark:selection:text-emerald-200">
       {/* Background Visual Themes */}
       {isDark ? <NorthernLightsCanvas /> : <MannsPlanetCanvas />}
+      <CometOverlay />
 
       {/* Main App Container */}
       <div className="relative z-10 flex flex-col min-h-screen">
