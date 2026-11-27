@@ -106,6 +106,27 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
+  test('hero title and eyebrow remain readable over the unchanged light-mode background on mobile and desktop', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto(baseURL + '/');
+      await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
+
+      const eyebrow = page.getByText('Master Your Sleep Architecture', { exact: true });
+      const title = page.getByRole('heading', { name: /Plan your sleep timing/i });
+      const titleAccent = title.locator('span');
+      for (const element of [eyebrow, title, titleAccent]) {
+        await expect(element).toBeVisible();
+        const styles = await element.evaluate(node => {
+          const computed = getComputedStyle(node);
+          return { color: computed.color, textShadow: computed.textShadow };
+        });
+        expect(styles.color).toBe('rgb(255, 255, 255)');
+        expect(styles.textShadow).not.toBe('none');
+      }
+    }
+  });
+
   test('native thin shooting stars run in both themes on mobile and desktop without a separate overlay', async ({ page }) => {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
       await page.setViewportSize(viewport);
