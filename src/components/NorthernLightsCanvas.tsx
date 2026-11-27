@@ -304,6 +304,7 @@ export const NorthernLightsCanvas: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
+      data-testid="dark-background-canvas"
       className="fixed inset-0 pointer-events-none z-0 block w-full h-full"
       aria-hidden="true"
     />
