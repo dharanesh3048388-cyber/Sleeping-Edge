@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="no-referrer" />
     <script>
-      // Restore the visitor's saved theme when available; default to Aurora dark mode.
-      try {
-        const savedTheme = localStorage.getItem('sleepingedge_theme');
-        document.documentElement.classList.toggle('dark', savedTheme !== 'light');
-      } catch {
-        document.documentElement.classList.add('dark');
-      }
+      // Always paint the initial page in Aurora dark mode before React loads.
+      // A visitor may switch themes during the current session; the next fresh visit starts dark again.
+      document.documentElement.classList.add('dark');
     </script>
 <title>SleepingEdge | Sleep Calculator &amp; Sleep Sounds</title>
     <meta name="description" content="Free bedtime, wake-up, nap and caffeine calculators, plus browser-generated white, pink and brown noise, rain, ocean and wind sounds." />
