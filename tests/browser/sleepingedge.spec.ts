@@ -122,19 +122,19 @@ test.describe('SleepingEdge production app', () => {
 
         const stacking = await page.evaluate(() => {
           const comet = document.querySelector('[data-testid="comet-overlay"]') as HTMLCanvasElement | null;
-          const main = document.querySelector('main');
-          if (!comet || !main) return null;
+          const uiLayer = document.querySelector('.relative.z-10');
+          if (!comet || !uiLayer) return null;
           return {
             pointerEvents: getComputedStyle(comet).pointerEvents,
             position: getComputedStyle(comet).position,
             cometZ: Number(getComputedStyle(comet).zIndex),
-            mainZ: Number(getComputedStyle(main).zIndex)
+            uiZ: Number(getComputedStyle(uiLayer).zIndex)
           };
         });
         expect(stacking).not.toBeNull();
         expect(stacking?.pointerEvents).toBe('none');
         expect(stacking?.position).toBe('fixed');
-        expect(stacking!.cometZ).toBeLessThan(stacking!.mainZ);
+        expect(stacking!.cometZ).toBeLessThan(stacking!.uiZ);
 
         // Confirm the overlay is actually drawing changing frames, not just mounted.
         await page.waitForTimeout(700);
