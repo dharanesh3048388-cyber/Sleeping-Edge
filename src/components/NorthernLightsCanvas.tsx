@@ -85,8 +85,17 @@ export const NorthernLightsCanvas: React.FC = () => {
       });
     };
 
-    // Sporadic natural shooting stars (every 8-15 seconds)
-    let nextNaturalCometTime = performance.now() + 4000;
+    // Frequent, single natural shooting stars entering from any viewport edge.
+    let nextNaturalCometTime = performance.now() + 1800;
+    const spawnNaturalComet = () => {
+      const edge = Math.floor(Math.random() * 4);
+      const startX = edge === 0 ? Math.random() * width : edge === 1 ? width : edge === 2 ? Math.random() * width : 0;
+      const startY = edge === 0 ? 0 : edge === 1 ? Math.random() * height : edge === 2 ? height : Math.random() * height;
+      const targetX = width * (0.15 + Math.random() * 0.7);
+      const targetY = height * (0.12 + Math.random() * 0.7);
+      spawnComet(startX, startY, targetX - startX, targetY - startY);
+    };
+    let lastCometFrameTime = performance.now();
 
     // Pointer move listener
     const handlePointerMove = (e: MouseEvent | TouchEvent) => {
@@ -132,14 +141,16 @@ export const NorthernLightsCanvas: React.FC = () => {
     let time = 0;
 
     const render = (now: number) => {
+      const frameScale = Math.min(Math.max((now - lastCometFrameTime) / 16.67, 0.5), 2);
+      lastCometFrameTime = now;
       if (!prefersReducedMotion) {
-        time += 0.004;
+        time += 0.004 * frameScale;
       }
 
-      // Trigger natural shooting stars
-      if (now > nextNaturalCometTime) {
-        spawnComet(Math.random() * width * 0.8, Math.random() * height * 0.35);
-        nextNaturalCometTime = now + (Math.random() * 10000 + 7000);
+      // Keep one natural shooting star active at a time; launch every 2.4-3.6 seconds.
+      if (!prefersReducedMotion && comets.length === 0 && now >= nextNaturalCometTime) {
+        spawnNaturalComet();
+        nextNaturalCometTime = now + (Math.random() * 1200 + 2400);
       }
 
       // Clear with deep space obsidian gradient
@@ -210,9 +221,9 @@ export const NorthernLightsCanvas: React.FC = () => {
       // 3. Update & render shooting star comets
       for (let i = comets.length - 1; i >= 0; i--) {
         const c = comets[i];
-        c.x += c.vx;
-        c.y += c.vy;
-        c.alpha -= c.decay;
+        c.x += c.vx * frameScale;
+        c.y += c.vy * frameScale;
+        c.alpha -= c.decay * frameScale;
 
         // Leave tiny trail sparkles
         if (Math.random() < 0.4 && c.alpha > 0.2) {
@@ -241,7 +252,7 @@ export const NorthernLightsCanvas: React.FC = () => {
         // Draw comet sparkles
         for (let j = c.sparkles.length - 1; j >= 0; j--) {
           const sp = c.sparkles[j];
-          sp.alpha -= 0.03;
+          sp.alpha -= 0.03 * frameScale;
           if (sp.alpha <= 0) {
             c.sparkles.splice(j, 1);
             continue;
@@ -293,6 +304,7 @@ export const NorthernLightsCanvas: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
+      data-testid="dark-background-canvas"
       className="fixed inset-0 pointer-events-none z-0 block w-full h-full"
       aria-hidden="true"
     />

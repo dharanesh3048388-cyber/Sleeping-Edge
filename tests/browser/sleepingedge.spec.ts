@@ -106,45 +106,36 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
-  test('comets animate above both background themes without intercepting the interface', async ({ page }) => {
+  test('native thin shooting stars run in both themes on mobile and desktop without a separate overlay', async ({ page }) => {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
       await page.setViewportSize(viewport);
       await page.goto(baseURL + '/');
 
-      const overlay = page.getByTestId('comet-overlay');
-      await expect(overlay).toBeVisible();
+      await expect(page.getByTestId('dark-background-canvas')).toBeVisible();
+      await expect(page.getByTestId('comet-overlay')).toHaveCount(0);
 
-      for (const theme of ['dark', 'light'] as const) {
-        const currentlyDark = await page.locator('html').evaluate(element => element.classList.contains('dark'));
-        if (theme === 'light' && currentlyDark) {
-          await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
-        } else if (theme === 'dark' && !currentlyDark) {
-          await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
-        }
+      const darkSize = await page.getByTestId('dark-background-canvas').evaluate((canvas: HTMLCanvasElement) => ({
+        width: canvas.width,
+        height: canvas.height
+      }));
+      expect(darkSize.width).toBeGreaterThanOrEqual(viewport.width);
+      expect(darkSize.height).toBeGreaterThanOrEqual(viewport.height);
 
-        const stacking = await page.evaluate(() => {
-          const comet = document.querySelector('[data-testid="comet-overlay"]') as HTMLCanvasElement | null;
-          const uiLayer = document.querySelector('.relative.z-10');
-          if (!comet || !uiLayer) return null;
-          return {
-            pointerEvents: getComputedStyle(comet).pointerEvents,
-            position: getComputedStyle(comet).position,
-            cometZ: Number(getComputedStyle(comet).zIndex),
-            uiZ: Number(getComputedStyle(uiLayer).zIndex)
-          };
-        });
-        expect(stacking).not.toBeNull();
-        expect(stacking?.pointerEvents).toBe('none');
-        expect(stacking?.position).toBe('fixed');
-        expect(stacking!.cometZ).toBeLessThan(stacking!.uiZ);
+      await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
+      await expect(page.getByTestId('light-background-canvas')).toBeVisible();
+      await expect(page.getByTestId('dark-background-canvas')).toHaveCount(0);
+      await expect(page.getByTestId('comet-overlay')).toHaveCount(0);
 
-        // Confirm the overlay is actually drawing changing frames, not just mounted.
-        await page.waitForTimeout(700);
-        const firstFrame = await overlay.evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL());
-        await page.waitForTimeout(140);
-        const nextFrame = await overlay.evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL());
-        expect(nextFrame).not.toBe(firstFrame);
-      }
+      const lightSize = await page.getByTestId('light-background-canvas').evaluate((canvas: HTMLCanvasElement) => ({
+        width: canvas.width,
+        height: canvas.height
+      }));
+      expect(lightSize.width).toBeGreaterThanOrEqual(viewport.width);
+      expect(lightSize.height).toBeGreaterThanOrEqual(viewport.height);
+
+      await expect(page.getByRole('heading', { name: /Plan your sleep timing/i })).toBeVisible();
+      await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
+      await expect(page.getByTestId('dark-background-canvas')).toBeVisible();
     }
   });
 

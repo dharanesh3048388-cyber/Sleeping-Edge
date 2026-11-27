@@ -19,6 +19,17 @@ interface WindStream {
   alpha: number;
 }
 
+interface NaturalStarComet {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  length: number;
+  alpha: number;
+  decay: number;
+  sparkles: { x: number; y: number; alpha: number; size: number }[];
+}
+
 interface SpindriftParticle {
   x: number;
   y: number;
@@ -103,7 +114,32 @@ export const MannsPlanetCanvas: React.FC = () => {
     // --- 3. Interactive Wind Streams & Blowing Spindrift ---
     const windStreams: WindStream[] = [];
     const spindrift: SpindriftParticle[] = [];
+    const naturalComets: NaturalStarComet[] = [];
+    let nextNaturalCometTime = performance.now() + 1800;
+    let lastCometFrameTime = performance.now();
     let streamIdCounter = 0;
+
+    const spawnNaturalComet = () => {
+      const edge = Math.floor(Math.random() * 4);
+      const startX = edge === 0 ? Math.random() * width : edge === 1 ? width : edge === 2 ? Math.random() * width : 0;
+      const startY = edge === 0 ? 0 : edge === 1 ? Math.random() * height : edge === 2 ? height : Math.random() * height;
+      const targetX = width * (0.15 + Math.random() * 0.7);
+      const targetY = height * (0.12 + Math.random() * 0.7);
+      const dx = targetX - startX;
+      const dy = targetY - startY;
+      const distance = Math.hypot(dx, dy) || 1;
+      const speed = Math.random() * 6 + 7;
+      naturalComets.push({
+        x: startX,
+        y: startY,
+        vx: (dx / distance) * speed,
+        vy: (dy / distance) * speed,
+        length: Math.random() * 70 + 60,
+        alpha: 0.95,
+        decay: 0.012 + Math.random() * 0.008,
+        sparkles: []
+      });
+    };
 
     // Initialize ambient blowing spindrift particles
     const maxParticles = Math.min(140, Math.floor((width * height) / 12000));
@@ -254,8 +290,10 @@ export const MannsPlanetCanvas: React.FC = () => {
     let time = 0;
 
     // --- 4. Main 120Hz Animation Loop ---
-    const render = () => {
-      time += 0.012;
+    const render = (now: number) => {
+      const frameScale = Math.min(Math.max((now - lastCometFrameTime) / 16.67, 0.5), 2);
+      lastCometFrameTime = now;
+      time += 0.012 * frameScale;
 
       // 1. Smooth Spring/Damping Lerp on Background Image
       // Smoothly applies parallax, mountain tilt, and wind displacement to the background photo
@@ -490,6 +528,64 @@ export const MannsPlanetCanvas: React.FC = () => {
         ctx.restore();
       }
 
+      // Subtle native shooting stars: one at a time, entering from any screen edge.
+      if (!prefersReducedMotion && naturalComets.length === 0 && now >= nextNaturalCometTime) {
+        spawnNaturalComet();
+        nextNaturalCometTime = now + (Math.random() * 1200 + 2400);
+      }
+      for (let i = naturalComets.length - 1; i >= 0; i--) {
+        const comet = naturalComets[i];
+        comet.x += comet.vx * frameScale;
+        comet.y += comet.vy * frameScale;
+        comet.alpha -= comet.decay * frameScale;
+
+        if (Math.random() < 0.4 && comet.alpha > 0.2) {
+          comet.sparkles.push({
+            x: comet.x - comet.vx * 0.2 + (Math.random() * 4 - 2),
+            y: comet.y - comet.vy * 0.2 + (Math.random() * 4 - 2),
+            alpha: comet.alpha * 0.8,
+            size: Math.random() * 1.5 + 0.8
+          });
+        }
+
+        const gradient = ctx.createLinearGradient(
+          comet.x, comet.y,
+          comet.x - comet.vx * (comet.length / 10),
+          comet.y - comet.vy * (comet.length / 10)
+        );
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${comet.alpha})`);
+        gradient.addColorStop(0.2, `rgba(167, 243, 208, ${comet.alpha * 0.8})`);
+        gradient.addColorStop(1, 'rgba(30, 230, 168, 0)');
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 1.8;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(comet.x, comet.y);
+        ctx.lineTo(
+          comet.x - comet.vx * (comet.length / 10),
+          comet.y - comet.vy * (comet.length / 10)
+        );
+        ctx.stroke();
+
+        for (let j = comet.sparkles.length - 1; j >= 0; j--) {
+          const sparkle = comet.sparkles[j];
+          sparkle.alpha -= 0.03 * frameScale;
+          if (sparkle.alpha <= 0) {
+            comet.sparkles.splice(j, 1);
+            continue;
+          }
+          ctx.fillStyle = `rgba(255, 255, 255, ${sparkle.alpha})`;
+          ctx.beginPath();
+          ctx.arc(sparkle.x, sparkle.y, sparkle.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (comet.alpha <= 0 || comet.x < -100 || comet.x > width + 100 || comet.y < -100 || comet.y > height + 100) {
+          naturalComets.splice(i, 1);
+        }
+      }
+
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -524,6 +620,7 @@ export const MannsPlanetCanvas: React.FC = () => {
       {/* 120Hz Interactive Mountain & Arctic Wind Simulation Canvas */}
       <canvas
         ref={canvasRef}
+        data-testid="light-background-canvas"
         className="absolute inset-0 block w-full h-full will-change-contents"
       />
     </div>
