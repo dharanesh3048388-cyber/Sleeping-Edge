@@ -106,6 +106,47 @@ test.describe('SleepingEdge production app', () => {
     }
   });
 
+  test('comets animate above both background themes without intercepting the interface', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 1365, height: 900 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto(baseURL + '/');
+
+      const overlay = page.getByTestId('comet-overlay');
+      await expect(overlay).toBeVisible();
+
+      for (const theme of ['dark', 'light'] as const) {
+        if (theme === 'light') {
+          await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
+        } else {
+          await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
+        }
+
+        const stacking = await page.evaluate(() => {
+          const comet = document.querySelector('[data-testid="comet-overlay"]') as HTMLCanvasElement | null;
+          const main = document.querySelector('main');
+          if (!comet || !main) return null;
+          return {
+            pointerEvents: getComputedStyle(comet).pointerEvents,
+            position: getComputedStyle(comet).position,
+            cometZ: Number(getComputedStyle(comet).zIndex),
+            mainZ: Number(getComputedStyle(main).zIndex)
+          };
+        });
+        expect(stacking).not.toBeNull();
+        expect(stacking?.pointerEvents).toBe('none');
+        expect(stacking?.position).toBe('fixed');
+        expect(stacking!.cometZ).toBeLessThan(stacking!.mainZ);
+
+        // Confirm the overlay is actually drawing changing frames, not just mounted.
+        await page.waitForTimeout(700);
+        const firstFrame = await overlay.evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL());
+        await page.waitForTimeout(140);
+        const nextFrame = await overlay.evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL());
+        expect(nextFrame).not.toBe(firstFrame);
+      }
+    }
+  });
+
   test('a fresh visit defaults to dark mode even when the device prefers light', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(baseURL + '/');
