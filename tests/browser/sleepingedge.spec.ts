@@ -117,9 +117,8 @@ test.describe('SleepingEdge production app', () => {
       for (const theme of ['dark', 'light'] as const) {
         if (theme === 'light') {
           await page.getByRole('switch', { name: 'Switch to Light Mode' }).click();
-        } else {
-          await page.getByRole('switch', { name: 'Switch to Dark Mode' }).click();
         }
+        // Each fresh page starts in dark mode, so no toggle is needed for the dark pass.
 
         const stacking = await page.evaluate(() => {
           const comet = document.querySelector('[data-testid="comet-overlay"]') as HTMLCanvasElement | null;
