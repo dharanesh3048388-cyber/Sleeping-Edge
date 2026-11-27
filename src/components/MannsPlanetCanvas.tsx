@@ -620,6 +620,7 @@ export const MannsPlanetCanvas: React.FC = () => {
       {/* 120Hz Interactive Mountain & Arctic Wind Simulation Canvas */}
       <canvas
         ref={canvasRef}
+        data-testid="light-background-canvas"
         className="absolute inset-0 block w-full h-full will-change-contents"
       />
     </div>
